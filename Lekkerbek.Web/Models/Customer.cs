@@ -9,7 +9,7 @@
     }
     public class Customer
     {
-        public int Id { get; set; }
+        public int CustomerId { get; set; }
         public string Name { get; set; } = string.Empty;
 
         public string Address { get; set; } = string.Empty;
@@ -23,14 +23,14 @@
             get { return loyaltyScore; } 
             set 
             { 
-                if (Orders.Count >= 3)
-                    loyaltyScore = true;
-                else
-                    loyaltyScore = false;
+                //if (Orders.Count >= 3)
+                //    loyaltyScore = true;
+                //else
+                //    loyaltyScore = false;
             } }
 
-        //binnen de oerder class Customer property moet toegevoegd worden dus elke klant kan een of meer bestelling hebben maar elke bestelling is van slechts een klant
-        public virtual ICollection <Order> Orders { get; set; }
+        //aan de Order class - virtual Customer property - int CustomerId -  moeten toegevoegd worden dus elke klant kan een of meer bestelling hebben maar elke bestelling is van slechts een klant
+        //public virtual ICollection <Order> Orders { get; set; }
         public virtual DishesList PreferedDishes { get; set; }
     }
 }
