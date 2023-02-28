@@ -1,18 +1,33 @@
-﻿using Lekkerbek.Web.Models;
+﻿using Lekkerbek.Web.Data;
+using Lekkerbek.Web.Migrations;
+using Lekkerbek.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static Azure.Core.HttpHeader;
 
 namespace Lekkerbek.Web.Controllers
 {
     public class CustomerController : Controller
     {
-        public List<Customer> Customers { get; set; } = new List<Customer>();
+        //!!!!Onze DataBase!!!!
+        LekkerbekContext db = new LekkerbekContext();
+
         // GET: CustomerController
         public ActionResult Index()
         {
-            return View(Customers);
+            return View(db.Customers);
         }
+        //GET: CustomerController/Details/5
+        public ActionResult Details(int id)
+        {
 
+            var data = db.Customers.Find(id);
+            if (data == null)
+            {
+                return View();//we kunnen hier foutmelden toevoegen
+            }
+            return View(data);
+        }
         // GET: CustomerController/Create
         public ActionResult Create()
         {
@@ -26,6 +41,12 @@ namespace Lekkerbek.Web.Controllers
         {
             try
             {
+                Customer customer = new Customer();
+                customer.Name = collection["Name"];
+                customer.Address = collection["Address"];
+                customer.Birthday = DateTime.Parse(collection["Birthday"]);
+                db.Customers.Add(customer);
+                db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -37,7 +58,12 @@ namespace Lekkerbek.Web.Controllers
         // GET: CustomerController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var data = db.Customers.Find(id);
+            if (data == null)
+            {
+                return View();//we kunnen hier foutmelden toevoegen
+            }
+            return View(data);
         }
 
         // POST: CustomerController/Edit/5
@@ -47,6 +73,11 @@ namespace Lekkerbek.Web.Controllers
         {
             try
             {
+                var firstVersion = db.Customers.Find(id);
+                firstVersion.Name = collection["Name"];
+                firstVersion.Address = collection["Address"];
+                firstVersion.Birthday = DateTime.Parse(collection["Birthday"]);
+                db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -55,25 +86,33 @@ namespace Lekkerbek.Web.Controllers
             }
         }
 
-        //// GET: CustomerController/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
+        // GET: CustomerController/Delete/5
+        public ActionResult Delete(int id)
+        {
+            var data = db.Customers.Find(id);
+            if (data == null)
+            {
+                return View();//we kunnen hier foutmelden toevoegen
+            }
+            return View(data);
+        }
 
-        //// POST: CustomerController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+        // POST: CustomerController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, IFormCollection collection)
+        {
+            try
+            {
+                var data = db.Customers.Find(id);
+                db.Remove(data);
+                db.SaveChanges();
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
     }
 }
