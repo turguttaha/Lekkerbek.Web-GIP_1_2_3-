@@ -15,10 +15,10 @@
         public DateTime EndTimeSlot { get; set;}
         public int? Chef1Id  { get; set; }
 
-        //public virtual Chef Chef1 { get; set; }
+        public virtual Chef Chef1 { get; set; }
         public int? Chef2Id { get; set; }
 
-        //public virtual Chef Chef2 { get; set; }
+        public virtual Chef Chef2 { get; set; }
 
 
     }
