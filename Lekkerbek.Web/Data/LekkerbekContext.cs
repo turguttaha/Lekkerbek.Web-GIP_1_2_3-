@@ -12,6 +12,8 @@ namespace Lekkerbek.Web.Data
         {
         }
 
+
+
         public LekkerbekContext(DbContextOptions<LekkerbekContext> options) 
             :base(options)
 
@@ -19,6 +21,9 @@ namespace Lekkerbek.Web.Data
         }
 
         public DbSet<Customer> Customers { get; set; }
+
+        public DbSet<TimeSlot> TimeSlot { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
