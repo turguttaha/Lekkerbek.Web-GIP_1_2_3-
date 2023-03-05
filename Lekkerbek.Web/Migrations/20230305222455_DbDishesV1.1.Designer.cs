@@ -4,6 +4,7 @@ using Lekkerbek.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek.Web.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20230305222455_DbDishesV1.1")]
+    partial class DbDishesV11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,14 +118,9 @@ namespace Lekkerbek.Web.Migrations
                     b.Property<DateTime>("OrderFinishedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("TimeSlotID")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderID");
 
                     b.HasIndex("CustomerID");
-
-                    b.HasIndex("TimeSlotID");
 
                     b.ToTable("Orders");
                 });
@@ -215,13 +213,7 @@ namespace Lekkerbek.Web.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("CustomerID");
 
-                    b.HasOne("Lekkerbek.Web.Models.TimeSlot", "TimeSlot")
-                        .WithMany("Orders")
-                        .HasForeignKey("TimeSlotID");
-
                     b.Navigation("Customer");
-
-                    b.Navigation("TimeSlot");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.OrderLine", b =>
@@ -271,11 +263,6 @@ namespace Lekkerbek.Web.Migrations
             modelBuilder.Entity("Lekkerbek.Web.Models.PreferredDish", b =>
                 {
                     b.Navigation("Customers");
-                });
-
-            modelBuilder.Entity("Lekkerbek.Web.Models.TimeSlot", b =>
-                {
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

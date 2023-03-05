@@ -4,6 +4,7 @@ using Lekkerbek.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek.Web.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20230305221953_DbOrderLineV1.1")]
+    partial class DbOrderLineV11
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,33 +74,6 @@ namespace Lekkerbek.Web.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("Lekkerbek.Web.Models.Dish", b =>
-                {
-                    b.Property<int>("DishId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DishId"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Discount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.HasKey("DishId");
-
-                    b.ToTable("Dishes");
-                });
-
             modelBuilder.Entity("Lekkerbek.Web.Models.Order", b =>
                 {
                     b.Property<int>("OrderID")
@@ -115,14 +91,9 @@ namespace Lekkerbek.Web.Migrations
                     b.Property<DateTime>("OrderFinishedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("TimeSlotID")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderID");
 
                     b.HasIndex("CustomerID");
-
-                    b.HasIndex("TimeSlotID");
 
                     b.ToTable("Orders");
                 });
@@ -138,9 +109,6 @@ namespace Lekkerbek.Web.Migrations
                     b.Property<int>("DishAmount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DishID")
-                        .HasColumnType("int");
-
                     b.Property<string>("ExtraDetails")
                         .HasColumnType("nvarchar(max)");
 
@@ -148,8 +116,6 @@ namespace Lekkerbek.Web.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("OrderLineID");
-
-                    b.HasIndex("DishID");
 
                     b.HasIndex("OrderID");
 
@@ -215,26 +181,14 @@ namespace Lekkerbek.Web.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("CustomerID");
 
-                    b.HasOne("Lekkerbek.Web.Models.TimeSlot", "TimeSlot")
-                        .WithMany("Orders")
-                        .HasForeignKey("TimeSlotID");
-
                     b.Navigation("Customer");
-
-                    b.Navigation("TimeSlot");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.OrderLine", b =>
                 {
-                    b.HasOne("Lekkerbek.Web.Models.Dish", "Dish")
-                        .WithMany("OrderLines")
-                        .HasForeignKey("DishID");
-
                     b.HasOne("Lekkerbek.Web.Models.Order", "Order")
                         .WithMany("OrderLines")
                         .HasForeignKey("OrderID");
-
-                    b.Navigation("Dish");
 
                     b.Navigation("Order");
                 });
@@ -258,11 +212,6 @@ namespace Lekkerbek.Web.Migrations
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("Lekkerbek.Web.Models.Dish", b =>
-                {
-                    b.Navigation("OrderLines");
-                });
-
             modelBuilder.Entity("Lekkerbek.Web.Models.Order", b =>
                 {
                     b.Navigation("OrderLines");
@@ -271,11 +220,6 @@ namespace Lekkerbek.Web.Migrations
             modelBuilder.Entity("Lekkerbek.Web.Models.PreferredDish", b =>
                 {
                     b.Navigation("Customers");
-                });
-
-            modelBuilder.Entity("Lekkerbek.Web.Models.TimeSlot", b =>
-                {
-                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

@@ -23,10 +23,16 @@
                 //    loyaltyScore = false;
             } }
 
-        //aan de Order class - virtual Customer property - int CustomerId -  moeten toegevoegd worden dus elke klant kan een of meer bestelling hebben maar elke bestelling is van slechts een klant
-        // public virtual ICollection<Order> Orders { get; set; }
+        
+       
+        //Foreign Key van Preferred Dish
         public int? PreferredDishId { get; set; }
         public virtual PreferredDish PreferredDish { get; set; }
+
+        //Relatie met order
+        //aan de Order class - virtual Customer property - int CustomerId -  moeten toegevoegd worden dus elke klant kan een of meer bestelling hebben maar elke bestelling is van slechts een klant
+        public virtual ICollection<Order> Orders { get; set; }
+
 
     }
 }

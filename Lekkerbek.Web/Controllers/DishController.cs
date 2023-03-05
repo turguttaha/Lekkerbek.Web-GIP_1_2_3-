@@ -1,13 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Lekkerbek.Web.Data;
+using Lekkerbek.Web.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Lekkerbek.Web.Controllers
 {
     public class DishController : Controller
     {
-        List<Dish> DishList { get; set; } = new List<Dish>();
-        public IActionResult Index()
+        private readonly LekkerbekContext _context;
+
+        public DishController(LekkerbekContext context)
         {
-            return View(DishList);
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            return View(_context.Dishes);
         }
 
         public ActionResult Create()
@@ -21,6 +29,13 @@ namespace Lekkerbek.Web.Controllers
         {
             try
             {
+                Dish dish = new Dish();
+                dish.Name = collection["Name"];
+                dish.Description = collection["Description"];
+                dish.Price = int.Parse(collection["Price"]);
+                dish.Discount = int.Parse(collection["Discount"]);
+                _context.Dishes.Add(dish);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -31,7 +46,8 @@ namespace Lekkerbek.Web.Controllers
 
         public ActionResult Edit(int id)
         {
-            return View();
+            Dish dish = _context.Dishes.Find(id);
+            return View(dish);
         }
 
         [HttpPost]
@@ -40,6 +56,13 @@ namespace Lekkerbek.Web.Controllers
         {
             try
             {
+                Dish dish = _context.Dishes.Find(id);
+                dish.Name = collection["Name"];
+                dish.Description = collection["Description"];
+                dish.Price = int.Parse(collection["Price"]);
+                dish.Discount = int.Parse(collection["Discount"]);
+                _context.Dishes.Update(dish);
+                _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
             catch

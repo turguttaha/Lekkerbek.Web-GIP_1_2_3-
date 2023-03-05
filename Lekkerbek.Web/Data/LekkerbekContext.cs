@@ -19,13 +19,17 @@ namespace Lekkerbek.Web.Data
 
         {
         }
-
+        //Models
         public DbSet<Customer> Customers { get; set; }
-
         public DbSet<TimeSlot> TimeSlots { get; set; }
         public DbSet<Chef> Chefs { get; set; }
-
         public DbSet<PreferredDish> PreferredDishes { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<Dish> Dishes { get; set; }
+
+
+
 
 
 
