@@ -1,17 +1,18 @@
 ﻿@model Lekkerbek.Web.Models.Customer
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>Create</h1>
+<h1>Edit</h1>
 
 <h4>Customer</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CustomerId" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -27,19 +28,18 @@
                 <input asp-for="Birthday" class="form-control" />
                 <span asp-validation-for="Birthday" class="text-danger"></span>
             </div>
-            <!--Dat is niet nodig om customer te toevoegen het zal automatisch berekent worden door customer class-->
-@*            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="LoyaltyScore" /> @Html.DisplayNameFor(model => model.LoyaltyScore)
-                </label>
-            </div>*@
             <div class="form-group">
-                <label asp-for="PreferedDishes" class="control-label"></label>
-                <input asp-for="PreferedDishes" class="form-control" />
-                <span asp-validation-for="PreferedDishes" class="text-danger"></span>
+                <label asp-for="LoyaltyScore" class="control-label">Loyalty Score</label>
+                <input asp-for="LoyaltyScore" class="form-control" />
+                <span asp-validation-for="LoyaltyScore" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label asp-for="PreferredDishId" class="control-label">Prederred Dish</label>
+                <select asp-for="PreferredDishId" class="form-control" asp-items="ViewBag.PreferredDishName"></select>
+                <span asp-validation-for="PreferredDishId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>

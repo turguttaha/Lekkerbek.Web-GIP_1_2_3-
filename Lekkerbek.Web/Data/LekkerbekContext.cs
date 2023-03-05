@@ -22,7 +22,13 @@ namespace Lekkerbek.Web.Data
 
         public DbSet<Customer> Customers { get; set; }
 
-        public DbSet<TimeSlot> TimeSlot { get; set; }
+        public DbSet<TimeSlot> TimeSlots { get; set; }
+        public DbSet<Chef> Chefs { get; set; }
+
+        public DbSet<PreferredDish> PreferredDishes { get; set; }
+
+
+
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

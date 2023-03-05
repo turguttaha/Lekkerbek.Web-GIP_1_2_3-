@@ -1,12 +1,6 @@
 ﻿namespace Lekkerbek.Web.Models
 {
-    public enum DishesList
-    {
-        vlees,
-        vis,
-        aziatisch,
-        vegetarisch
-    }
+
     public class Customer
     {
         public int CustomerId { get; set; }
@@ -22,7 +16,7 @@
         public bool? LoyaltyScore { 
             get { return loyaltyScore; } 
             set 
-            { 
+            {
                 //if (Orders.Count >= 3)
                 //    loyaltyScore = true;
                 //else
@@ -30,8 +24,9 @@
             } }
 
         //aan de Order class - virtual Customer property - int CustomerId -  moeten toegevoegd worden dus elke klant kan een of meer bestelling hebben maar elke bestelling is van slechts een klant
-        //public virtual ICollection <Order> Orders { get; set; }
-        public DishesList? PreferedDishes { get; set; }
+        // public virtual ICollection<Order> Orders { get; set; }
+        public int? PreferredDishId { get; set; }
+        public virtual PreferredDish PreferredDish { get; set; }
 
     }
 }

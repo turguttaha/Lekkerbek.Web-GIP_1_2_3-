@@ -22,6 +22,23 @@ namespace Lekkerbek.Web.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Lekkerbek.Web.Models.Chef", b =>
+                {
+                    b.Property<int>("ChefId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChefId"));
+
+                    b.Property<string>("ChefName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ChefId");
+
+                    b.ToTable("Chefs");
+                });
+
             modelBuilder.Entity("Lekkerbek.Web.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
@@ -44,12 +61,31 @@ namespace Lekkerbek.Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PreferedDishes")
+                    b.Property<int?>("PreferredDishId")
                         .HasColumnType("int");
 
                     b.HasKey("CustomerId");
 
+                    b.HasIndex("PreferredDishId");
+
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("Lekkerbek.Web.Models.PreferredDish", b =>
+                {
+                    b.Property<int>("PreferredDishId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PreferredDishId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PreferredDishId");
+
+                    b.ToTable("PreferredDishes");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.TimeSlot", b =>
@@ -60,10 +96,7 @@ namespace Lekkerbek.Web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("Chef1Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Chef2Id")
+                    b.Property<int?>("ChefId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndTimeSlot")
@@ -77,7 +110,37 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TimeSlot");
+                    b.HasIndex("ChefId");
+
+                    b.ToTable("TimeSlots");
+                });
+
+            modelBuilder.Entity("Lekkerbek.Web.Models.Customer", b =>
+                {
+                    b.HasOne("Lekkerbek.Web.Models.PreferredDish", "PreferredDish")
+                        .WithMany("Customers")
+                        .HasForeignKey("PreferredDishId");
+
+                    b.Navigation("PreferredDish");
+                });
+
+            modelBuilder.Entity("Lekkerbek.Web.Models.TimeSlot", b =>
+                {
+                    b.HasOne("Lekkerbek.Web.Models.Chef", "Chef")
+                        .WithMany("TimeSlot")
+                        .HasForeignKey("ChefId");
+
+                    b.Navigation("Chef");
+                });
+
+            modelBuilder.Entity("Lekkerbek.Web.Models.Chef", b =>
+                {
+                    b.Navigation("TimeSlot");
+                });
+
+            modelBuilder.Entity("Lekkerbek.Web.Models.PreferredDish", b =>
+                {
+                    b.Navigation("Customers");
                 });
 #pragma warning restore 612, 618
         }

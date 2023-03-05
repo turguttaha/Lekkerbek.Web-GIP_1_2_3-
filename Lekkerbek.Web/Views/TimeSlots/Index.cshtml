@@ -22,10 +22,7 @@
                 @Html.DisplayNameFor(model => model.EndTimeSlot)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Chef1Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Chef2Id)
+                @Html.DisplayNameFor(model => model.Chef)
             </th>
             <th></th>
         </tr>
@@ -43,10 +40,7 @@
                 @Html.DisplayFor(modelItem => item.EndTimeSlot)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Chef1Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Chef2Id)
+                @Html.DisplayFor(modelItem => item.Chef.ChefId)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

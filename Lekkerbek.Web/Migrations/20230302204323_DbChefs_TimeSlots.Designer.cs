@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek.Web.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    [Migration("20230302150157_DbTimeslotV1.1")]
-    partial class DbTimeslotV11
+    [Migration("20230302204323_DbChefs_TimeSlots")]
+    partial class DbChefs_TimeSlots
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,23 @@ namespace Lekkerbek.Web.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Lekkerbek.Web.Models.Chef", b =>
+                {
+                    b.Property<int>("ChefId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChefId"));
+
+                    b.Property<string>("ChefName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ChefId");
+
+                    b.ToTable("Chefs");
+                });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.Customer", b =>
                 {
@@ -77,7 +94,23 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TimeSlot");
+                    b.HasIndex("ChefId");
+
+                    b.ToTable("TimeSlots");
+                });
+
+            modelBuilder.Entity("Lekkerbek.Web.Models.TimeSlot", b =>
+                {
+                    b.HasOne("Lekkerbek.Web.Models.Chef", "Chef")
+                        .WithMany("TimeSlot")
+                        .HasForeignKey("ChefId");
+
+                    b.Navigation("Chef");
+                });
+
+            modelBuilder.Entity("Lekkerbek.Web.Models.Chef", b =>
+                {
+                    b.Navigation("TimeSlot");
                 });
 #pragma warning restore 612, 618
         }
