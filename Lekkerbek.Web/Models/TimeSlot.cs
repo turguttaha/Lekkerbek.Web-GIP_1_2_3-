@@ -12,6 +12,6 @@ namespace Lekkerbek.Web.Models
         public int? ChefId  { get; set; }
         public virtual Chef Chef { get; set; }
 
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<OrderLine> OrderLines { get; set; }
     }
 }

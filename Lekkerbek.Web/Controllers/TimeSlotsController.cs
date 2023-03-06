@@ -48,7 +48,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: TimeSlots/Create
         public IActionResult Create()
         {
-            ViewData["ChefNames"] = new SelectList(_context.Chefs, "ChefName", "ChefName");
+            ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId");
             return View();
         }
 
@@ -59,12 +59,12 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,IsAvailable,StartTimeSlot,EndTimeSlot,ChefId")] TimeSlot timeSlot)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 _context.Add(timeSlot);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            //}
             ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", timeSlot.ChefId);
             return View(timeSlot);
         }
@@ -98,8 +98,8 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 try
                 {
                     _context.Update(timeSlot);
@@ -117,7 +117,7 @@ namespace Lekkerbek.Web.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+           // }
             ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId", timeSlot.ChefId);
             return View(timeSlot);
         }
