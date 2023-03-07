@@ -14,10 +14,6 @@
         public int? DishID { get; set; }
         public virtual Dish Dish { get; set; }
 
-        //Foreign Key van Time Slot
-        public int? TimeSlotID { get; set; }
-        public virtual TimeSlot TimeSlot { get; set; }//this is something we need to think about what we call it
-
 
     }
 }

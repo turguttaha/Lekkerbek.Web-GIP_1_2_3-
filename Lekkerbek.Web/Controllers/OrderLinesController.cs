@@ -22,7 +22,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.OrderLines.Include(o => o.Dish).Include(o => o.Order).Include(o => o.TimeSlot);
+            var lekkerbekContext = _context.OrderLines.Include(o => o.Dish).Include(o => o.Order);
             return View(await lekkerbekContext.ToListAsync());
         }
 
@@ -37,7 +37,6 @@ namespace Lekkerbek.Web.Controllers
             var orderLine = await _context.OrderLines
                 .Include(o => o.Dish)
                 .Include(o => o.Order)
-                .Include(o => o.TimeSlot)
                 .FirstOrDefaultAsync(m => m.OrderLineID == id);
             if (orderLine == null)
             {
@@ -52,7 +51,6 @@ namespace Lekkerbek.Web.Controllers
         {
             ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId");
             ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID");
-            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id");
             return View();
         }
 
@@ -61,17 +59,16 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,DishID,TimeSlotID")] OrderLine orderLine)
+        public async Task<IActionResult> Create([Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,DishID")] OrderLine orderLine)
         {
-           // if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
                 _context.Add(orderLine);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-           // }
+            }
             ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId", orderLine.DishID);
             ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
-            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", orderLine.TimeSlotID);
             return View(orderLine);
         }
 
@@ -90,7 +87,6 @@ namespace Lekkerbek.Web.Controllers
             }
             ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId", orderLine.DishID);
             ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
-            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", orderLine.TimeSlotID);
             return View(orderLine);
         }
 
@@ -99,15 +95,15 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,DishID,TimeSlotID")] OrderLine orderLine)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,DishID")] OrderLine orderLine)
         {
             if (id != orderLine.OrderLineID)
             {
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
                 try
                 {
                     _context.Update(orderLine);
@@ -125,10 +121,9 @@ namespace Lekkerbek.Web.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            //}
+            }
             ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId", orderLine.DishID);
             ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
-            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", orderLine.TimeSlotID);
             return View(orderLine);
         }
 
@@ -143,7 +138,6 @@ namespace Lekkerbek.Web.Controllers
             var orderLine = await _context.OrderLines
                 .Include(o => o.Dish)
                 .Include(o => o.Order)
-                .Include(o => o.TimeSlot)
                 .FirstOrDefaultAsync(m => m.OrderLineID == id);
             if (orderLine == null)
             {

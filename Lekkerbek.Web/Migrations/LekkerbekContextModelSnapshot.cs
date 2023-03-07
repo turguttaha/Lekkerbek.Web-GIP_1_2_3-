@@ -115,9 +115,14 @@ namespace Lekkerbek.Web.Migrations
                     b.Property<DateTime>("OrderFinishedTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("TimeSlotID")
+                        .HasColumnType("int");
+
                     b.HasKey("OrderID");
 
                     b.HasIndex("CustomerID");
+
+                    b.HasIndex("TimeSlotID");
 
                     b.ToTable("Orders");
                 });
@@ -142,16 +147,11 @@ namespace Lekkerbek.Web.Migrations
                     b.Property<int?>("OrderID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TimeSlotID")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderLineID");
 
                     b.HasIndex("DishID");
 
                     b.HasIndex("OrderID");
-
-                    b.HasIndex("TimeSlotID");
 
                     b.ToTable("OrderLines");
                 });
@@ -215,7 +215,13 @@ namespace Lekkerbek.Web.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("CustomerID");
 
+                    b.HasOne("Lekkerbek.Web.Models.TimeSlot", "TimeSlot")
+                        .WithMany("Orders")
+                        .HasForeignKey("TimeSlotID");
+
                     b.Navigation("Customer");
+
+                    b.Navigation("TimeSlot");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.OrderLine", b =>
@@ -228,15 +234,9 @@ namespace Lekkerbek.Web.Migrations
                         .WithMany("OrderLines")
                         .HasForeignKey("OrderID");
 
-                    b.HasOne("Lekkerbek.Web.Models.TimeSlot", "TimeSlot")
-                        .WithMany("OrderLines")
-                        .HasForeignKey("TimeSlotID");
-
                     b.Navigation("Dish");
 
                     b.Navigation("Order");
-
-                    b.Navigation("TimeSlot");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.TimeSlot", b =>
@@ -275,7 +275,7 @@ namespace Lekkerbek.Web.Migrations
 
             modelBuilder.Entity("Lekkerbek.Web.Models.TimeSlot", b =>
                 {
-                    b.Navigation("OrderLines");
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

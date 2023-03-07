@@ -22,7 +22,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Orders.Include(o => o.Customer);
+            var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot);
             return View(await lekkerbekContext.ToListAsync());
         }
 
@@ -36,6 +36,7 @@ namespace Lekkerbek.Web.Controllers
 
             var order = await _context.Orders
                 .Include(o => o.Customer)
+                .Include(o => o.TimeSlot)
                 .FirstOrDefaultAsync(m => m.OrderID == id);
             if (order == null)
             {
@@ -48,7 +49,8 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "CustomerId");
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name");
+            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id");
             return View();
         }
 
@@ -57,15 +59,16 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderID,OrderFinishedTime,Finished,CustomerID")] Order order)
+        public async Task<IActionResult> Create([Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order order)
         {
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
                 _context.Add(order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            //}
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerID);
+            }
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
+            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
             return View(order);
         }
 
@@ -82,7 +85,8 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerID);
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
+            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
             return View(order);
         }
 
@@ -91,15 +95,15 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderID,OrderFinishedTime,Finished,CustomerID")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order order)
         {
             if (id != order.OrderID)
             {
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-           //{
+            if (ModelState.IsValid)
+            {
                 try
                 {
                     _context.Update(order);
@@ -117,8 +121,9 @@ namespace Lekkerbek.Web.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-           // }
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerID);
+            }
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
+            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
             return View(order);
         }
 
@@ -132,6 +137,7 @@ namespace Lekkerbek.Web.Controllers
 
             var order = await _context.Orders
                 .Include(o => o.Customer)
+                .Include(o => o.TimeSlot)
                 .FirstOrDefaultAsync(m => m.OrderID == id);
             if (order == null)
             {
