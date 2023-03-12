@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using Microsoft.Data.SqlClient;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -171,8 +172,11 @@ namespace Lekkerbek.Web.Controllers
         {
             TempData["SelectedTime"] = collection["dates"];
 
-
-            return NotFound(ViewBag.SelectedTime + " " + TempData["SelectedDate"].ToString() );
+            var customer = (_context.Customers.Where(c => c.Name == "Customer1")).FirstOrDefault<Customer>();
+            //get the object data of the query you asked
+            //in theory, ask date + time first; check if any of the 2 chefs are free; put the free chefs in a dropdown
+            //thinking about ^this, would it be better to first choose day and time, look up in the database, and then show the free chefs to assign to the newly made timeslot
+            return NotFound(ViewBag.SelectedTime + " " + TempData["SelectedDate"].ToString() + " " + customer.Name );
 
 
             return View();
