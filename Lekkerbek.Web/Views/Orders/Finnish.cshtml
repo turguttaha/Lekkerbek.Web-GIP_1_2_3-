@@ -1,0 +1,26 @@
+﻿@model Lekkerbek.Web.Models.TimeSlot
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<h4>TimeSlot</h4>
+<hr />
+
+ViewBag.SelectedChef
+ViewBag.SelectedDate
+ViewBag.SelectedTime
+
+
+
+
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

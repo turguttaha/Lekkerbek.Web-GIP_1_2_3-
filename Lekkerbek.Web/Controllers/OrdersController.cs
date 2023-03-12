@@ -53,6 +53,130 @@ namespace Lekkerbek.Web.Controllers
             ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id");
             return View();
         }
+        public IActionResult Step2(IFormCollection collection)
+        {
+            /*
+            if (ModelState.IsValid)
+            {
+                _context.Add(order);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            24
+            which chef is free on *insert day*
+
+            select chefID from TimeSlot where beginTimeSlot = 'datepickertime' and where (select )
+            -> if count < 24 -> show in dropdown
+            
+             ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
+            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
+             
+             */
+            return View();
+        }
+        public IActionResult Step3(IFormCollection collection)
+        {
+            TempData["SelectedDate"] = collection["StartTimeSlot"].ToString();
+
+
+
+            ViewData["Chef"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
+
+            
+            return View();
+        }
+        public IActionResult Step4(IFormCollection collection)
+        {
+            TempData["SelectedChef"] = collection["ChefId"];
+
+            List<SelectListItem> dates = new List<SelectListItem>() {
+                new SelectListItem {
+                    Text = "12:00", Value = "12:00"
+                },
+                new SelectListItem {
+                    Text = "12:15", Value = "12:15"
+                },
+                new SelectListItem {
+                    Text = "12:30", Value = "12:30"
+                },
+                new SelectListItem {
+                    Text = "12:45", Value = "12:45"
+                },
+                new SelectListItem {
+                    Text = "13:00", Value = "13:00"
+                },
+                new SelectListItem {
+                    Text = "13:15", Value = "13:15"
+                },
+                new SelectListItem {
+                    Text = "13:30", Value = "13:30"
+                },
+                new SelectListItem {
+                    Text = "13:45", Value = "13:45"
+                },
+                new SelectListItem {
+                    Text = "18:00", Value = "18:00"
+                },
+                new SelectListItem {
+                    Text = "18:15", Value = "18:15"
+                },
+                new SelectListItem {
+                    Text = "18:30", Value = "18:30"
+                },
+                new SelectListItem {
+                    Text = "18:45", Value = "18:45"
+                },
+                new SelectListItem {
+                    Text = "19:00", Value = "19:00"
+                },
+                new SelectListItem {
+                    Text = "19:15", Value = "19:15"
+                },
+                new SelectListItem {
+                    Text = "19:30", Value = "19:30"
+                },
+                new SelectListItem {
+                    Text = "19:45", Value = "19:45"
+                },
+                new SelectListItem {
+                    Text = "20:00", Value = "20:00"
+                },
+                new SelectListItem {
+                    Text = "20:15", Value = "20:15"
+                },
+                new SelectListItem {
+                    Text = "20:30", Value = "20:30"
+                },
+                new SelectListItem {
+                    Text = "20:45", Value = "20:45"
+                },
+                new SelectListItem {
+                    Text = "21:00", Value = "21:00"
+                },
+                new SelectListItem {
+                    Text = "21:15", Value = "21:15"
+                },
+                new SelectListItem {
+                    Text = "21:30", Value = "21:30"
+                },
+                new SelectListItem {
+                    Text = "21:45", Value = "21:45"
+                },
+            };
+            ViewBag.dates = dates;
+            
+            return View();
+        }
+        public IActionResult Finnish(IFormCollection collection)
+        {
+            TempData["SelectedTime"] = collection["dates"];
+
+
+            return NotFound(ViewBag.SelectedTime + " " + TempData["SelectedDate"].ToString() );
+
+
+            return View();
+        }
 
         // POST: Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -61,6 +185,7 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order order)
         {
+            
             if (ModelState.IsValid)
             {
                 _context.Add(order);

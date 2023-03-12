@@ -1,0 +1,44 @@
+﻿@model Lekkerbek.Web.Models.TimeSlot
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<h4>TimeSlot</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Finnish">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group">
+                
+
+               
+
+
+
+                <label asp-for="StartTimeSlot" class="control-label"></label>
+                @Html.DropDownList("dates", (IEnumerable<SelectListItem>)ViewBag.dates)
+                <span asp-validation-for="StartTimeSlot" class="text-danger"></span>
+
+
+                <span asp-validation-for="StartTimeSlot" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <input type="submit" value="Volgende Stap" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
