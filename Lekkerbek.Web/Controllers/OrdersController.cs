@@ -47,6 +47,7 @@ namespace Lekkerbek.Web.Controllers
             return View(order);
         }
 
+        // !!!!Creating Order Starts here!!!!
         // GET: Orders/Create
         public IActionResult SelectCustomer()
         {
@@ -166,10 +167,6 @@ namespace Lekkerbek.Web.Controllers
             DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
             TempData["SelectedDateTime"] = timeSlotDateAndTime;
 
-
-            
-
-
             return RedirectToAction("SelectChef", "Orders");
         }
         public IActionResult SelectChef()
@@ -189,6 +186,7 @@ namespace Lekkerbek.Web.Controllers
         public IActionResult AddOrderLine()
         {
             ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId");
+            ViewBag.TemproraryCart = Order.TemproraryCart;
             return View();
         }
 
@@ -201,8 +199,8 @@ namespace Lekkerbek.Web.Controllers
         {
 
             Order.TemproraryCart.Add(orderLine);
-            ViewBag.TemproraryCart = Order.TemproraryCart;
             ViewData["Message"] = "Your Dish is added";
+            ViewBag.TemproraryCart = Order.TemproraryCart;
             ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId");
             return View();
 
@@ -245,11 +243,11 @@ namespace Lekkerbek.Web.Controllers
         {
             TempData["SelectedTime"] = collection["dates"];
 
-            var customer = (_context.Customers.Where(c => c.Name == "Customer1")).FirstOrDefault<Customer>();
+            //var customer = (_context.Customers.Where(c => c.Name == "Customer1")).FirstOrDefault<Customer>();
             //get the object data of the query you asked
             //in theory, ask date + time first; check if any of the 2 chefs are free; put the free chefs in a dropdown
             //thinking about ^this, would it be better to first choose day and time, look up in the database, and then show the free chefs to assign to the newly made timeslot
-            return NotFound(ViewBag.SelectedTime + " " + TempData["SelectedDate"].ToString() + " " + customer.Name );
+            //return NotFound(ViewBag.SelectedTime + " " + TempData["SelectedDate"].ToString() + " " + customer.Name );
 
 
             return View();

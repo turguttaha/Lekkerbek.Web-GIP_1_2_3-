@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Create";
 
-    List<OrderLine> list = new List<OrderLine>();
+    List<OrderLine> list = ViewBag.TemproraryCart;
 
 }
 
@@ -40,7 +40,7 @@
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.Dish)
+                        @Html.DisplayNameFor(model => model.DishID)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.DishAmount)
@@ -48,15 +48,15 @@
                     <th>
                         @Html.DisplayNameFor(model => model.ExtraDetails)
                     </th>
-                    <th></th>
+                    @*<th></th>*@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in list)
+                @foreach (OrderLine item in list)
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Dish.DishId)
+                            @Html.DisplayFor(modelItem => item.DishID)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.DishAmount)
@@ -65,7 +65,7 @@
                             @Html.DisplayFor(modelItem => item.ExtraDetails)
                         </td>
                         <td>
-                            @*                            <a asp-action="Edit" asp-route-id="@item.OrderLineID">Edit</a> |
+                            @*<a asp-action="Edit" asp-route-id="@item.OrderLineID">Edit</a> |
                         <a asp-action="Details" asp-route-id="@item.OrderLineID">Details</a> |
                         <a asp-action="Delete" asp-route-id="@item.OrderLineID">Delete</a>*@
                         </td>

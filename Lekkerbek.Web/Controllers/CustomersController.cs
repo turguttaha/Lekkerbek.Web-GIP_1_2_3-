@@ -48,7 +48,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: Customers/Create
         public IActionResult Create()
         {
-            ViewData["PreferredDishName"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "Name");
+            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId");
             return View();
         }
 
@@ -57,16 +57,16 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,Name,Address,Birthday,LoyaltyScore,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> Create([Bind("FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
         {
-           // if (ModelState.IsValid)
-           // {
+            //if (ModelState.IsValid)
+            //{
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             //}
-            //ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
-            //return View(customer);
+            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
+            return View(customer);
         }
 
         // GET: Customers/Edit/5
@@ -82,7 +82,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["PreferredDishName"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "Name", customer.PreferredDishId);
+            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
             return View(customer);
         }
 
@@ -91,7 +91,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,[Bind("CustomerId,Name,Address,Birthday,LoyaltyScore,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
         {
             if (id != customer.CustomerId)
             {
@@ -99,10 +99,9 @@ namespace Lekkerbek.Web.Controllers
             }
 
            // if (ModelState.IsValid)
-          //  {
+           // {
                 try
                 {
-                    //customer.PreferredDishId = int.Parse(collection["PreferredDishId"]);
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
                 }
@@ -118,9 +117,9 @@ namespace Lekkerbek.Web.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            //}
-            //ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
-            //return View(customer);
+           // }
+            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
+            return View(customer);
         }
 
         // GET: Customers/Delete/5
