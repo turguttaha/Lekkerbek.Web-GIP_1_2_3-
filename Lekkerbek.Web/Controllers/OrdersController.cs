@@ -48,49 +48,38 @@ namespace Lekkerbek.Web.Controllers
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+        public IActionResult SelectCustomer()
         {
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name");
-            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id");
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "CustomerId");
             return View();
         }
-        public IActionResult Step2(IFormCollection collection)
+
+        // POST: Orders/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SelectCustomer(IFormCollection collection)
+        {
+            
+            TempData["SelectedCustomerId"] = int.Parse(collection["CustomerID"]);
+            
+            return RedirectToAction("SelectTimeSlot", "Orders");
+
+        }
+        public IActionResult SelectTimeSlot()
         {
             /*
-            if (ModelState.IsValid)
-            {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
             24
             which chef is free on *insert day*
 
             select chefID from TimeSlot where beginTimeSlot = 'datepickertime' and where (select )
             -> if count < 24 -> show in dropdown
-            
-             ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
-            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
              
              */
-            return View();
-        }
-        public IActionResult Step3(IFormCollection collection)
-        {
-            TempData["SelectedDate"] = collection["StartTimeSlot"].ToString();
 
 
-
-            ViewData["Chef"] = new SelectList(_context.Chefs, "ChefId", "ChefName");
-
-            
-            return View();
-        }
-        public IActionResult Step4(IFormCollection collection)
-        {
-            TempData["SelectedChef"] = collection["ChefId"];
-
-            List<SelectListItem> dates = new List<SelectListItem>() {
+            List<SelectListItem> TimeSlotsSelectList = new List<SelectListItem>() {
                 new SelectListItem {
                     Text = "12:00", Value = "12:00"
                 },
@@ -164,9 +153,93 @@ namespace Lekkerbek.Web.Controllers
                     Text = "21:45", Value = "21:45"
                 },
             };
-            ViewBag.dates = dates;
-            
+            ViewBag.TimeSlotsSelectList = TimeSlotsSelectList;
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SelectTimeSlot(IFormCollection collection)
+        {
+            string x = collection["TimeSlotsSelectList"];
+            String selectedDate = collection["StartTimeSlot"] + " "+ x;
+            DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
+            TempData["SelectedDateTime"] = timeSlotDateAndTime;
+
+
+            
+
+
+            return RedirectToAction("SelectChef", "Orders");
+        }
+        public IActionResult SelectChef()
+        {
+            ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId");
+
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SelectChef(IFormCollection collection)
+        {
+            TempData["SelectedChef"] = int.Parse(collection["ChefId"]);
+            return RedirectToAction("AddOrderLine", "Orders");
+        }
+        // GET: OrderLines/Create
+        public IActionResult AddOrderLine()
+        {
+            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId");
+            return View();
+        }
+
+        // POST: OrderLines/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddOrderLine([Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,DishID")] OrderLine orderLine)
+        {
+
+            Order.TemproraryCart.Add(orderLine);
+            ViewBag.TemproraryCart = Order.TemproraryCart;
+            ViewData["Message"] = "Your Dish is added";
+            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId");
+            return View();
+
+        }
+
+        public async Task<IActionResult> CompleteOrder()
+        {
+            //TimeSlot Object aanmaken
+
+            TimeSlot timeSlot = new TimeSlot();
+            timeSlot.StartTimeSlot = (DateTime)TempData["SelectedDateTime"];
+            timeSlot.ChefId =(int)TempData["SelectedChef"];
+            _context.Add(timeSlot);
+            await _context.SaveChangesAsync();
+
+            //Order Object aanmaken
+
+            var lastTimeSlot = _context.TimeSlots.OrderByDescending(t=>t.Id).FirstOrDefault();
+
+            Order order = new Order();
+            order.CustomerID = (int)TempData["SelectedCustomerId"];
+            order.TimeSlotID = lastTimeSlot.Id;
+            _context.Add(order);
+            await _context.SaveChangesAsync();
+
+            var lastOrder = _context.Orders.OrderByDescending(t => t.OrderID).FirstOrDefault();
+
+            //Ordelines Object aanmaken/toevoegen aan order*
+            foreach (OrderLine item in Order.TemproraryCart.ToList())
+            {
+                item.OrderID = lastOrder.OrderID;
+                _context.Add(item);
+                await _context.SaveChangesAsync();
+                Order.TemproraryCart.Remove(item);
+            }
+
+            return RedirectToAction("index", "Orders");
         }
         public IActionResult Finnish(IFormCollection collection)
         {
@@ -181,26 +254,6 @@ namespace Lekkerbek.Web.Controllers
 
             return View();
         }
-
-        // POST: Orders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order order)
-        {
-            
-            if (ModelState.IsValid)
-            {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
-            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
-            return View(order);
-        }
-
         // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

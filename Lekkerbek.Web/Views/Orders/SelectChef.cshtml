@@ -1,4 +1,4 @@
-﻿@model Lekkerbek.Web.Models.TimeSlot
+﻿@model Lekkerbek.Web.Models.Chef
 
 @{
     ViewData["Title"] = "View";
@@ -10,14 +10,14 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Step4">
+        <form asp-action="SelectChef">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
             <div class="form-group">
                 
 
                 <label asp-for="ChefId" class="control-label"></label>
-                <Select asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefId" /></select>
+                <select asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefId"></select>
             </div>
            
             <div class="form-group">
