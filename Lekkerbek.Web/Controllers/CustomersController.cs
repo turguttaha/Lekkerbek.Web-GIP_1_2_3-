@@ -59,9 +59,11 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
         {
+            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
             //if (ModelState.IsValid)
             //{
-                _context.Add(customer);
+
+            _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             //}
@@ -99,9 +101,11 @@ namespace Lekkerbek.Web.Controllers
             }
 
             //if (ModelState.IsValid)
-           // {
-                try
-                {
+            // {
+            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
+
+            try
+            {
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
                 }
