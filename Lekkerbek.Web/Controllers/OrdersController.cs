@@ -39,6 +39,21 @@ namespace Lekkerbek.Web.Controllers
                 .Include(o => o.Customer)
                 .Include(o => o.TimeSlot)
                 .FirstOrDefaultAsync(m => m.OrderID == id);
+
+            //filtering orderlines occording to orderId
+             List<OrderLine> allOrderLines = _context.OrderLines.ToList();
+             List<OrderLine> filteredOrderLines = new List<OrderLine>();
+
+                foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
+                {
+                    if (!filteredOrderLines.Contains(orderLine))
+                    filteredOrderLines.Add(orderLine);
+                }
+
+            
+            ViewBag.listOfTheOrder  = filteredOrderLines;
+
+
             if (order == null)
             {
                 return NotFound();
@@ -319,11 +334,22 @@ namespace Lekkerbek.Web.Controllers
                 .Include(o => o.Customer)
                 .Include(o => o.TimeSlot)
                 .FirstOrDefaultAsync(m => m.OrderID == id);
+            //filtering orderlines occording to orderId
+            List<OrderLine> allOrderLines = _context.OrderLines.ToList();
+            List<OrderLine> filteredOrderLines = new List<OrderLine>();
+
+            foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
+            {
+                if (!filteredOrderLines.Contains(orderLine))
+                    filteredOrderLines.Add(orderLine);
+            }
+            ViewBag.listOfTheOrder = filteredOrderLines;
+
             if (order == null)
             {
                 return NotFound();
             }
-
+            TempData["TimesPast"] = "";
             return View(order);
         }
 
@@ -336,14 +362,47 @@ namespace Lekkerbek.Web.Controllers
             {
                 return Problem("Entity set 'LekkerbekContext.Orders'  is null.");
             }
-            var order = await _context.Orders.FindAsync(id);
-            if (order != null)
-            {
-                _context.Orders.Remove(order);
-            }
             
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            var order = await _context.Orders.FindAsync(id);
+
+            
+            if (order != null ) {
+                var timeSlot = await _context.TimeSlots.FindAsync(order.TimeSlotID);
+                DateTime startTimeSlot = timeSlot.StartTimeSlot;
+                DateTime endTimeSlot = startTimeSlot.AddMinutes(15);
+                DateTime now = DateTime.Now;
+                DateTime twoHoursAgo = endTimeSlot.AddMinutes(-120);
+                //filtering orderlines occording to orderId
+                List<OrderLine> allOrderLines = _context.OrderLines.ToList();
+                List<OrderLine> filteredOrderLines = new List<OrderLine>();
+
+                foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
+                {
+                    if (!filteredOrderLines.Contains(orderLine))
+                        filteredOrderLines.Add(orderLine);
+                }
+                if (twoHoursAgo > now) {
+
+
+                
+                    //deleting order timeslot orderlines from database
+                    if (timeSlot != null && filteredOrderLines != null)
+                    {
+                        _context.Orders.Remove(order);
+                        _context.TimeSlots.Remove(timeSlot);
+                        foreach (var orderLine in filteredOrderLines) { _context.OrderLines.Remove(orderLine); }
+                    }
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                TempData["TimesPast"] = "Order has less than 2 hours to prepare so it cannot be cancelled.";
+                ViewBag.listOfTheOrder = filteredOrderLines;
+                return View(order);
+            }
+            return NotFound();
+
+
         }
 
         private bool OrderExists(int id)
