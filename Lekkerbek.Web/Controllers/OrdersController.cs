@@ -232,7 +232,7 @@ namespace Lekkerbek.Web.Controllers
             Order.TemproraryCart.Add(orderLine);
             ViewData["Message"] = "Your Dish is added";
             ViewBag.TemproraryCart = Order.TemproraryCart;
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId");
+            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
             return View();
 
         }
