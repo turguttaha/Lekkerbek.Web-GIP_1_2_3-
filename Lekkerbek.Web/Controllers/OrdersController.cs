@@ -51,7 +51,8 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders/Create
         public IActionResult SelectCustomer()
         {
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "CustomerId");
+            
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "FName");
             return View();
         }
 
@@ -171,8 +172,23 @@ namespace Lekkerbek.Web.Controllers
         }
         public IActionResult SelectChef()
         {
-            ViewData["ChefId"] = new SelectList(_context.Chefs, "ChefId", "ChefId");
 
+            var usedTimeSlots = _context.TimeSlots.Where(t => t.StartTimeSlot == (DateTime)TempData["SelectedDateTime"]).ToList();
+
+            var allChefId = _context.Chefs.ToList();
+            List<int> ids = new List<int>();
+            
+            if (usedTimeSlots != null)
+            {
+                foreach (var test in usedTimeSlots)
+                {
+                    ids.Add((int)test.ChefId);
+                }
+            }
+
+
+            ViewData["ChefId"] = new SelectList(_context.Chefs.Where(r=>ids.Contains(r.ChefId)==false), "ChefId", "ChefName");
+            
             return View();
         }
         [HttpPost]
@@ -185,7 +201,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines/Create
         public IActionResult AddOrderLine()
         {
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId");
+            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
             ViewBag.TemproraryCart = Order.TemproraryCart;
             return View();
         }

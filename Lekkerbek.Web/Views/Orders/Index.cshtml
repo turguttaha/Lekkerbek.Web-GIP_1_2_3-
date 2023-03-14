@@ -20,7 +20,7 @@
                 @Html.DisplayNameFor(model => model.Customer)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TimeSlot)
+                @Html.DisplayNameFor(model => model.TimeSlot.StartTimeSlot)
             </th>
             <th></th>
         </tr>
@@ -36,7 +36,7 @@
                 @Html.DisplayFor(modelItem => item.Customer.CustomerId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TimeSlot.Id)
+                @Html.DisplayFor(modelItem => (DateTime)item.TimeSlot.StartTimeSlot.AddMinutes(15))
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.OrderID">Edit</a> |
