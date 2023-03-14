@@ -187,9 +187,10 @@ namespace Lekkerbek.Web.Controllers
         }
         public IActionResult SelectChef()
         {
+            DateTime selectedDateTime = (DateTime)TempData["SelectedDateTime"];
 
-            var usedTimeSlots = _context.TimeSlots.Where(t => t.StartTimeSlot == (DateTime)TempData["SelectedDateTime"]).ToList();
-
+            var usedTimeSlots = _context.TimeSlots.Where(t => t.StartTimeSlot == selectedDateTime).ToList();
+            TempData["SelectedDateTime"] = selectedDateTime;
             var allChefId = _context.Chefs.ToList();
             List<int> ids = new List<int>();
             
