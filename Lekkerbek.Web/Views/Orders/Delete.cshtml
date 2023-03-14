@@ -64,7 +64,7 @@
             }
         </tbody>
     </table>
-    <p>@TempData["TimesPast"]</p>
+    <p class="text-danger">@TempData["TimesPast"]</p>
     <form asp-action="Delete">
         <input type="hidden" asp-for="OrderID" />
         <input type="submit" value="Cancel Order" class="btn btn-danger" /> |
