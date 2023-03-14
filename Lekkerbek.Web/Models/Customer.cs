@@ -42,8 +42,9 @@ namespace Lekkerbek.Web.Models
             } }
 
         //Foreign Key van Preferred Dish
-        [Display(Name = "Preferred Dish")]
+        
         public int? PreferredDishId { get; set; }
+        [Display(Name = "Preferred Dish")]
         public virtual PreferredDish PreferredDish { get; set; }
 
         //Relatie met order

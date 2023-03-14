@@ -91,14 +91,14 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
         {
             if (id != customer.CustomerId)
             {
                 return NotFound();
             }
 
-           // if (ModelState.IsValid)
+            //if (ModelState.IsValid)
            // {
                 try
                 {
@@ -117,7 +117,7 @@ namespace Lekkerbek.Web.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-           // }
+            //}
             ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
             return View(customer);
         }
