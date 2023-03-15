@@ -56,12 +56,12 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("DishId,Name,Description,Price")] Dish dish)
         {
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 _context.Add(dish);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
+            //}
             return View(dish);
         }
 
@@ -93,8 +93,8 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+           // {
                 try
                 {
                     _context.Update(dish);
@@ -112,7 +112,7 @@ namespace Lekkerbek.Web.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            //}
             return View(dish);
         }
 
