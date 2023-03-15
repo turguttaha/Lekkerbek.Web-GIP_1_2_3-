@@ -48,7 +48,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: Customers/Create
         public IActionResult Create()
         {
-            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId");
+            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "Name");
             return View();
         }
 
@@ -84,7 +84,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
+            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "Name", customer.PreferredDishId);
             return View(customer);
         }
 

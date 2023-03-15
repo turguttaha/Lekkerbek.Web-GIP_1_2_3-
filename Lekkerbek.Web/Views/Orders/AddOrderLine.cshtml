@@ -17,7 +17,7 @@
         <form asp-action="AddOrderline">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="DishID" class="control-label"></label>
+                <label asp-for="DishID" class="control-label">Dish Name</label>
                 <select asp-for="DishID" class="form-control" asp-items="ViewBag.DishID"></select>
             </div>
             <div class="form-group">

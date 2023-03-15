@@ -271,19 +271,7 @@ namespace Lekkerbek.Web.Controllers
 
             return RedirectToAction("index", "Orders");
         }
-        public IActionResult Finnish(IFormCollection collection)
-        {
-            TempData["SelectedTime"] = collection["dates"];
 
-            //var customer = (_context.Customers.Where(c => c.Name == "Customer1")).FirstOrDefault<Customer>();
-            //get the object data of the query you asked
-            //in theory, ask date + time first; check if any of the 2 chefs are free; put the free chefs in a dropdown
-            //thinking about ^this, would it be better to first choose day and time, look up in the database, and then show the free chefs to assign to the newly made timeslot
-            //return NotFound(ViewBag.SelectedTime + " " + TempData["SelectedDate"].ToString() + " " + customer.Name );
-
-
-            return View();
-        }
         // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
