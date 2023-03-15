@@ -285,8 +285,9 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
-            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
+            //ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "FName");
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId","FName", order.CustomerID);
+            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "StartTimeSlot", order.TimeSlotID);
             return View(order);
         }
 
@@ -295,15 +296,15 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderID,Finished,CustomerID,TimeSlotID")] Order order)
         {
             if (id != order.OrderID)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
                 try
                 {
                     _context.Update(order);
@@ -321,7 +322,7 @@ namespace Lekkerbek.Web.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            //}
             ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
             ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
             return View(order);

@@ -1,17 +1,17 @@
 ﻿using Lekkerbek.Web.Data;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lekkerbek.Web.Models
 {
     public class TimeSlot
     {
+        [ScaffoldColumn(false)]
         public int Id { get; set; }
-        public bool IsAvailable { get; set; }
+        [Display(Name = "Time Slot")]
         public DateTime StartTimeSlot { get; set; }
-        public DateTime EndTimeSlot { get; set;}
         public int? ChefId  { get; set; }
         public virtual Chef Chef { get; set; }
-
         public virtual ICollection<Order> Orders { get; set; }
     }
 }
