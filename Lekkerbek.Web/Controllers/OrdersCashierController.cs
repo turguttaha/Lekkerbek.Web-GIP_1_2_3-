@@ -11,11 +11,11 @@ using Microsoft.Data.SqlClient;
 
 namespace Lekkerbek.Web.Controllers
 {
-    public class OrdersController : Controller
+    public class OrdersCashierController : Controller
     {
         private readonly LekkerbekContext _context;
 
-        public OrdersController(LekkerbekContext context)
+        public OrdersCashierController(LekkerbekContext context)
         {
             _context = context;
         }
@@ -41,17 +41,17 @@ namespace Lekkerbek.Web.Controllers
                 .FirstOrDefaultAsync(m => m.OrderID == id);
 
             //filtering orderlines occording to orderId
-             List<OrderLine> allOrderLines = _context.OrderLines.ToList();
-             List<OrderLine> filteredOrderLines = new List<OrderLine>();
+            List<OrderLine> allOrderLines = _context.OrderLines.ToList();
+            List<OrderLine> filteredOrderLines = new List<OrderLine>();
 
-                foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
-                {
-                    if (!filteredOrderLines.Contains(orderLine))
+            foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
+            {
+                if (!filteredOrderLines.Contains(orderLine))
                     filteredOrderLines.Add(orderLine);
-                }
+            }
 
-            
-            ViewBag.listOfTheOrder  = filteredOrderLines;
+
+            ViewBag.listOfTheOrder = filteredOrderLines;
 
 
             if (order == null)
@@ -66,7 +66,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders/Create
         public IActionResult SelectCustomer()
         {
-            
+
             ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "FName");
             return View();
         }
@@ -78,9 +78,9 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SelectCustomer(IFormCollection collection)
         {
-            
+
             TempData["SelectedCustomerId"] = int.Parse(collection["CustomerID"]);
-            
+
             return RedirectToAction("SelectTimeSlot", "Orders");
 
         }
@@ -179,7 +179,7 @@ namespace Lekkerbek.Web.Controllers
         public IActionResult SelectTimeSlot(IFormCollection collection)
         {
             string x = collection["TimeSlotsSelectList"];
-            String selectedDate = collection["StartTimeSlot"] + " "+ x;
+            String selectedDate = collection["StartTimeSlot"] + " " + x;
             DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
             TempData["SelectedDateTime"] = timeSlotDateAndTime;
 
@@ -230,7 +230,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 ViewBag.Korting = true;
             }
-            else 
+            else
             {
                 ViewBag.Korting = false;
             }
@@ -251,32 +251,32 @@ namespace Lekkerbek.Web.Controllers
 
             //if (ModelState.IsValid)
             //{
-                try
-                {
+            try
+            {
                 var discount = collection["Customer"];
                 // Order.TemproraryCart.Add(orderLine);
 
                 Console.WriteLine(discount.ToString());
 
                 //orderFinish.Finished = true;
-                
-                    orderFinish.Discount = int.Parse(collection["Discount"]);
-                    ViewBag.totalPrice = double.Parse(collection["Customer"]) * (100 - orderFinish.Discount) / 100;
-                    ViewBag.discount = discount;
-                    //_context.Update(order);
-                    //await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
+
+                orderFinish.Discount = int.Parse(collection["Discount"]);
+                ViewBag.totalPrice = double.Parse(collection["Customer"]) * (100 - orderFinish.Discount) / 100;
+                ViewBag.discount = discount;
+                //_context.Update(order);
+                //await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderExists(orderInfo.OrderID))
                 {
-                    if (!OrderExists(orderInfo.OrderID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
+                else
+                {
+                    throw;
+                }
+            }
             if (id == null || _context.Orders == null)
             {
                 return NotFound();
@@ -307,7 +307,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            
+
 
             var test = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
             if (test.Count() >= 3)
@@ -320,7 +320,7 @@ namespace Lekkerbek.Web.Controllers
             }
             return View();
             //}
-            
+
             return RedirectToAction(nameof(Index));
         }
         [HttpPost]
@@ -350,7 +350,7 @@ namespace Lekkerbek.Web.Controllers
                     throw;
                 }
             }
-            
+
             //}
 
             return RedirectToAction(nameof(Index));
@@ -363,7 +363,7 @@ namespace Lekkerbek.Web.Controllers
             TempData["SelectedDateTime"] = selectedDateTime;
             var allChefId = _context.Chefs.ToList();
             List<int> ids = new List<int>();
-            
+
             if (usedTimeSlots != null)
             {
                 foreach (var test in usedTimeSlots)
@@ -373,8 +373,8 @@ namespace Lekkerbek.Web.Controllers
             }
 
 
-            ViewData["ChefId"] = new SelectList(_context.Chefs.Where(r=>ids.Contains(r.ChefId)==false), "ChefId", "ChefName");
-            
+            ViewData["ChefId"] = new SelectList(_context.Chefs.Where(r => ids.Contains(r.ChefId) == false), "ChefId", "ChefName");
+
             return View();
         }
         [HttpPost]
@@ -411,7 +411,7 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Pay(IFormCollection collection)
         {
-            
+
             ViewData["Message"] = "Your Dish is added";
             ViewBag.TemproraryCart = Order.TemproraryCart;
             ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
@@ -425,13 +425,13 @@ namespace Lekkerbek.Web.Controllers
 
             TimeSlot timeSlot = new TimeSlot();
             timeSlot.StartTimeSlot = (DateTime)TempData["SelectedDateTime"];
-            timeSlot.ChefId =(int)TempData["SelectedChef"];
+            timeSlot.ChefId = (int)TempData["SelectedChef"];
             _context.Add(timeSlot);
             await _context.SaveChangesAsync();
 
             //Order Object aanmaken
 
-            var lastTimeSlot = _context.TimeSlots.OrderByDescending(t=>t.Id).FirstOrDefault();
+            var lastTimeSlot = _context.TimeSlots.OrderByDescending(t => t.Id).FirstOrDefault();
 
             Order order = new Order();
             order.CustomerID = (int)TempData["SelectedCustomerId"];
@@ -467,7 +467,7 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
             //ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "FName");
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId","FName", order.CustomerID);
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "FName", order.CustomerID);
             ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "StartTimeSlot", order.TimeSlotID);
             return View(order);
         }
@@ -486,23 +486,23 @@ namespace Lekkerbek.Web.Controllers
 
             //if (ModelState.IsValid)
             //{
-                try
+            try
+            {
+                _context.Update(order);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderExists(order.OrderID))
                 {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!OrderExists(order.OrderID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
             //}
             ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
             ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
@@ -549,12 +549,13 @@ namespace Lekkerbek.Web.Controllers
             {
                 return Problem("Entity set 'LekkerbekContext.Orders'  is null.");
             }
-            
+
 
             var order = await _context.Orders.FindAsync(id);
 
-            
-            if (order != null ) {
+
+            if (order != null)
+            {
                 var timeSlot = await _context.TimeSlots.FindAsync(order.TimeSlotID);
                 DateTime startTimeSlot = timeSlot.StartTimeSlot;
                 DateTime endTimeSlot = startTimeSlot.AddMinutes(15);
@@ -569,10 +570,11 @@ namespace Lekkerbek.Web.Controllers
                     if (!filteredOrderLines.Contains(orderLine))
                         filteredOrderLines.Add(orderLine);
                 }
-                if (twoHoursAgo > now) {
+                if (twoHoursAgo > now)
+                {
 
 
-                
+
                     //deleting order timeslot orderlines from database
                     if (timeSlot != null && filteredOrderLines != null)
                     {
@@ -594,7 +596,7 @@ namespace Lekkerbek.Web.Controllers
 
         private bool OrderExists(int id)
         {
-          return _context.Orders.Any(e => e.OrderID == id);
+            return _context.Orders.Any(e => e.OrderID == id);
         }
     }
 }
