@@ -3,7 +3,6 @@
 @{
     List<OrderLine> listOfTheOrder = ViewBag.listOfTheOrder;
     ViewData["Title"] = "Details";
-
 }
 
 <h1>Order Details</h1>
@@ -39,13 +38,7 @@
                 Dish Name
             </th>
             <th>
-                Dish Price
-            </th>
-            <th>
                 Dish Amount
-            </th>
-            <th>
-                Sub Total
             </th>
             <th>
                 Extra Details
@@ -57,75 +50,19 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem=>item.Dish.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=>item.Dish.Price)
+                    @Html.DisplayFor(modelItem => item.DishID)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DishAmount)
                 </td>
                 <td>
-                    @(item.Dish.Price * item.DishAmount)
-                </td>
-
-                <td>
                     @Html.DisplayFor(modelItem => item.ExtraDetails)
                 </td>
             </tr>
         }
-        @{
-            if (ViewBag.Korting) 
-            { 
-                    <tr>
-
-                        <td>
-                            Discount:
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                            
-                                <input  type="submit" id="discountButton" value="Add Discount" class="btn btn-primary mt-3" />
-                            
-                        </td>
-
-                        <td>
-                            <input  class="form-control" min="0" max="80" type="number" id="discountField" asp-for="Customer" />
-                        </td>
-                    </tr>
-            }
-
-        }
-        
-        <tr>
-            
-            <td>
-                Total Price:
-            </td>
-            <td>
-                
-            </td>
-            <td>
-                
-            </td>
-            <td>
-            </td>
-
-            <td>
-                @ViewBag.totalPrice
-                
-            </td>
-        </tr>
-            
     </tbody>
 </table>
 
-<form asp-action="Pay" asp-route-id="@Model?.OrderID">
-    <input type="submit" value="Pay" class="btn btn-primary mt-3" />
-</form>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.OrderID">Edit</a> |
     <a asp-action="Index">Back to List</a>
