@@ -16,6 +16,7 @@ namespace Lekkerbek.Web.Controllers
         public IActionResult Index()
         {
             return View();
+            //return View("_LayoutLogIn");
         }
 
         public IActionResult Privacy()
