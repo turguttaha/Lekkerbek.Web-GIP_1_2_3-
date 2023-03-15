@@ -1,0 +1,87 @@
+﻿@model Lekkerbek.Web.Models.OrderLine
+
+@{
+    ViewData["Title"] = "Create";
+
+    List<OrderLine> list = ViewBag.TemproraryCart;
+
+}
+
+<h1>Create - Order</h1>
+
+<h4>Select/add Dish</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddOrderline">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DishID" class="control-label">Dish Name</label>
+                <select asp-for="DishID" class="form-control" asp-items="ViewBag.DishID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="DishAmount" class="control-label"></label>
+                <input asp-for="DishAmount" class="form-control" />
+                <span asp-validation-for="DishAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExtraDetails" class="control-label"></label>
+                <input asp-for="ExtraDetails" class="form-control" />
+                <span asp-validation-for="ExtraDetails" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Add Dish to Order" class="btn btn-primary mt-3" />
+            </div>
+            <p class="text-danger">@ViewData["Message"] </p>
+        </form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DishID)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DishAmount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.ExtraDetails)
+                    </th>
+                    @*<th></th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (OrderLine item in list)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DishID)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DishAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ExtraDetails)
+                        </td>
+                        <td>
+                            @*<a asp-action="Edit" asp-route-id="@item.OrderLineID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.OrderLineID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.OrderLineID">Delete</a>*@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <form asp-action="CompleteOrder">
+            <input type="submit" value="Complete Order" class="btn btn-danger mt-3" />
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
