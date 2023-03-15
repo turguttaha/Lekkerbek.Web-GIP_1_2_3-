@@ -7,7 +7,7 @@
 
         //Foreign Key van Customer
         public int? CustomerID { get; set; }
-        public int Discount { get; set; }
+        public int? Discount { get; set; }
         public virtual Customer Customer { get; set; }
         
         //Realatie met OrderLine

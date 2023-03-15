@@ -423,6 +423,7 @@ namespace Lekkerbek.Web.Controllers
             //Ordelines Object aanmaken/toevoegen aan order*
             foreach (OrderLine item in Order.TemproraryCart.ToList())
             {
+                item.Dish = null;
                 item.OrderID = lastOrder.OrderID;
                 _context.Add(item);
                 await _context.SaveChangesAsync();
