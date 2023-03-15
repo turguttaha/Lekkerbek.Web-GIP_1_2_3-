@@ -23,7 +23,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot);
+            var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).Where(c=>c.Finished==false);
             return View(await lekkerbekContext.ToListAsync());
         }
 
@@ -407,17 +407,7 @@ namespace Lekkerbek.Web.Controllers
             return View();
 
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Pay(IFormCollection collection)
-        {
-
-            ViewData["Message"] = "Your Dish is added";
-            ViewBag.TemproraryCart = Order.TemproraryCart;
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
-            return View();
-
-        }
+       
 
         public async Task<IActionResult> CompleteOrder()
         {

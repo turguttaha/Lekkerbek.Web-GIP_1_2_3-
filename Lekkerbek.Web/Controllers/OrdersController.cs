@@ -407,17 +407,7 @@ namespace Lekkerbek.Web.Controllers
             return View();
 
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Pay(IFormCollection collection)
-        {
-            
-            ViewData["Message"] = "Your Dish is added";
-            ViewBag.TemproraryCart = Order.TemproraryCart;
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
-            return View();
-
-        }
+        
 
         public async Task<IActionResult> CompleteOrder()
         {
