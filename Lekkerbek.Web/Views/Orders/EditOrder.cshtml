@@ -1,0 +1,92 @@
+﻿@model Lekkerbek.Web.Models.Order
+
+@{
+    ViewData["Title"] = "Edit";
+    List<OrderLine> listOfTheOrder = ViewBag.listOfTheOrder;
+}
+
+<h1>Edit</h1>
+
+<h4>Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditOrder">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="OrderID" />
+            
+            <div class="form-group">
+                <label asp-for="CustomerID" class="control-label"></label>
+                <select asp-for="CustomerID" class="form-control" asp-items="ViewBag.CustomerId"></select>
+                <span asp-validation-for="CustomerID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+                <label asp-for="TimeSlotID" class="control-label"></label>
+                <input value="@TempData["SelectDate"]" asp-for="TimeSlotID" type="date" class="form-control" />
+
+            </div>
+            <div class="form-group">
+
+                <label asp-for="TimeSlotID" class="control-label"></label>
+                @Html.DropDownList("TimeSlotsSelectList",new SelectList(ViewBag.TimeSlotsSelectList, "Value", "Text",TempData["time"]))
+                <span asp-validation-for="TimeSlotID" class="text-danger"></span>
+
+@*                <label asp-for="TimeSlotID" class="control-label"></label>
+                <select asp-for="TimeSlotID" class="form-control" asp-items="ViewBag.TimeSlotsSelectList"></select>
+                <span asp-validation-for="TimeSlotID" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <div class="form-group form-check invisible">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Finished" /> @Html.DisplayNameFor(model => model.Finished)
+                </label>
+            </div>
+        </form>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Dish Name
+            </th>
+            <th>
+                Dish Amount
+            </th>
+            <th>
+                Extra Details
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in listOfTheOrder)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DishID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DishAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExtraDetails)
+                </td>
+                <td>
+                    <a asp-action="EditOrderLine" asp-route-id="@item.OrderLineID">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
