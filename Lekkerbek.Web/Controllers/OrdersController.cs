@@ -185,6 +185,96 @@ namespace Lekkerbek.Web.Controllers
 
             return RedirectToAction("SelectChef", "Orders");
         }
+        // GET: Orders/Edit/5
+        public async Task<IActionResult> Pay(int? id)
+        {
+            if (id == null || _context.Orders == null)
+            {
+                return NotFound();
+            }
+
+            var order = await _context.Orders
+                .Include(o => o.Customer)
+                .Include(o => o.TimeSlot)
+                .FirstOrDefaultAsync(m => m.OrderID == id);
+
+            //filtering orderlines occording to orderId
+            List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
+            List<OrderLine> filteredOrderLines = new List<OrderLine>();
+
+            foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
+            {
+                if (!filteredOrderLines.Contains(orderLine))
+                    filteredOrderLines.Add(orderLine);
+
+            }
+            ViewBag.Dishes = _context.Dishes;
+
+
+            ViewBag.listOfTheOrder = filteredOrderLines;
+
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            double totalPrice = 0;
+            foreach (var oorder in filteredOrderLines)
+            {
+                totalPrice += oorder.Dish.Price * oorder.DishAmount;
+            }
+            ViewBag.totalPrice = totalPrice;
+
+            var test = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
+            if (test.Count() >= 3)
+            {
+                ViewBag.Korting = true;
+            }
+            else 
+            {
+                ViewBag.Korting = false;
+            }
+
+
+
+            return View(order);
+        }
+
+        // POST: Orders/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Pay(int id, [Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order order)
+        {
+            var orderFinish = _context.Orders.Where(c => c.OrderID == id).FirstOrDefault();
+
+            //if (ModelState.IsValid)
+            //{
+                try
+                {
+                    orderFinish.Finished = true;
+                    Console.WriteLine("test");
+                    _context.Update(order);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!OrderExists(order.OrderID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+               // }
+                return RedirectToAction(nameof(Index));
+            }
+            
+            return RedirectToAction(nameof(Index));
+        }
+        
         public IActionResult SelectChef()
         {
             DateTime selectedDateTime = (DateTime)TempData["SelectedDateTime"];
@@ -231,6 +321,20 @@ namespace Lekkerbek.Web.Controllers
         {
 
             Order.TemproraryCart.Add(orderLine);
+            ViewData["Message"] = "Your Dish is added";
+            ViewBag.TemproraryCart = Order.TemproraryCart;
+            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
+            return View();
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Pay(IFormCollection collection)
+        {
+            var discount = collection["Customer"];
+            // Order.TemproraryCart.Add(orderLine);
+
+            Console.WriteLine(discount.ToString());
             ViewData["Message"] = "Your Dish is added";
             ViewBag.TemproraryCart = Order.TemproraryCart;
             ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
