@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
 using Microsoft.Data.SqlClient;
+using System.Net.Mail;
+using System.Net;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -239,32 +241,49 @@ namespace Lekkerbek.Web.Controllers
 
             //if (ModelState.IsValid)
             //{
-                try
-                {
-                var discount = collection["Customer"];
+            try
+            {
+                var discount = collection["Discount"];
                 // Order.TemproraryCart.Add(orderLine);
 
-                Console.WriteLine(discount.ToString());
+                List<OrderLine> allOrderLines2 = _context.OrderLines.Include(c => c.Dish).ToList();
+                List<OrderLine> filteredOrderLines2 = new List<OrderLine>();
+
+                foreach (var orderLine in allOrderLines2.Where(c => c.OrderID == id))
+                {
+                    if (!filteredOrderLines2.Contains(orderLine))
+                        filteredOrderLines2.Add(orderLine);
+
+                }
+                double totalPrice = 0;
+                foreach (var oorder in filteredOrderLines2)
+                {
+                    totalPrice += oorder.Dish.Price * oorder.DishAmount;
+                }
+
 
                 //orderFinish.Finished = true;
-                
-                    orderFinish.Discount = int.Parse(collection["Discount"]);
-                    ViewBag.totalPrice = double.Parse(collection["Customer"]) * (100 - orderFinish.Discount) / 100;
-                    ViewBag.discount = discount;
-                    //_context.Update(order);
-                    //await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
+                if (orderFinish != null)
                 {
-                    if (!OrderExists(orderInfo.OrderID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    orderFinish.Discount = int.Parse(collection["Discount"]);
+                    ViewBag.totalPrice = totalPrice * (100 - orderFinish.Discount) / 100;
+                    ViewBag.discount = discount;
                 }
+
+                //_context.Update(orderFinish);
+                //await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderExists(orderInfo.OrderID))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
             if (id == null || _context.Orders == null)
             {
                 return NotFound();
@@ -295,7 +314,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            
+
 
             var test = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
             if (test.Count() >= 3)
@@ -306,9 +325,9 @@ namespace Lekkerbek.Web.Controllers
             {
                 ViewBag.Korting = false;
             }
-            return View();
+            return View(order);
             //}
-            
+
             return RedirectToAction(nameof(Index));
         }
         [HttpPost]
@@ -322,10 +341,31 @@ namespace Lekkerbek.Web.Controllers
             try
             {
 
-                //orderFinish.Finished = true;
-                Console.WriteLine("test");
-                //_context.Update(order);
-                //await _context.SaveChangesAsync();
+                orderFinish.Finished = true;
+                Console.WriteLine("AAAAAAAAAAAAAA");
+                _context.Update(orderFinish);
+                await _context.SaveChangesAsync();
+
+                ///send emsil
+                /*
+                string fromMail = "";
+                string fromPassword = "";
+
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(fromMail);
+                message.Subject = "You better work or i will find your family";
+                message.To.Add(new MailAddress(""));
+                message.Body = "<html><body> Test Body </body></html>";
+                message.IsBodyHtml = true;
+
+                var smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    Credentials = new NetworkCredential(fromMail, fromPassword),
+                    EnableSsl = true,
+                };
+
+                smtpClient.Send(message);*/
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -371,10 +411,19 @@ namespace Lekkerbek.Web.Controllers
                 return RedirectToAction("SelectTimeSlot", "Orders");
             }
 
+            if (ids.Count() < 2)
+            {
+                ViewData["ChefId"] = new SelectList(_context.Chefs.Where(r => ids.Contains(r.ChefId) == false), "ChefId", "ChefName");
 
-            ViewData["ChefId"] = new SelectList(_context.Chefs.Where(r=>ids.Contains(r.ChefId)==false), "ChefId", "ChefName");
+                return View();
+            }
+            else 
+            {
+                TempData["errorChefs"] = "There are no chefs availible for this time slot!";
+                return RedirectToAction("SelectTimeSlot", "Orders");
+            }
+
             
-            return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

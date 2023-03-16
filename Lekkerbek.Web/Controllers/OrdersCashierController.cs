@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
 using Microsoft.Data.SqlClient;
+using System.Net.Mail;
+using System.Net;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -257,17 +259,34 @@ namespace Lekkerbek.Web.Controllers
             //{
             try
             {
-                var discount = collection["Customer"];
+                var discount = collection["Discount"];
                 // Order.TemproraryCart.Add(orderLine);
 
-                Console.WriteLine(discount.ToString());
+                List<OrderLine> allOrderLines2 = _context.OrderLines.Include(c => c.Dish).ToList();
+                List<OrderLine> filteredOrderLines2 = new List<OrderLine>();
+
+                foreach (var orderLine in allOrderLines2.Where(c => c.OrderID == id))
+                {
+                    if (!filteredOrderLines2.Contains(orderLine))
+                        filteredOrderLines2.Add(orderLine);
+
+                }
+                double totalPrice = 0;
+                foreach (var oorder in filteredOrderLines2)
+                {
+                    totalPrice += oorder.Dish.Price * oorder.DishAmount;
+                }
+
 
                 //orderFinish.Finished = true;
-                ViewData["CustomerId"] = orderInfo.CustomerID;
-                orderFinish.Discount = int.Parse(collection["Discount"]);
-                ViewBag.totalPrice = double.Parse(collection["Customer"]) * (100 - orderFinish.Discount) / 100;
-                ViewBag.discount = discount;
-                //_context.Update(order);
+                if ( orderFinish != null) 
+                { 
+                    orderFinish.Discount = int.Parse(collection["Discount"]);
+                    ViewBag.totalPrice = totalPrice * (100 - orderFinish.Discount) / 100;
+                    ViewBag.discount = discount;
+                }
+                
+                //_context.Update(orderFinish);
                 //await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -322,7 +341,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 ViewBag.Korting = false;
             }
-            return View();
+            return View(order);
             //}
 
             return RedirectToAction(nameof(Index));
@@ -338,10 +357,35 @@ namespace Lekkerbek.Web.Controllers
             try
             {
 
-                //orderFinish.Finished = true;
-                Console.WriteLine("test");
-                //_context.Update(order);
+                orderFinish.Finished = true;
+                
+                //_context.Update(orderFinish);
                 //await _context.SaveChangesAsync();
+
+
+
+
+                ///send email
+                ///
+                /*
+                string fromMail = "";
+                string fromPassword = "";
+
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress(fromMail);
+                message.Subject = "You better work or i will find your family";
+                message.To.Add(new MailAddress(""));
+                message.Body = "<html><body> Test Body </body></html>";
+                message.IsBodyHtml = true;
+
+                var smtpClient = new SmtpClient("smtp.gmail.com")
+                {
+                    Port = 587,
+                    Credentials = new NetworkCredential(fromMail, fromPassword),
+                    EnableSsl = true,
+                };
+
+                smtpClient.Send(message);*/
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -355,7 +399,7 @@ namespace Lekkerbek.Web.Controllers
                 }
             }
 
-            //}
+           // }
 
             return RedirectToAction(nameof(Index));
         }
@@ -411,8 +455,6 @@ namespace Lekkerbek.Web.Controllers
             return View();
 
         }
-       
-
         public async Task<IActionResult> CompleteOrder()
         {
             //TimeSlot Object aanmaken
