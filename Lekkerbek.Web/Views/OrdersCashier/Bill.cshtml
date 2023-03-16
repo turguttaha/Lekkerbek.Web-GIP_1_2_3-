@@ -51,6 +51,9 @@
             <th>
                 Extra Details
             </th>
+            <th>
+                
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -69,7 +72,6 @@
                 <td>
                     @(item.Dish.Price * item.DishAmount)
                 </td>
-
                 <td>
                     @Html.DisplayFor(modelItem => item.ExtraDetails)
                 </td>
@@ -86,18 +88,19 @@
                     </td>
                     <td>
                     </td>
+                   
+
                     <td>
                     </td>
-                    
-                        <td>
-
-                            <input  type="submit" value="Add Discount" class="btn btn-primary mt-3" />
-
-                        </td>
 
                         <td>
-                            <input  class="form-control" min="0" max="80" type="number" value="@ViewBag.Discount" id="discountField" asp-for="Discount" />
+                        <input type="submit" value="Add Discount" class="btn btn-primary mt-3" />
                         </td>
+                    <td>
+                        <input class="form-control" min="0" max="80" type="number" value="@ViewBag.Discount" id="discountField" asp-for="Discount" />
+                        
+
+                    </td>
                 </tr>
                 <tr>
 
@@ -107,12 +110,11 @@
                     <td>
 
                     </td>
-                    <td>
-
-                    </td>
+                    
                     <td>
                     </td>
-
+                    <td>
+                    </td>
                     <td>
 
                         <input class="form-control" value="@ViewBag.totalPrice" id="discountField" asp-for="Customer" />
@@ -129,8 +131,7 @@
                     </td>
                     <td>
                     </td>
-                    <td>
-                    </td>
+                    
                     <td>
                     </td>
 

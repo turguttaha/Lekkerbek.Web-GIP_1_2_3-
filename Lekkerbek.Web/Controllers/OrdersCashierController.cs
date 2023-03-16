@@ -10,6 +10,10 @@ using Lekkerbek.Web.Models;
 using Microsoft.Data.SqlClient;
 using System.Net.Mail;
 using System.Net;
+using System.IO;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Threading;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -280,14 +284,17 @@ namespace Lekkerbek.Web.Controllers
 
                 //orderFinish.Finished = true;
                 if ( orderFinish != null) 
-                { 
+                {
+                    
                     orderFinish.Discount = int.Parse(collection["Discount"]);
                     ViewBag.totalPrice = totalPrice * (100 - orderFinish.Discount) / 100;
                     ViewBag.discount = discount;
+                    
+                    _context.Update(orderFinish);
+                    await _context.SaveChangesAsync();
                 }
                 
-                //_context.Update(orderFinish);
-                //await _context.SaveChangesAsync();
+                
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -324,14 +331,11 @@ namespace Lekkerbek.Web.Controllers
 
 
             ViewBag.listOfTheOrder = filteredOrderLines;
-
-
+            
             if (order == null)
             {
                 return NotFound();
             }
-
-
             var test = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
             if (test.Count() >= 3)
             {
@@ -358,24 +362,132 @@ namespace Lekkerbek.Web.Controllers
             {
 
                 orderFinish.Finished = true;
-                
+
                 //_context.Update(orderFinish);
                 //await _context.SaveChangesAsync();
+                String testMail = @"<table class=""table"">
+                <thead>
+                    <tr>
+                        <th>
+                            Dish Name
+                        </th>
+                        <th>
+                            Dish Price
+                        </th>
+                        <th>
+                            Dish Amount
+                        </th>
+                        <th>
+                            Sub Total
+                        </th>
+                        <th>
+                            Extra Details
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>";
+                
 
+                //filtering orderlines occording to orderId
+                List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
+                List<OrderLine> filteredOrderLines = new List<OrderLine>();
 
+                foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
+                {
+                    if (!filteredOrderLines.Contains(orderLine))
+                        filteredOrderLines.Add(orderLine);
 
+                }
+                double totalPrice = 0;
+                foreach (var item in filteredOrderLines)
+                {
+                            testMail += @" <tr>
+                        <td>
+                            " + item.Dish.Name + @"
+                        </td>
+                        <td>
+                            " + item.Dish.Price + @"
+                        </td>
+                        <td>
+                            " + item.DishAmount + @"
+                        </td>
+                        <td>
+                            " + item.Dish.Price * item.DishAmount + @"
+                        </td>
+                        <td>
+                            " + item.ExtraDetails + @"
+                        </td>
+                    </tr>";
+                    totalPrice = item.Dish.Price * item.DishAmount;
+                }
+                
+                bool discountBool = false;
+                var orderFinishMail = _context.Orders.Where(c => c.OrderID == id).FirstOrDefault();
+                
+                
+                if (orderFinishMail != null|| orderFinishMail.Discount !=0) 
+                {
+                    discountBool = true;
+                }
+                
+                
+                
+                
+                
+                if (discountBool)
+                {
+                    testMail += @"
+                    <tr>
+
+                        <td>
+                            Discount:
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    
+                            <td>
+                            </td>
+
+                            <td>
+                                "+ orderFinishMail.Discount+ @"
+                            </td>
+                    </tr>";
+                }
+
+                testMail += @"
+                <tr>
+                    <td>
+                        Total Price:
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+                    </td>
+
+                    <td>
+                        " + totalPrice + @"
+                    </td>
+                </tr>
+                </form></tbody></table>";
+            
 
                 ///send email
                 ///
-                /*
-                string fromMail = "";
-                string fromPassword = "";
+                
+                string fromMail = "gipteam2.lekkerbek@gmail.com";
+                string fromPassword = "pagwjgwdlutmgpfj";
 
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress(fromMail);
-                message.Subject = "You better work or i will find your family";
-                message.To.Add(new MailAddress(""));
-                message.Body = "<html><body> Test Body </body></html>";
+                message.Subject = "Your Invoice of the Lekkerbek";
+                message.To.Add(new MailAddress("frederik.vandekerkhove@gmail.com"));
+                message.Body = testMail;
                 message.IsBodyHtml = true;
 
                 var smtpClient = new SmtpClient("smtp.gmail.com")
@@ -385,7 +497,7 @@ namespace Lekkerbek.Web.Controllers
                     EnableSsl = true,
                 };
 
-                smtpClient.Send(message);*/
+                smtpClient.Send(message);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -447,11 +559,13 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddOrderLine([Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,DishID")] OrderLine orderLine)
         {
-
+            
             Order.TemproraryCart.Add(orderLine);
             ViewData["Message"] = "Your Dish is added";
+            
             ViewBag.TemproraryCart = Order.TemproraryCart;
             ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
+            
             return View();
 
         }

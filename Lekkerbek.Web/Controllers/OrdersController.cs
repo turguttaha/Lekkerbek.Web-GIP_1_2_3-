@@ -450,9 +450,10 @@ namespace Lekkerbek.Web.Controllers
             // go to database and get dish name via id
             orderLine.Dish = _context.Dishes.Find(orderLine.DishID);
             Order.TemproraryCart.Add(orderLine);
+            
             ViewData["Message"] = "Your Dish is added";
             ViewBag.TemproraryCart = Order.TemproraryCart;
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
+            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");ModelState.Clear();
             return View();
 
         }
