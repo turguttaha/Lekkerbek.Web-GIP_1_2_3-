@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
@@ -29,20 +30,14 @@ namespace Lekkerbek.Web.Models
         [DataType(DataType.Date)]
             
         public DateTime Birthday { get; set; }
+        
+        
 
-        private bool loyaltyScore;
 
         // als loyaltyScore true is(meer dan 2 betelling is al gedaan), dan betekent dat klant 10% korting kan hebben 
         [ScaffoldColumn(false)]
-        public bool LoyaltyScore { 
-            get { return loyaltyScore; } 
-            set 
-            {
-                if (Orders.Count >= 3)
-                    loyaltyScore = true;
-                else
-                    loyaltyScore = false;
-            } }
+        [HiddenInput(DisplayValue = false)]
+        public bool LoyaltyScore { get; set; }
 
         //Foreign Key van Preferred Dish
         
