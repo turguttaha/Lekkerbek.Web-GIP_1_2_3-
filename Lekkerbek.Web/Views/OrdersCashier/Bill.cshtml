@@ -31,7 +31,7 @@
             @Html.DisplayFor(model => model.TimeSlot.StartTimeSlot)
         </dd>
     </dl>
-    <a asp-controller="Customers" asp-action="Edit" asp-route-id="@Model.CustomerID">Edit Customer</a>
+    <a asp-controller="OrdersCashier" asp-action="EditCustomer" asp-route-id="@Model.CustomerID">Edit Customer</a>
 </div>
 <table class="table">
     <thead>

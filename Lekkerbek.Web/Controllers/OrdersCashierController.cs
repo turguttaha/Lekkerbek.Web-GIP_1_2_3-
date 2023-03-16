@@ -197,6 +197,10 @@ namespace Lekkerbek.Web.Controllers
                 .Include(o => o.Customer)
                 .Include(o => o.TimeSlot)
                 .FirstOrDefaultAsync(m => m.OrderID == id);
+            TempData["OrderIdFromBill"] = id;
+            int x = (int)id;
+            TempData["OrderID"] = x;
+
 
             //filtering orderlines occording to orderId
             List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
@@ -259,7 +263,7 @@ namespace Lekkerbek.Web.Controllers
                 Console.WriteLine(discount.ToString());
 
                 //orderFinish.Finished = true;
-
+                ViewData["CustomerId"] = orderInfo.CustomerID;
                 orderFinish.Discount = int.Parse(collection["Discount"]);
                 ViewBag.totalPrice = double.Parse(collection["Customer"]) * (100 - orderFinish.Discount) / 100;
                 ViewBag.discount = discount;
@@ -583,10 +587,69 @@ namespace Lekkerbek.Web.Controllers
 
 
         }
+        // GET: Customers/Edit/5
+        public async Task<IActionResult> EditCustomer(int? id)
+        {
+            if (id == null || _context.Customers == null)
+            {
+                return NotFound();
+            }
 
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "Name", customer.PreferredDishId);
+            return View(customer);
+        }
+
+        // POST: Customers/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCustomer(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
+        {
+            if (id != customer.CustomerId)
+            {
+                return NotFound();
+            }
+
+            //if (ModelState.IsValid)
+            // {
+            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
+
+            try
+            {
+                _context.Update(customer);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CustomerExists(customer.CustomerId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction("Bill", new { id = (int)TempData["OrderIdFromBill"] });
+            //}
+            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
+            return View(customer);
+        }
+        private bool CustomerExists(int id)
+        {
+            return _context.Customers.Any(e => e.CustomerId == id);
+        }
         private bool OrderExists(int id)
         {
             return _context.Orders.Any(e => e.OrderID == id);
         }
     }
 }
+
+
