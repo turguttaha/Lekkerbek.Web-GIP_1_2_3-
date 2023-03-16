@@ -5,11 +5,12 @@
     Layout = "_LayoutAdmin";
 }
 
-<h1>Index</h1>
+<h1>Orders</h1>
 
 <p>
-    <a asp-action="SelectCustomer">Create New</a>
+    <a asp-action="SelectCustomer">New Order</a>
 </p>
+<p class="text-danger">@TempData["TimesPast"]</p>
 <table class="table">
     <thead>
         <tr>
@@ -43,11 +44,9 @@
             <td>
                 <a asp-action="EditOrder" asp-route-id="@item.OrderID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.OrderID">Details</a> |
-                    <a asp-action="Bill" asp-route-id="@item.OrderID">Pay</a> |
                 <a asp-action="Delete" asp-route-id="@item.OrderID">Cancel</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
-<p class="text-danger">@TempData["TimesPast"]</p>

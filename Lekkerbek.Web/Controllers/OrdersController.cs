@@ -57,7 +57,7 @@ namespace Lekkerbek.Web.Controllers
         public IActionResult SelectCustomer()
         {
             
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "FName");
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name");
             return View();
         }
 
@@ -388,21 +388,27 @@ namespace Lekkerbek.Web.Controllers
             DateTime selectedDateTime = (DateTime)TempData["SelectedDateTime"];
 
             var usedTimeSlots = _context.TimeSlots.Where(t => t.StartTimeSlot == selectedDateTime).ToList();
+
             TempData["SelectedDateTime"] = selectedDateTime;
             var allChefId = _context.Chefs.ToList();
             List<int> ids = new List<int>();
-            
-            if (usedTimeSlots != null)
+
+
+            if (usedTimeSlots.Count() != 0)
             {
                 foreach (var test in usedTimeSlots)
                 {
-                    Console.WriteLine(test.ChefId);
-                    if (test.ChefId != null) 
-                    {
-                        ids.Add((int)test.ChefId);
-                    }
+
+                  ids.Add((int)test.ChefId);
+         
+                
                     
                 }
+            }
+            if(usedTimeSlots.Count() == 2)
+            {
+                TempData["ChefError"] = "This time slot is full!";
+                return RedirectToAction("SelectTimeSlot", "Orders");
             }
 
             if (ids.Count() < 2)
@@ -827,7 +833,7 @@ namespace Lekkerbek.Web.Controllers
             
 
             var order = await _context.Orders.FindAsync(id);
-
+            order.Customer = _context.Customers.Find(order.CustomerID);
             
             if (order != null ) {
                 var timeSlot = await _context.TimeSlots.FindAsync(order.TimeSlotID);
@@ -852,6 +858,7 @@ namespace Lekkerbek.Web.Controllers
                 }
                 TempData["TimesPast"] = "Order has less than 2 hours to prepare so it cannot be cancelled.";
                 ViewBag.listOfTheOrder = filteredOrderLines;
+
                 return View(order);
             }
             return NotFound();
