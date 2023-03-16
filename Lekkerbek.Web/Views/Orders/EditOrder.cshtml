@@ -22,13 +22,13 @@
             </div>
             <div class="form-group">
 
-                <label asp-for="TimeSlotID" class="control-label"></label>
+                <label asp-for="TimeSlotID" class="control-label">Date</label>
                 <input value="@TempData["SelectDate"]" asp-for="TimeSlotID" type="date" class="form-control" />
 
             </div>
             <div class="form-group">
 
-                <label asp-for="TimeSlotID" class="control-label"></label>
+                <label asp-for="TimeSlotID" class="control-label">Time Slot</label>
                 @Html.DropDownList("TimeSlotsSelectList",new SelectList(ViewBag.TimeSlotsSelectList, "Value", "Text",TempData["time"]))
                 <span asp-validation-for="TimeSlotID" class="text-danger"></span>
 
@@ -36,17 +36,12 @@
                 <select asp-for="TimeSlotID" class="form-control" asp-items="ViewBag.TimeSlotsSelectList"></select>
                 <span asp-validation-for="TimeSlotID" class="text-danger"></span>*@
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
             <div class="form-group form-check invisible">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Finished" /> @Html.DisplayNameFor(model => model.Finished)
                 </label>
             </div>
-        </form>
-    </div>
-</div>
+<a asp-controller="Orderlines" asp-action="Create" asp-route-id="@Model.OrderID">Add New Dish</a>
 <table class="table">
     <thead>
         <tr>
@@ -67,7 +62,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DishID)
+                    @Html.DisplayFor(modelItem => item.Dish.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DishAmount)
@@ -77,12 +72,19 @@
                 </td>
                 <td>
                     <a asp-action="EditOrderLine" asp-route-id="@item.OrderLineID">Edit</a>
+                    <a asp-controller="Orderlines" asp-action="Delete" asp-route-id="@item.OrderLineID">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
 
+        </form>
+    </div>
+</div>
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
