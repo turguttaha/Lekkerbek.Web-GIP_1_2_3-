@@ -197,6 +197,10 @@ namespace Lekkerbek.Web.Controllers
                 .Include(o => o.Customer)
                 .Include(o => o.TimeSlot)
                 .FirstOrDefaultAsync(m => m.OrderID == id);
+            TempData["OrderIdFromBill"] = id;
+            int x = (int)id;
+            TempData["OrderID"] = x;
+
 
             //filtering orderlines occording to orderId
             List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
@@ -632,7 +636,7 @@ namespace Lekkerbek.Web.Controllers
                     throw;
                 }
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Bill", new { id = (int)TempData["OrderIdFromBill"] });
             //}
             ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
             return View(customer);
