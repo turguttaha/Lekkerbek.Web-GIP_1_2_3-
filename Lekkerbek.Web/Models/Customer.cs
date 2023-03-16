@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
 namespace Lekkerbek.Web.Models
@@ -52,7 +53,7 @@ namespace Lekkerbek.Web.Models
         //Relatie met order
         //aan de Order class - virtual Customer property - int CustomerId -  moeten toegevoegd worden dus elke klant kan een of meer bestelling hebben maar elke bestelling is van slechts een klant
         public virtual ICollection<Order> Orders { get; set; }
-
+        [NotMapped]
         public string Name
         {
             get { return FName + " " + LName; }
