@@ -7,7 +7,7 @@ namespace Lekkerbek.Web.Models
         public int DishId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        [Range(1, 1000)]
+        [Range(0, 1000)]
         public double Price { get; set; }
         public virtual ICollection<OrderLine> OrderLines { get; set; }
 
