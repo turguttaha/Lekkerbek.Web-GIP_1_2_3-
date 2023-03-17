@@ -363,8 +363,8 @@ namespace Lekkerbek.Web.Controllers
 
                 orderFinish.Finished = true;
 
-                //_context.Update(orderFinish);
-                //await _context.SaveChangesAsync();
+                _context.Update(orderFinish);
+                await _context.SaveChangesAsync();
                 String testMail = @"<table class=""table"">
                 <thead>
                     <tr>
@@ -380,9 +380,9 @@ namespace Lekkerbek.Web.Controllers
                         <th>
                             Sub Total
                         </th>
-                        <th>
-                            Extra Details
-                        </th>
+            <th>
+                
+            </th>
                     </tr>
                 </thead>
                 <tbody>";
@@ -415,7 +415,7 @@ namespace Lekkerbek.Web.Controllers
                             " + item.Dish.Price * item.DishAmount + @"
                         </td>
                         <td>
-                            " + item.ExtraDetails + @"
+                            
                         </td>
                     </tr>";
                     totalPrice = item.Dish.Price * item.DishAmount;
@@ -447,11 +447,12 @@ namespace Lekkerbek.Web.Controllers
                         <td>
                         </td>
                     
-                            <td>
-                            </td>
+
 
                             <td>
                                 "+ orderFinishMail.Discount+ @"
+                            </td>
+                            <td>
                             </td>
                     </tr>";
                 }
@@ -467,11 +468,12 @@ namespace Lekkerbek.Web.Controllers
                     <td>
 
                     </td>
-                    <td>
-                    </td>
+
 
                     <td>
                         " + totalPrice + @"
+                    </td>
+                    <td>
                     </td>
                 </tr>
                 </form></tbody></table>";
