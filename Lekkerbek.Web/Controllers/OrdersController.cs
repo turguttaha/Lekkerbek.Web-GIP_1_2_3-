@@ -519,7 +519,7 @@ namespace Lekkerbek.Web.Controllers
 
             if (twoHoursAgo > now)
             {
-                ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "FName", order.CustomerID);
+                ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
 
                 var timeSlot = await _context.TimeSlots.FindAsync(order.TimeSlotID);
 
