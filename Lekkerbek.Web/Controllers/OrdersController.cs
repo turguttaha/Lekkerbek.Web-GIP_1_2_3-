@@ -750,7 +750,8 @@ namespace Lekkerbek.Web.Controllers
             
 
             var order = await _context.Orders.FindAsync(id);
-            order.Customer = _context.Customers.Find(order.CustomerID);
+            int x = (int)order.CustomerID;
+            order.Customer = _context.Customers.Find(x);
             
             if (order != null ) {
                 var timeSlot = await _context.TimeSlots.FindAsync(order.TimeSlotID);
