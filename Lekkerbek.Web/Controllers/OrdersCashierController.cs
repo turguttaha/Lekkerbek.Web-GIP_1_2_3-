@@ -418,7 +418,7 @@ namespace Lekkerbek.Web.Controllers
                             
                         </td>
                     </tr>";
-                    totalPrice = item.Dish.Price * item.DishAmount;
+                    totalPrice += item.Dish.Price * item.DishAmount;
                 }
                 
                 bool discountBool = false;
@@ -455,8 +455,9 @@ namespace Lekkerbek.Web.Controllers
                             <td>
                             </td>
                     </tr>";
+                    totalPrice = totalPrice * (double)(100 - orderFinish.Discount) / 100;
                 }
-
+               
                 testMail += @"
                 <tr>
                     <td>
