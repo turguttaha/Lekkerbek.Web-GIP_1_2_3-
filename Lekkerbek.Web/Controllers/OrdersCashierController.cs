@@ -363,8 +363,8 @@ namespace Lekkerbek.Web.Controllers
 
                 orderFinish.Finished = true;
 
-                //_context.Update(orderFinish);
-                //await _context.SaveChangesAsync();
+                _context.Update(orderFinish);
+                await _context.SaveChangesAsync();
                 String testMail = @"<table class=""table"">
                 <thead>
                     <tr>
@@ -418,7 +418,7 @@ namespace Lekkerbek.Web.Controllers
                             " + item.ExtraDetails + @"
                         </td>
                     </tr>";
-                    totalPrice = item.Dish.Price * item.DishAmount;
+                    totalPrice += item.Dish.Price * item.DishAmount;
                 }
                 
                 bool discountBool = false;
@@ -454,8 +454,9 @@ namespace Lekkerbek.Web.Controllers
                                 "+ orderFinishMail.Discount+ @"
                             </td>
                     </tr>";
+                    totalPrice = totalPrice * (double)(100 - orderFinish.Discount) / 100;
                 }
-
+               
                 testMail += @"
                 <tr>
                     <td>
