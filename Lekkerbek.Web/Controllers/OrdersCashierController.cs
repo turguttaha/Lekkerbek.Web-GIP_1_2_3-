@@ -331,7 +331,7 @@ namespace Lekkerbek.Web.Controllers
                 MailMessage message = new MailMessage();
                 message.From = new MailAddress(fromMail);
                 message.Subject = "Your Invoice of the Lekkerbek";
-                message.To.Add(new MailAddress("frederik.vandekerkhove@gmail.com"));
+                message.To.Add(new MailAddress("gipteam2.lekkerbek@gmail.com"));
                 message.Body = testMail;
                 message.IsBodyHtml = true;
 
