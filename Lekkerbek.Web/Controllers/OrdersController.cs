@@ -175,214 +175,7 @@ namespace Lekkerbek.Web.Controllers
 
             return RedirectToAction("SelectChef", "Orders");
         }
-        // GET: Orders/Edit/5
-        public async Task<IActionResult> Bill(int? id)
-        {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
 
-            var order = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.TimeSlot)
-                .FirstOrDefaultAsync(m => m.OrderID == id);
-
-            //filtering orderlines occording to orderId
-            List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
-            List<OrderLine> filteredOrderLines = new List<OrderLine>();
-
-            foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
-            {
-                if (!filteredOrderLines.Contains(orderLine))
-                    filteredOrderLines.Add(orderLine);
-
-            }
-            ViewBag.Dishes = _context.Dishes;
-
-
-            ViewBag.listOfTheOrder = filteredOrderLines;
-
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-            double totalPrice = 0;
-            foreach (var oorder in filteredOrderLines)
-            {
-                totalPrice += oorder.Dish.Price * oorder.DishAmount;
-            }
-            ViewBag.totalPrice = totalPrice;
-
-            var test = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
-            if (test.Count() >= 3)
-            {
-                ViewBag.Korting = true;
-            }
-            else 
-            {
-                ViewBag.Korting = false;
-            }
-
-
-
-            return View(order);
-        }
-
-        // POST: Orders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Bill(int id, [Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order orderInfo, IFormCollection collection)
-        {
-            var orderFinish = _context.Orders.Where(c => c.OrderID == id).FirstOrDefault();
-
-            //if (ModelState.IsValid)
-            //{
-            try
-            {
-                var discount = collection["Discount"];
-                // Order.TemproraryCart.Add(orderLine);
-
-                List<OrderLine> allOrderLines2 = _context.OrderLines.Include(c => c.Dish).ToList();
-                List<OrderLine> filteredOrderLines2 = new List<OrderLine>();
-
-                foreach (var orderLine in allOrderLines2.Where(c => c.OrderID == id))
-                {
-                    if (!filteredOrderLines2.Contains(orderLine))
-                        filteredOrderLines2.Add(orderLine);
-
-                }
-                double totalPrice = 0;
-                foreach (var oorder in filteredOrderLines2)
-                {
-                    totalPrice += oorder.Dish.Price * oorder.DishAmount;
-                }
-
-
-                //orderFinish.Finished = true;
-                if (orderFinish != null)
-                {
-                    orderFinish.Discount = int.Parse(collection["Discount"]);
-                    ViewBag.totalPrice = totalPrice * (100 - orderFinish.Discount) / 100;
-                    ViewBag.discount = discount;
-                }
-
-                //_context.Update(orderFinish);
-                //await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(orderInfo.OrderID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.TimeSlot)
-                .FirstOrDefaultAsync(m => m.OrderID == id);
-
-            //filtering orderlines occording to orderId
-            List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
-            List<OrderLine> filteredOrderLines = new List<OrderLine>();
-
-            foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
-            {
-                if (!filteredOrderLines.Contains(orderLine))
-                    filteredOrderLines.Add(orderLine);
-
-            }
-            ViewBag.Dishes = _context.Dishes;
-
-
-            ViewBag.listOfTheOrder = filteredOrderLines;
-
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-
-            var test = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
-            if (test.Count() >= 3)
-            {
-                ViewBag.Korting = true;
-            }
-            else
-            {
-                ViewBag.Korting = false;
-            }
-            return View(order);
-            //}
-
-            return RedirectToAction(nameof(Index));
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Pay(int id, [Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order order)
-        {
-            var orderFinish = _context.Orders.Where(c => c.OrderID == id).FirstOrDefault();
-
-            //if (ModelState.IsValid)
-            //{
-            try
-            {
-
-                orderFinish.Finished = true;
-                Console.WriteLine("AAAAAAAAAAAAAA");
-                _context.Update(orderFinish);
-                await _context.SaveChangesAsync();
-
-                ///send emsil
-                /*
-                string fromMail = "";
-                string fromPassword = "";
-
-                MailMessage message = new MailMessage();
-                message.From = new MailAddress(fromMail);
-                message.Subject = "You better work or i will find your family";
-                message.To.Add(new MailAddress(""));
-                message.Body = "<html><body> Test Body </body></html>";
-                message.IsBodyHtml = true;
-
-                var smtpClient = new SmtpClient("smtp.gmail.com")
-                {
-                    Port = 587,
-                    Credentials = new NetworkCredential(fromMail, fromPassword),
-                    EnableSsl = true,
-                };
-
-                smtpClient.Send(message);*/
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(order.OrderID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            
-            //}
-
-            return RedirectToAction(nameof(Index));
-        }
         public IActionResult SelectChef()
         {
             DateTime selectedDateTime = (DateTime)TempData["SelectedDateTime"];
@@ -457,8 +250,8 @@ namespace Lekkerbek.Web.Controllers
             return View();
 
         }
-        
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CompleteOrder()
         {
             //TimeSlot Object aanmaken
@@ -493,6 +286,9 @@ namespace Lekkerbek.Web.Controllers
 
             return RedirectToAction("index", "Orders");
         }
+
+        // Completed order right here------------------------
+
 
         // GET: Orders/EditOrder/5
         public async Task<IActionResult> EditOrder(int? id)
