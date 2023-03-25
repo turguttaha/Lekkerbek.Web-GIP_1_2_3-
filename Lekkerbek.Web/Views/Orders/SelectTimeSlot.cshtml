@@ -35,7 +35,7 @@
             <div class="form-group">
                 
                 <label asp-for="StartTimeSlot" class="control-label"></label>
-                <input value="@TempData["SelectDate"]" asp-for="StartTimeSlot" type="date" class="form-control" />
+                <input id="date" value="@TempData["SelectDate"]" asp-for="StartTimeSlot" type="date" class="form-control" />
                
                 
                 
@@ -43,11 +43,22 @@
             <div class="form-group">
 
                 <label asp-for="StartTimeSlot" class="control-label"></label>
-                @Html.DropDownList("TimeSlotsSelectList", (IEnumerable<SelectListItem>)ViewBag.TimeSlotsSelectList)
+                @Html.DropDownList("TimeSlotsSelectList", (IEnumerable<SelectListItem>)ViewBag.TimeSlotsSelectList, new{@id="time"})
                 <span asp-validation-for="StartTimeSlot" class="text-danger"></span>
 
 
             </div>
+            <div class="form-group">
+                <label asp-for="ChefId" class="control-label">Chef Name</label>
+                <select asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefId"></select>
+            </div>
+
+
+            <div class="form-group">
+                <input type="button" value="Send" class="btn btn-primary" id="sendButton">
+            </div>
+
+
             <p class="text-danger">@TempData["ChefError"]</p>
             <div class="form-group">
                 <input type="submit" value="Next Step" class="btn btn-primary" />
@@ -55,7 +66,40 @@
         </form>
     </div>
 </div>
-
+<script>
+     $(function () {
+     $("#sendButton").click(function () {
+     $.ajax({
+     // Hier kan je kiezen tussen GET, POST, PUT, DELETE....
+     // Elk van deze keywords heeft een andere nut,
+     // zie de les frontend.
+     type: "POST",
+     // Hier geven we de action naam en controler naam mee.
+     url: '@Url.Action("Message", "Home")',
+     // Hier gaan we data meegeven in een JSON formaat.
+                data: { "date": $("#date").val(), "time": $("#time").val() },
+     dataType: "json",
+     // Hier gaan we jQuery/javascript code schrijven indien onze
+     // request successvol is.
+     success: function (response) {
+     console.log(response);
+    // Hier gaan we de span met id "statusSpan" ophalen
+    // en de text vervangen met de status.
+    // Status krijgen we van de action Message mee.
+    $("#statusMessageSpan").text(response.statusMessage);
+    $("#statusNameSpan").text(response.statusName);
+     },
+     error: function (response) {
+     // Indien onze request faalt, kunnen we hier een mooie
+    // foutmelding tonen.
+    // In ons geval gaan we een alert tonen op het scherm
+     // (in praktijk moet je dit beter afhandelen!).
+     alert(response);
+     }
+     });
+     });
+     })
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

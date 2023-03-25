@@ -218,6 +218,54 @@ namespace Lekkerbek.Web.Controllers
 
             
         }
+        public async Task<JsonResult> Message(string date, string time)
+        {
+
+            string x = time;
+            String selectedDate = date;
+            DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
+
+
+
+            var usedTimeSlots = _context.TimeSlots.Where(t => t.StartTimeSlot == timeSlotDateAndTime).ToList();
+
+            var allChefId = _context.Chefs.ToList();
+            List<int> ids = new List<int>();
+
+
+            if (usedTimeSlots.Count() != 0)
+            {
+                foreach (var test in usedTimeSlots)
+                {
+
+                    ids.Add((int)test.ChefId);
+
+
+
+                }
+            }
+            //if (usedTimeSlots.Count() == 2)
+            //{
+            //    TempData["ChefError"] = "This time slot is full!";
+            //}
+
+            if (ids.Count() < 2)
+            {
+                ViewData["ChefId"] = new SelectList(_context.Chefs.Where(r => ids.Contains(r.ChefId) == false), "ChefId", "ChefName");
+
+            }
+            else
+            {
+                TempData["errorChefs"] = "There are no chefs availible for this time slot!";
+            }
+
+
+
+            string output = "The message '" + message + "' has been send.";
+            string output2 = "The message '" + name + "' has been send.";
+            Console.WriteLine(output + output2);
+            return Json(new { statusMessage = output, statusName = output2 });
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SelectChef(IFormCollection collection)
