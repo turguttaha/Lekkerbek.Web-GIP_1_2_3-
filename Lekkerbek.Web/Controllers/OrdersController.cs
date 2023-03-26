@@ -76,15 +76,6 @@ namespace Lekkerbek.Web.Controllers
         }
         public IActionResult SelectTimeSlot()
         {
-            /*
-            24
-            which chef is free on *insert day*
-
-            select chefID from TimeSlot where beginTimeSlot = 'datepickertime' and where (select )
-            -> if count < 24 -> show in dropdown
-             
-             */
-
 
             List<SelectListItem> TimeSlotsSelectList = new List<SelectListItem>() {
                 new SelectListItem {
@@ -172,60 +163,16 @@ namespace Lekkerbek.Web.Controllers
             String selectedDate = collection["StartTimeSlot"] + " "+ x;
             DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
             TempData["SelectedDateTime"] = timeSlotDateAndTime;
-
-            return RedirectToAction("SelectChef", "Orders");
-        }
-
-        public IActionResult SelectChef()
-        {
-            DateTime selectedDateTime = (DateTime)TempData["SelectedDateTime"];
-
-            var usedTimeSlots = _context.TimeSlots.Where(t => t.StartTimeSlot == selectedDateTime).ToList();
-
-            TempData["SelectedDateTime"] = selectedDateTime;
-            var allChefId = _context.Chefs.ToList();
-            List<int> ids = new List<int>();
-
-
-            if (usedTimeSlots.Count() != 0)
-            {
-                foreach (var test in usedTimeSlots)
-                {
-
-                  ids.Add((int)test.ChefId);
-         
-                
-                    
-                }
-            }
-            if(usedTimeSlots.Count() == 2)
-            {
-                TempData["ChefError"] = "This time slot is full!";
-                return RedirectToAction("SelectTimeSlot", "Orders");
-            }
-
-            if (ids.Count() < 2)
-            {
-                ViewData["ChefId"] = new SelectList(_context.Chefs.Where(r => ids.Contains(r.ChefId) == false), "ChefId", "ChefName");
-
-                return View();
-            }
-            else 
-            {
-                TempData["errorChefs"] = "There are no chefs availible for this time slot!";
-                return RedirectToAction("SelectTimeSlot", "Orders");
-            }
-
+            TempData["SelectedChef"] = int.Parse(collection["ChefId"]);
             
+            return RedirectToAction("AddOrderLine", "Orders");
         }
-        public async Task<JsonResult> Message(string date, string time)
+        public async Task<JsonResult> LookUpChefs(string date, string time)
         {
 
             string x = time;
             String selectedDate = date;
-            DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
-
-
+            DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate + " " + time);
 
             var usedTimeSlots = _context.TimeSlots.Where(t => t.StartTimeSlot == timeSlotDateAndTime).ToList();
 
@@ -237,42 +184,75 @@ namespace Lekkerbek.Web.Controllers
             {
                 foreach (var test in usedTimeSlots)
                 {
-
-                    ids.Add((int)test.ChefId);
-
-
-
+                    if (test.ChefId != null) 
+                    { 
+                        ids.Add((int)test.ChefId);
+                        Console.WriteLine("chef ids aaaa");
+                    }
+                    
                 }
             }
-            //if (usedTimeSlots.Count() == 2)
-            //{
-            //    TempData["ChefError"] = "This time slot is full!";
-            //}
-
+            Console.WriteLine("this works");
             if (ids.Count() < 2)
             {
-                ViewData["ChefId"] = new SelectList(_context.Chefs.Where(r => ids.Contains(r.ChefId) == false), "ChefId", "ChefName");
+                ViewData["ChefId"] = _context.Chefs.Where(r => ids.Contains(r.ChefId) == false);
 
             }
             else
             {
-                TempData["errorChefs"] = "There are no chefs availible for this time slot!";
+                ViewData["ChefId"] = "";
             }
 
+            return Json(new { chefs = ViewData["ChefId"] });
+        }
+        //public IActionResult SelectChef()
+        //{
+        //    DateTime selectedDateTime = (DateTime)TempData["SelectedDateTime"];
+
+        //    var usedTimeSlots = _context.TimeSlots.Where(t => t.StartTimeSlot == selectedDateTime).ToList();
+
+        //    TempData["SelectedDateTime"] = selectedDateTime;
+        //    var allChefId = _context.Chefs.ToList();
+        //    List<int> ids = new List<int>();
 
 
-            string output = "The message '" + message + "' has been send.";
-            string output2 = "The message '" + name + "' has been send.";
-            Console.WriteLine(output + output2);
-            return Json(new { statusMessage = output, statusName = output2 });
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult SelectChef(IFormCollection collection)
-        {
-            TempData["SelectedChef"] = int.Parse(collection["ChefId"]);
-            return RedirectToAction("AddOrderLine", "Orders");
-        }
+        //    if (usedTimeSlots.Count() != 0)
+        //    {
+        //        foreach (var test in usedTimeSlots)
+        //        {
+
+        //          ids.Add((int)test.ChefId);
+                            
+        //        }
+        //    }
+        //    if(usedTimeSlots.Count() == 2)
+        //    {
+        //        TempData["ChefError"] = "This time slot is full!";
+        //        return RedirectToAction("SelectTimeSlot", "Orders");
+        //    }
+
+        //    if (ids.Count() < 2)
+        //    {
+        //        ViewData["ChefId"] = new SelectList(_context.Chefs.Where(r => ids.Contains(r.ChefId) == false), "ChefId", "ChefName");
+
+        //        return View();
+        //    }
+        //    else 
+        //    {
+        //        TempData["errorChefs"] = "There are no chefs availible for this time slot!";
+        //        return RedirectToAction("SelectTimeSlot", "Orders");
+        //    }
+
+            
+        //}
+        
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult SelectChef(IFormCollection collection)
+        //{
+            
+        //    return RedirectToAction("AddOrderLine", "Orders");
+        //}
         // GET: OrderLines/Create
         public IActionResult AddOrderLine()
         {
@@ -294,7 +274,8 @@ namespace Lekkerbek.Web.Controllers
             
             ViewData["Message"] = "Your Dish is added";
             ViewBag.TemproraryCart = Order.TemproraryCart;
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");ModelState.Clear();
+            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
+            ModelState.Clear();
             return View();
 
         }
