@@ -187,12 +187,10 @@ namespace Lekkerbek.Web.Controllers
                     if (test.ChefId != null) 
                     { 
                         ids.Add((int)test.ChefId);
-                        Console.WriteLine("chef ids aaaa");
                     }
                     
                 }
             }
-            Console.WriteLine("this works");
             if (ids.Count() < 2)
             {
                 ViewData["ChefId"] = _context.Chefs.Where(r => ids.Contains(r.ChefId) == false);
