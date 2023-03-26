@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -18,6 +21,9 @@ namespace Lekkerbek.Web.Controllers
         {
             _context = context;
         }
+
+        
+
 
         // GET: Customers
         public async Task<IActionResult> Index()
@@ -45,6 +51,8 @@ namespace Lekkerbek.Web.Controllers
             return View(customer);
         }
 
+
+       
         // GET: Customers/Create
         public IActionResult Create()
         {
