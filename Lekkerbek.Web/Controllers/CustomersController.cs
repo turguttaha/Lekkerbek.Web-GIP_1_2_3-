@@ -10,19 +10,64 @@ using Microsoft.EntityFrameworkCore;
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
 using System.ComponentModel.DataAnnotations;
+using Lekkerbek.Web.NewFolder;
 
 namespace Lekkerbek.Web.Controllers
 {
     public class CustomersController : Controller
     {
         private readonly LekkerbekContext _context;
+        private readonly ProductService _productService;
 
-        public CustomersController(LekkerbekContext context)
+        public CustomersController(LekkerbekContext context, ProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
-        
+        public ActionResult Editing_Popup()
+        {
+            return View();
+        }
+
+        public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_productService.Read().ToDataSourceResult(request));
+        }
+
+        //[AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult EditingPopup_Create([DataSourceRequest] DataSourceRequest request, Customer customer)
+        {
+            if (customer != null && ModelState.IsValid)
+            {
+                _productService.Create(customer);
+            }
+
+            return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
+        }
+
+       // [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult EditingPopup_Update([DataSourceRequest] DataSourceRequest request, Customer customer)
+        {
+            if (customer != null && ModelState.IsValid)
+            {
+               // _productService.Update(product);
+            }
+
+            return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
+        }
+
+       // [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult EditingPopup_Destroy([DataSourceRequest] DataSourceRequest request, Customer customer)
+        {
+            if (customer != null)
+            {
+               // _productService.Destroy(product);
+            }
+
+            return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
+        }
+
 
 
         // GET: Customers
