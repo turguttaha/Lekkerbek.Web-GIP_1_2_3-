@@ -8,7 +8,7 @@ namespace Lekkerbek.Web.Models
 
     public class Customer
     {
-        [ScaffoldColumn(false)]
+        //[ScaffoldColumn(false)]
         public int CustomerId { get; set; }
         [StringLength(20, ErrorMessage = "Your First Name can contain only 20 characters")]
         [Display(Name = "First Name")]
