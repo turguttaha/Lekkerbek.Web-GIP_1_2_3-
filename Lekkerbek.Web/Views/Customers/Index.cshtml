@@ -17,7 +17,7 @@
         columns.Bound(p => p.PhoneNumber);
         columns.Bound(p => p.Address);
         columns.Bound(p => p.Birthday);
-        columns.Bound(p => p.PreferredDish);
+        columns.Bound(p => p.PreferredDish.Name);
         columns.Command(command => { command.Edit(); command.Destroy(); }).Width(200);
     })
     .ToolBar(toolbar => toolbar.Create())
