@@ -14,6 +14,7 @@ using System.IO;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Threading;
+using Lekkerbek.Web.Services;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -320,29 +321,13 @@ namespace Lekkerbek.Web.Controllers
                     </td>
                 </tr>
                 </form></tbody></table>";
-            
+
 
                 ///send email
                 ///
+                EmailService emailService = new EmailService();
+                emailService.SendMail("gipteam2.lekkerbek@gmail.com", "Your invoice of the Lekkerbek", testMail);
                 
-                string fromMail = "gipteam2.lekkerbek@gmail.com";
-                string fromPassword = "pagwjgwdlutmgpfj";
-
-                MailMessage message = new MailMessage();
-                message.From = new MailAddress(fromMail);
-                message.Subject = "Your Invoice of the Lekkerbek";
-                message.To.Add(new MailAddress("gipteam2.lekkerbek@gmail.com"));
-                message.Body = testMail;
-                message.IsBodyHtml = true;
-
-                var smtpClient = new SmtpClient("smtp.gmail.com")
-                {
-                    Port = 587,
-                    Credentials = new NetworkCredential(fromMail, fromPassword),
-                    EnableSsl = true,
-                };
-
-                smtpClient.Send(message);
             }
             catch (DbUpdateConcurrencyException)
             {
