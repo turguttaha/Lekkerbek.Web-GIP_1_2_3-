@@ -17,7 +17,7 @@ namespace Lekkerbek.Web.Models
 
         //Foreign Key van Dish
         public int? DishID { get; set; }
-        public virtual Dish Dish { get; set; }
+        public virtual MenuItem Dish { get; set; }
 
 
     }

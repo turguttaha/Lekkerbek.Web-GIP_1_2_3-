@@ -7,45 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
-using Azure.Core;
-using Kendo.Mvc.Extensions;
-using Kendo.Mvc.UI;
 
 namespace Lekkerbek.Web.Controllers
 {
     public class DishesController : Controller
     {
         private readonly LekkerbekContext _context;
+
         public DishesController(LekkerbekContext context)
         {
             _context = context;
         }
-        public IActionResult ReadDishes([DataSourceRequest] DataSourceRequest request)
-        {
-            //var Dishes = _context.Dishes.ToList();
-            var Dishes = _context.Dishes.Select(dish => new Dish
-            //This is another way to make a new object
-            {
-                DishId = dish.DishId,
-                Price = dish.Price,
-                Description = dish.Description,
-                Name = dish.Name,
-            }).ToList();
-            return Json(Dishes.ToDataSourceResult(request));
-        }
 
-        public IActionResult DeleteDish([DataSourceRequest] DataSourceRequest request, Dish dish)
-        {
-            // Delete the item in the data base or follow with the dummy data.
-            _context.Dishes.Remove(dish);
-            _context.SaveChanges();
-
-            // Return a collection which contains only the destroyed item.
-            return Json(new[] { dish }.ToDataSourceResult(request));
-        }
-
-    // GET: Dishes
-    public async Task<IActionResult> Index()
+        // GET: Dishes
+        public async Task<IActionResult> Index()
         {
               return View(await _context.Dishes.ToListAsync());
         }
@@ -79,7 +54,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DishId,Name,Description,Price")] Dish dish)
+        public async Task<IActionResult> Create([Bind("DishId,Name,Description,Price")] MenuItem dish)
         {
             //if (ModelState.IsValid)
             //{
@@ -111,12 +86,12 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DishId,Name,Description,Price")] Dish dish)
+        public async Task<IActionResult> Edit(int id, [Bind("DishId,Name,Description,Price")] MenuItem dish)
         {
-            //if (id != dish.DishId)
-            //{
-            //    return NotFound();
-            //}
+            if (id != dish.DishId)
+            {
+                return NotFound();
+            }
 
             //if (ModelState.IsValid)
            // {
