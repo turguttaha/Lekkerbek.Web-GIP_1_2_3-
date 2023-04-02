@@ -17,52 +17,53 @@ namespace Lekkerbek.Web.Controllers
     public class CustomersController : Controller
     {
         private readonly LekkerbekContext _context;
-        private readonly ProductService _productService;
+        private readonly CustomerService _customerService;
 
-        public CustomersController(LekkerbekContext context, ProductService productService)
+        public CustomersController(LekkerbekContext context, CustomerService customerService)
         {
             _context = context;
-            _productService = productService;
+            _customerService = customerService;
         }
 
-        public ActionResult Editing_Popup()
+        public ActionResult Index()
         {
             return View();
         }
 
         public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
         {
-            return Json(_productService.Read().ToDataSourceResult(request));
+            return Json(_customerService.Read().ToDataSourceResult(request));
         }
 
         //[AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult EditingPopup_Create([DataSourceRequest] DataSourceRequest request, Customer customer)
-        {
-            if (customer != null && ModelState.IsValid)
-            {
-                _productService.Create(customer);
-            }
+        //public ActionResult EditingPopup_Create([DataSourceRequest] DataSourceRequest request, Customer customer)
+        //{
+        //    if (customer != null && ModelState.IsValid)
+        //    {
+        //        _productService.Create(customer);
+        //    }
 
-            return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
-        }
+        //    return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
+        //}
 
-       // [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult EditingPopup_Update([DataSourceRequest] DataSourceRequest request, Customer customer)
-        {
-            if (customer != null && ModelState.IsValid)
-            {
-               // _productService.Update(product);
-            }
+        // [AcceptVerbs(HttpVerbs.Post)]
+        //public ActionResult EditingPopup_Update([DataSourceRequest] DataSourceRequest request, Customer customer)
+        //{
+        //    if (customer != null && ModelState.IsValid)
+        //    {
+        //       // _productService.Update(product);
+        //    }
 
-            return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
-        }
+        //    return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
+        //}
 
-       // [AcceptVerbs(HttpVerbs.Post)]
+        // [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult EditingPopup_Destroy([DataSourceRequest] DataSourceRequest request, Customer customer)
+        
         {
             if (customer != null)
             {
-               // _productService.Destroy(product);
+                _customerService.Destroy(customer);
             }
 
             return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
@@ -70,34 +71,34 @@ namespace Lekkerbek.Web.Controllers
 
 
 
-        // GET: Customers
-        public async Task<IActionResult> Index()
-        {
-            var lekkerbekContext = _context.Customers.Include(c => c.PreferredDish);
-            return View(await lekkerbekContext.ToListAsync());
-        }
+        //GET: Customers
+        //public async Task<IActionResult> Index()
+        //{
+        //    var lekkerbekContext = _context.Customers.Include(c => c.PreferredDish);
+        //    return View(await lekkerbekContext.ToListAsync());
+        //}
 
         // GET: Customers/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Customers == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null || _context.Customers == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var customer = await _context.Customers
-                .Include(c => c.PreferredDish)
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
+        //    var customer = await _context.Customers
+        //        .Include(c => c.PreferredDish)
+        //        .FirstOrDefaultAsync(m => m.CustomerId == id);
+        //    if (customer == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(customer);
-        }
+        //    return View(customer);
+        //}
 
 
-       
+
         // GET: Customers/Create
         public IActionResult Create()
         {

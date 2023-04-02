@@ -17,17 +17,18 @@
         columns.Bound(p => p.PhoneNumber);
         columns.Bound(p => p.Address);
         columns.Bound(p => p.Birthday);
-        columns.Bound(p => p.PreferredDish.Name);
+        columns.Bound(p => p.PreferredDish.Name).Title("Preferred Dish");
         columns.Bound(p => p.CustomerId)
-                                .Title("Edit").ClientTemplate("<a href='/Customers/Edit?id=#=CustomerId#'>Edit</a>");                              
-        /*columns.Bound(p => p.CustomerId)
-                                .Title("Add").ClientTemplate("<a href='/Customers/Create?id=#=CustomerId#'>Add</a>");*/
+                                .Title("  ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Customers/Edit/#=CustomerId#'>Edit</a></div>");
+        
+        @*columns.Bound(p => p.CustomerId)
+                                .Title("Add").ClientTemplate("<a href='/Customers/Create?id=#=CustomerId#'>Add</a>");*@
 
 
-        @*columns.Command(command => {command.Destroy(); }).Width(200);*@
+        columns.Command(command => {  command.Destroy(); }).Width(200);
 
     })
-    .ToolBar(toolbar => toolbar.Create())
+    .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Customers/Create'>Add New Customer</a></div>"))
     .Pageable()
     .Sortable()
     .Scrollable()
@@ -36,7 +37,7 @@
         .Ajax()
         .PageSize(20)
         .Events(events => events.Error("error_handler"))
-        @*.Model(model => model.Id(p => p.CustomerId))*@
+        .Model(model => model.Id(p => p.CustomerId))
         .Create(update => update.Action("EditingPopup_Create", "Customers"))
         .Read(read => read.Action("EditingPopup_Read", "Customers"))
         .Destroy(update => update.Action("EditingPopup_Destroy", "Customers"))

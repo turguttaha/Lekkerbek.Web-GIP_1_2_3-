@@ -10,13 +10,13 @@ using System.Web;
 
 namespace Lekkerbek.Web.NewFolder
 {
-    public class ProductService
+    public class CustomerService
     {
         private static bool UpdateDatabase = true;//If true, stores info in the database. If false, session.
 
         private LekkerbekContext _context;
 
-        public ProductService(LekkerbekContext entities)
+        public CustomerService(LekkerbekContext entities)
         {
             this._context = entities;
         }
@@ -104,41 +104,57 @@ namespace Lekkerbek.Web.NewFolder
             _context.Entry(customer1).State = EntityState.Modified;
             _context.SaveChanges();
         }
-    } }
-    
-            
-               /* public void Destroy(Customer customer)
+
+        public void Destroy(Customer customer)
+        {
+            if (!UpdateDatabase)
+            {
+                var target = GetAll().FirstOrDefault(p => p.CustomerId == customer.CustomerId);
+                if (target != null)
                 {
-                    var customer1 = new Customer();
-
-                    customer1.CustomerId = customer.CustomerId;
-
-                    _context.customer.Attach(customer1);
-
-                    _context.Products.Remove(customer1);
-
-                    var orderDetails = _context.Order_Details.Where(pd => pd.ProductID == customer1.c);
-
-                    foreach (var orderDetail in orderDetails)
-                    {
-                        _context.Order_Details.Remove(orderDetail);
-                    }
-
-                    _context.SaveChanges();
+                    GetAll().Remove(target);
                 }
+            }
+            else
+            {
+                var entity = new Customer();
+
+                entity.CustomerId = customer.CustomerId;
+
+                _context.Customers.Attach(entity);
+
+                _context.Customers.Remove(entity);
+
+                var orders = _context.Orders.Where(pd => pd.CustomerID == entity.CustomerId);
+                var orderLines = _context.OrderLines.Where(pd => pd.Order.CustomerID == entity.CustomerId);
+                foreach (var orderLine in orderLines)
+                {
+                    _context.OrderLines.Remove(orderLine);
                 }
-            
-            /*Customer One(Func<Customer, bool> predicate)
-            {
-                return GetAll().FirstOrDefault(predicate);
-            }*/
-        
 
-            /*public void Dispose() //why not @override?
-            {
-                entities.Dispose();
-            }*/
+                foreach (var order in orders)
+                {
+                    _context.Orders.Remove(order);
+                }
+
+                _context.SaveChanges();
+            }
+        }
 
 
-    
+
+        /*Customer One(Func<Customer, bool> predicate)
+        {
+         return GetAll().FirstOrDefault(predicate);
+        }*/
+
+
+        /*public void Dispose() //why not @override?
+        {
+            entities.Dispose();
+        }*/
+
+
+    }
+}
 

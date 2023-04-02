@@ -18,7 +18,7 @@ builder.Services.AddKendo();
 builder.Services.AddDbContext<LekkerbekContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddTransient<ProductService>();
+builder.Services.AddTransient<CustomerService>();
 
 
 
