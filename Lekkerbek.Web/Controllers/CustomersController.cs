@@ -61,10 +61,10 @@ namespace Lekkerbek.Web.Controllers
         public ActionResult EditingPopup_Destroy([DataSourceRequest] DataSourceRequest request, Customer customer)
 
         {
-            if (_context.Orders.Any(ol => ol.CustomerId == customer.CustomerId))
-            {
-                return View("NoDelete", customer);
-            }
+            //if (_context.Orders.Any(ol => ol.CustomerId == customer.CustomerId))
+            //{
+            //    return View("NoDelete", customer);
+            //}
             if (customer != null)
             {
                 _customerService.Destroy(customer);

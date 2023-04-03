@@ -33,30 +33,13 @@ namespace Lekkerbek.Web.Controllers
             }).ToList();
             return Json(menuItems.ToDataSourceResult(request));
         }
-        // GET: Dishes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.MenuItems == null)
-            {
-                return NotFound();
-            }
 
-            var menuItem = await _context.MenuItems
-                .FirstOrDefaultAsync(m => m.MenuItemId == id);
-            if (_context.OrderLines.Any(ol => ol.MenuItemId == menuItem.MenuItemId))
-            {
-                return RedirectToAction("NoDelete", "Orders", menuItem);
-            }
-            if (menuItem == null)
-            {
-                return NotFound();
-            }
-
-
-            return View(menuItem);
-        }
         public IActionResult DeleteMenuItem([DataSourceRequest] DataSourceRequest request, Models.MenuItem menuItem)
         {
+            //if (_context.OrderLines.Any(ol => ol.MenuItemId == menuItem.MenuItemId))
+            //{
+            //    return RedirectToAction("NoDelete", "Orders", menuItem);
+            //}
 
             // Delete the item in the data base or follow with the dummy data.
             _context.MenuItems.Remove(menuItem);
@@ -70,7 +53,7 @@ namespace Lekkerbek.Web.Controllers
     public async Task<IActionResult> Index()
         {
             var list = await _context.MenuItems.ToListAsync();
-              return View(await _context.MenuItems.ToListAsync());
+            return View(await _context.MenuItems.ToListAsync());
         }
 
         // GET: Dishes/Details/5
