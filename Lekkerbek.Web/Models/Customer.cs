@@ -25,13 +25,14 @@ namespace Lekkerbek.Web.Models
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
         public string Address { get; set; } = string.Empty;
-        
+
         [Display(Name = "Date of Birthday")]
         [DataType(DataType.Date)]
-            
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+
         public DateTime Birthday { get; set; }
-        
-        
+
+
 
 
         // als loyaltyScore true is(meer dan 2 betelling is al gedaan), dan betekent dat klant 10% korting kan hebben 
@@ -40,7 +41,7 @@ namespace Lekkerbek.Web.Models
         public bool LoyaltyScore { get; set; }
 
         //Foreign Key van Preferred Dish
-        
+
         public int? PreferredDishId { get; set; }
         [Display(Name = "Preferred Dish")]
         public virtual PreferredDish PreferredDish { get; set; }

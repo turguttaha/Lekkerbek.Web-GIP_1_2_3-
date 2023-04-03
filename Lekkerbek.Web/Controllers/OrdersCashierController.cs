@@ -51,7 +51,7 @@ namespace Lekkerbek.Web.Controllers
 
 
             //filtering orderlines occording to orderId
-            List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
+            List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.MenuItem).ToList();
             List<OrderLine> filteredOrderLines = new List<OrderLine>();
 
             foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
@@ -60,7 +60,7 @@ namespace Lekkerbek.Web.Controllers
                     filteredOrderLines.Add(orderLine);
 
             }
-            ViewBag.Dishes = _context.Dishes;
+            ViewBag.Dishes = _context.MenuItems;
 
 
             ViewBag.listOfTheOrder = filteredOrderLines;
@@ -73,11 +73,11 @@ namespace Lekkerbek.Web.Controllers
             double totalPrice = 0;
             foreach (var oorder in filteredOrderLines)
             {
-                totalPrice += oorder.Dish.Price * oorder.DishAmount;
+                totalPrice += oorder.MenuItem.Price * oorder.DishAmount;
             }
             ViewBag.totalPrice = totalPrice;
 
-            var test = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
+            var test = _context.Orders.Where(c => c.CustomerId == order.CustomerId).ToList();
             if (test.Count() >= 3)
             {
                 ViewBag.Korting = true;
@@ -106,7 +106,7 @@ namespace Lekkerbek.Web.Controllers
                 var discount = collection["Discount"];
                 // Order.TemproraryCart.Add(orderLine);
 
-                List<OrderLine> allOrderLines2 = _context.OrderLines.Include(c => c.Dish).ToList();
+                List<OrderLine> allOrderLines2 = _context.OrderLines.Include(c => c.MenuItem).ToList();
                 List<OrderLine> filteredOrderLines2 = new List<OrderLine>();
 
                 foreach (var orderLine in allOrderLines2.Where(c => c.OrderID == id))
@@ -118,7 +118,7 @@ namespace Lekkerbek.Web.Controllers
                 double totalPrice = 0;
                 foreach (var oorder in filteredOrderLines2)
                 {
-                    totalPrice += oorder.Dish.Price * oorder.DishAmount;
+                    totalPrice += oorder.MenuItem.Price * oorder.DishAmount;
                 }
 
 
@@ -158,7 +158,7 @@ namespace Lekkerbek.Web.Controllers
                 .FirstOrDefaultAsync(m => m.OrderID == id);
 
             //filtering orderlines occording to orderId
-            List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
+            List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.MenuItem).ToList();
             List<OrderLine> filteredOrderLines = new List<OrderLine>();
 
             foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
@@ -167,7 +167,7 @@ namespace Lekkerbek.Web.Controllers
                     filteredOrderLines.Add(orderLine);
 
             }
-            ViewBag.Dishes = _context.Dishes;
+            ViewBag.Dishes = _context.MenuItems;
 
 
             ViewBag.listOfTheOrder = filteredOrderLines;
@@ -176,7 +176,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            var test = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
+            var test = _context.Orders.Where(c => c.CustomerId == order.CustomerId).ToList();
             if (test.Count() >= 3)
             {
                 ViewBag.Korting = true;
@@ -231,7 +231,7 @@ namespace Lekkerbek.Web.Controllers
                 
 
                 //filtering orderlines occording to orderId
-                List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
+                List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.MenuItem).ToList();
                 List<OrderLine> filteredOrderLines = new List<OrderLine>();
 
                 foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
@@ -245,22 +245,22 @@ namespace Lekkerbek.Web.Controllers
                 {
                             testMail += @" <tr>
                         <td>
-                            " + item.Dish.Name + @"
+                            " + item.MenuItem.Name + @"
                         </td>
                         <td>
-                            " + item.Dish.Price + @"
+                            " + item.MenuItem.Price + @"
                         </td>
                         <td>
                             " + item.DishAmount + @"
                         </td>
                         <td>
-                            " + item.Dish.Price * item.DishAmount + @"
+                            " + item.MenuItem.Price * item.DishAmount + @"
                         </td>
                         <td>
                             
                         </td>
                     </tr>";
-                    totalPrice += item.Dish.Price * item.DishAmount;
+                    totalPrice += item.MenuItem.Price * item.DishAmount;
                 }
                 
                 bool discountBool = false;

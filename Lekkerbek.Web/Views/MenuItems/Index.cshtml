@@ -1,0 +1,44 @@
+﻿@using Kendo.Mvc.UI;
+
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_LayoutAdmin";
+}
+
+
+@(Html.Kendo().Grid<Lekkerbek.Web.Models.MenuItem>()
+.Name("grid")
+.ToolBar(tools =>
+{
+    tools.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/MenuItems/Create'>Add New Menu Item</a></div>"); ;
+})
+.Columns(columns =>
+{
+    columns.Bound(f => f.MenuItemId);
+    columns.Bound(f => f.Name);
+    columns.Bound(f => f.Description);
+    columns.Bound(f => f.Price);
+        columns.Bound(p => p.MenuItemId)
+.Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/MenuItems/Edit/#=MenuItemId#'>Edit</a></div>");
+
+    columns.Command(command =>
+    {
+        command.Destroy();
+    });
+})
+.Editable(editable => editable.Mode(GridEditMode.PopUp))
+.DataSource(d =>
+{
+    d.Ajax()
+    .Model(model =>
+    {
+        model.Id(product => product.MenuItemId); // Specify the property which is the unique identifier of the model.
+        model.Field(product => product.MenuItemId).Editable(false); // Make the OrderID property not editable.
+    })
+    .Create(create => create.Action("CreateMenuItem", "MenuItems")) // Action invoked when the user saves a new data item.
+    .Read(read => read.Action("ReadMenuItems", "MenuItems"))  // Action invoked when the Grid needs data.
+    .Update(update => update.Action("UpdateMenuItems", "MenuItems"))  // Action invoked when the user saves an updated data item.
+    .Destroy(delete => delete.Action("DeleteMenuItem", "MenuItems")); // Action invoked when the user removes a data item.
+})
+    )

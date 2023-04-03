@@ -4,6 +4,7 @@ using Lekkerbek.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek.Web.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20230402225331_dbMenuItem")]
+    partial class dbMenuItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -117,7 +120,7 @@ namespace Lekkerbek.Web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"));
 
-                    b.Property<int?>("CustomerId")
+                    b.Property<int?>("CustomerID")
                         .HasColumnType("int");
 
                     b.Property<int?>("Discount")
@@ -131,7 +134,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("OrderID");
 
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("CustomerID");
 
                     b.HasIndex("TimeSlotID");
 
@@ -149,18 +152,18 @@ namespace Lekkerbek.Web.Migrations
                     b.Property<int>("DishAmount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("DishID")
+                        .HasColumnType("int");
+
                     b.Property<string>("ExtraDetails")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MenuItemId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("OrderID")
                         .HasColumnType("int");
 
                     b.HasKey("OrderLineID");
 
-                    b.HasIndex("MenuItemId");
+                    b.HasIndex("DishID");
 
                     b.HasIndex("OrderID");
 
@@ -218,7 +221,7 @@ namespace Lekkerbek.Web.Migrations
                 {
                     b.HasOne("Lekkerbek.Web.Models.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerID");
 
                     b.HasOne("Lekkerbek.Web.Models.TimeSlot", "TimeSlot")
                         .WithMany("Orders")
@@ -231,15 +234,15 @@ namespace Lekkerbek.Web.Migrations
 
             modelBuilder.Entity("Lekkerbek.Web.Models.OrderLine", b =>
                 {
-                    b.HasOne("Lekkerbek.Web.Models.MenuItem", "MenuItem")
+                    b.HasOne("Lekkerbek.Web.Models.MenuItem", "Dish")
                         .WithMany("OrderLines")
-                        .HasForeignKey("MenuItemId");
+                        .HasForeignKey("DishID");
 
                     b.HasOne("Lekkerbek.Web.Models.Order", "Order")
                         .WithMany("OrderLines")
                         .HasForeignKey("OrderID");
 
-                    b.Navigation("MenuItem");
+                    b.Navigation("Dish");
 
                     b.Navigation("Order");
                 });

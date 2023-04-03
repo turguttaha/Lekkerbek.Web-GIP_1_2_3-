@@ -16,9 +16,9 @@
             <input type="hidden" asp-for="OrderID" />
             
             <div class="form-group">
-                <label asp-for="CustomerID" class="control-label">Customer Name</label>
-                <select asp-for="CustomerID" class="form-control" asp-items="ViewBag.CustomerId"></select>
-                <span asp-validation-for="CustomerID" class="text-danger"></span>
+                <label asp-for="CustomerId" class="control-label">Customer Name</label>
+                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
+                <span asp-validation-for="CustomerId" class="text-danger"></span>
             </div>
             <div class="form-group">
 
@@ -62,7 +62,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Dish.Name)
+                    @Html.DisplayFor(modelItem => item.MenuItem.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DishAmount)

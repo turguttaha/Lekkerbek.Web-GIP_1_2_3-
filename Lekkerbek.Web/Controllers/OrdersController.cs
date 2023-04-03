@@ -228,7 +228,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines/Create
         public IActionResult AddOrderLine()
         {
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
+            ViewData["MenuItemId"] = new SelectList(_context.MenuItems, "MenuItemId", "Name");
             ViewBag.TemproraryCart = Order.TemproraryCart;
             return View();
         }
@@ -238,15 +238,15 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddOrderLine([Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,DishID")] OrderLine orderLine)
+        public IActionResult AddOrderLine([Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,MenuItemId")] OrderLine orderLine)
         {
             // go to database and get dish name via id
-            orderLine.Dish = _context.Dishes.Find(orderLine.DishID);
+            orderLine.MenuItem = _context.MenuItems.Find(orderLine.MenuItemId);
             Order.TemproraryCart.Add(orderLine);
             
             ViewData["Message"] = "Your Dish is added";
             ViewBag.TemproraryCart = Order.TemproraryCart;
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");ModelState.Clear();
+            ViewData["MenuItemId"] = new SelectList(_context.MenuItems, "MenuItemId", "Name");ModelState.Clear();
             return View();
 
         }
@@ -267,7 +267,7 @@ namespace Lekkerbek.Web.Controllers
             var lastTimeSlot = _context.TimeSlots.OrderByDescending(t=>t.Id).FirstOrDefault();
 
             Order order = new Order();
-            order.CustomerID = (int)TempData["SelectedCustomerId"];
+            order.CustomerId = (int)TempData["SelectedCustomerId"];
             order.TimeSlotID = lastTimeSlot.Id;
             _context.Add(order);
             await _context.SaveChangesAsync();
@@ -277,7 +277,7 @@ namespace Lekkerbek.Web.Controllers
             //Ordelines Object aanmaken/toevoegen aan order*
             foreach (OrderLine item in Order.TemproraryCart.ToList())
             {
-                item.Dish = null;
+                item.MenuItem = null;
                 item.OrderID = lastOrder.OrderID;
                 _context.Add(item);
                 await _context.SaveChangesAsync();
@@ -315,7 +315,7 @@ namespace Lekkerbek.Web.Controllers
 
             if (twoHoursAgo > now)
             {
-                ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
+                ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerId);
 
                 var timeSlot = await _context.TimeSlots.FindAsync(order.TimeSlotID);
 
@@ -450,7 +450,7 @@ namespace Lekkerbek.Web.Controllers
 
             return RedirectToAction("index", "Orders");
             //}
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
+            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerId);
             ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
             return View(order);
         }
@@ -468,7 +468,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name", orderLine.DishID);
+            ViewData["DishID"] = new SelectList(_context.MenuItems, "DishId", "Name", orderLine.MenuItemId);
             //ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
             return View(orderLine);
         }
@@ -506,7 +506,7 @@ namespace Lekkerbek.Web.Controllers
             }
             return RedirectToAction("EditOrder", new { id = orderLine.OrderID });
             //}
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId", orderLine.DishID);
+            ViewData["DishID"] = new SelectList(_context.MenuItems, "DishId", "DishId", orderLine.MenuItemId);
             ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
             return View(orderLine);
         }
@@ -546,7 +546,7 @@ namespace Lekkerbek.Web.Controllers
             
 
             var order = await _context.Orders.FindAsync(id);
-            int x = (int)order.CustomerID;
+            int x = (int)order.CustomerId;
             order.Customer = _context.Customers.Find(x);
             
             if (order != null ) {
@@ -598,7 +598,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 if (!filteredOrderLines.Contains(orderLine))
                 {
-                    orderLine.Dish = _context.Dishes.Find(orderLine.DishID);
+                    orderLine.MenuItem = _context.MenuItems.Find(orderLine.MenuItemId);
                     filteredOrderLines.Add(orderLine);                  
                 }
                     

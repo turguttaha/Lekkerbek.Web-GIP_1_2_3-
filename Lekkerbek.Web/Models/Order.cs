@@ -6,7 +6,7 @@
         public bool Finished { get; set; }//idk if this is needed, in perfect case we know an order is finished when the time is later than the orderfinished time
 
         //Foreign Key van Customer
-        public int? CustomerID { get; set; }
+        public int? CustomerId { get; set; }
         public int? Discount { get; set; }
         public virtual Customer Customer { get; set; }
         
