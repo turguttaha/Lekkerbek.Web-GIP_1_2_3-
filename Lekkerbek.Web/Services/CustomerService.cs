@@ -1,5 +1,8 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using Lekkerbek.Web.Repositories;
+using Lekkerbek.Web.Services;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,38 +13,21 @@ using System.Web;
 
 namespace Lekkerbek.Web.NewFolder
 {
-    public class CustomerService
+    public class CustomerService : ICustomerService
     {
         private static bool UpdateDatabase = true;//If true, stores info in the database. If false, session.
 
-        private LekkerbekContext _context;
+        private readonly CustomersRepository _repository;
 
-        public CustomerService(LekkerbekContext entities)
+        public CustomerService(CustomersRepository customersRepository)
         {
-            this._context = entities;
+            _repository = customersRepository;
         }
 
         private IList<Customer> GetAll()
         {
 
-            var result = _context.Customers.Select(customer => new Customer
-            //This is another way to make a new object
-            {
-                CustomerId = customer.CustomerId,
-                FName = customer.FName,
-                LName = customer.LName,
-                Email = customer.Email,
-                PhoneNumber = customer.PhoneNumber,
-                Address = customer.Address,
-                Birthday = customer.Birthday,
-                PreferredDishId = customer.PreferredDishId,
-                PreferredDish = new PreferredDish()
-                {
-                    PreferredDishId = customer.PreferredDish.PreferredDishId,
-                    Name = customer.PreferredDish.Name
-                }
-
-            }).ToList();
+            var result = _repository.GetCustomers();
 
             return result;
         }
@@ -50,61 +36,93 @@ namespace Lekkerbek.Web.NewFolder
         {
             return GetAll();
         }
-
         public void Create(Customer customer)
         {
-            var customer1 = new Customer();//Declaring new customer entity and sticking in the info given from View.
-
-            customer1.CustomerId = customer.CustomerId;
-            customer1.FName = customer.FName;
-            customer1.LName = customer.LName;
-            customer1.Email = customer.Email;
-            customer1.PhoneNumber = customer.PhoneNumber;
-            customer1.Address = customer.Address;
-            customer1.Birthday = customer.Birthday;
-            customer1.PreferredDishId = customer.PreferredDishId;
-            //customer1.PreferredDish = new PreferredDish();
-
-
-            if (customer1.PreferredDishId == null)
-            {
-                customer1.PreferredDishId = 1;
-            }
-
-            else
-            {
-                customer1.PreferredDishId = customer.PreferredDish.PreferredDishId;
-            }
-
-            _context.Customers.Add(customer1);
-            _context.SaveChanges();
-
-            customer.CustomerId = customer1.CustomerId;
+            _repository.AddToDataBase(customer);
         }
-
         public void Update(Customer customer)
         {
-            var customer1 = new Customer();
-
-            customer1.CustomerId = customer.CustomerId;
-            customer1.FName = customer.FName;
-            customer1.LName = customer.LName;
-            customer1.Email = customer.Email;
-            customer1.PhoneNumber = customer.PhoneNumber;
-            customer1.Address = customer.Address;
-            customer1.Birthday = customer.Birthday;
-            customer1.PreferredDishId = customer.PreferredDishId;
-
-            if (customer.PreferredDish != null)
-            {
-                customer1.CustomerId = customer.CustomerId;
-            }
-
-            _context.Customers.Attach(customer1);
-            _context.Entry(customer1).State = EntityState.Modified;
-            _context.SaveChanges();
+            _repository.UpdateIntoDataBase(customer);
         }
 
+        public SelectList GetPreferredDishes()
+        {
+            var list = new SelectList(_repository.GetPreferredDishes(), "PreferredDishId", "Name");
+            return list;
+        }
+        public SelectList GetPreferredDishes(Customer customer)
+        {
+            var list = new SelectList(_repository.GetPreferredDishes(), "PreferredDishId", "Name", customer.PreferredDishId);
+            return list;
+        }
+        public Customer GetSpecificCustomer(int? id)
+        {
+            var customer = _repository.GetCustomers().Find(x=>x.CustomerId == id);
+            if (customer == null)
+                return null;
+            else
+            return customer;
+        }
+        public bool CustomerExists(int id)
+        {
+            return _repository.GetCustomers().Any(e => e.CustomerId == id);
+        }
+        // Create - Update Pop-up
+        //public void Create(Customer customer)
+        //{
+        //    var customer1 = new Customer();//Declaring new customer entity and sticking in the info given from View.
+
+        //    customer1.CustomerId = customer.CustomerId;
+        //    customer1.FName = customer.FName;
+        //    customer1.LName = customer.LName;
+        //    customer1.Email = customer.Email;
+        //    customer1.PhoneNumber = customer.PhoneNumber;
+        //    customer1.Address = customer.Address;
+        //    customer1.Birthday = customer.Birthday;
+        //    customer1.PreferredDishId = customer.PreferredDishId;
+        //    //customer1.PreferredDish = new PreferredDish();
+
+
+        //    if (customer1.PreferredDishId == null)
+        //    {
+        //        customer1.PreferredDishId = 1;
+        //    }
+
+        //    else
+        //    {
+        //        customer1.PreferredDishId = customer.PreferredDish.PreferredDishId;
+        //    }
+
+        //    _context.Customers.Add(customer1);
+        //    _context.SaveChanges();
+
+        //    customer.CustomerId = customer1.CustomerId;
+        //}
+
+        //public void Update(Customer customer)
+        //{
+        //    var customer1 = new Customer();
+
+        //    customer1.CustomerId = customer.CustomerId;
+        //    customer1.FName = customer.FName;
+        //    customer1.LName = customer.LName;
+        //    customer1.Email = customer.Email;
+        //    customer1.PhoneNumber = customer.PhoneNumber;
+        //    customer1.Address = customer.Address;
+        //    customer1.Birthday = customer.Birthday;
+        //    customer1.PreferredDishId = customer.PreferredDishId;
+
+        //    if (customer.PreferredDish != null)
+        //    {
+        //        customer1.CustomerId = customer.CustomerId;
+        //    }
+
+        //    _context.Customers.Attach(customer1);
+        //    _context.Entry(customer1).State = EntityState.Modified;
+        //    _context.SaveChanges();
+        //}
+
+        //This func removes customer and related objects(orders orderlines)
         public void Destroy(Customer customer)
         {
             if (!UpdateDatabase)
@@ -121,32 +139,16 @@ namespace Lekkerbek.Web.NewFolder
 
                 entity.CustomerId = customer.CustomerId;
 
-                _context.Customers.Attach(entity);
-
-                _context.Customers.Remove(entity);
-
-                var orders = _context.Orders.Where(pd => pd.CustomerId == entity.CustomerId);
-                var orderLines = _context.OrderLines.Where(pd => pd.Order.CustomerId == entity.CustomerId);
-                foreach (var orderLine in orderLines)
-                {
-                    _context.OrderLines.Remove(orderLine);
-                }
-
-                foreach (var order in orders)
-                {
-                    _context.Orders.Remove(order);
-                }
-
-                _context.SaveChanges();
+                _repository.DeleteFromDataBase(entity);
             }
         }
 
 
 
-        /*Customer One(Func<Customer, bool> predicate)
-        {
-         return GetAll().FirstOrDefault(predicate);
-        }*/
+        //public Customer One(Func<Customer, bool> predicate)
+        //{
+        //    return GetAll().FirstOrDefault(predicate);
+        //}
 
 
         /*public void Dispose() //why not @override?

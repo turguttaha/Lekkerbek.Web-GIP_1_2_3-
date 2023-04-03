@@ -11,22 +11,22 @@ using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
 using System.ComponentModel.DataAnnotations;
 using Lekkerbek.Web.NewFolder;
+using Lekkerbek.Web.Services;
 
 namespace Lekkerbek.Web.Controllers
 {
     public class CustomersController : Controller
     {
-        private readonly LekkerbekContext _context;
-        private readonly CustomerService _customerService;
+        private readonly ICustomerService _customerService;
 
-        public CustomersController(LekkerbekContext context, CustomerService customerService)
+        public CustomersController( ICustomerService customerService)
         {
-            _context = context;
             _customerService = customerService;
         }
 
         public ActionResult Index()
         {
+          
             return View();
         }
 
@@ -34,7 +34,7 @@ namespace Lekkerbek.Web.Controllers
         {
             return Json(_customerService.Read().ToDataSourceResult(request));
         }
-
+        // pop-up Create - update
         //[AcceptVerbs(HttpVerbs.Post)]
         //public ActionResult EditingPopup_Create([DataSourceRequest] DataSourceRequest request, Customer customer)
         //{
@@ -73,8 +73,92 @@ namespace Lekkerbek.Web.Controllers
             return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
         }
 
+        // GET: Customers/Create
+        public IActionResult Create()
+        {
 
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes();
+            return View();
+        }
 
+        // POST: Customers/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
+        {
+            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
+            //if (ModelState.IsValid)
+            //{
+            if(customer != null)
+            {
+                _customerService.Create(customer);
+                return RedirectToAction(nameof(Index));
+            }
+            //}
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
+            return View(customer);
+        }
+        
+        // GET: Customers/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _customerService.Read() == null)
+            {
+                return NotFound();
+            }
+            
+            var customer = _customerService.GetSpecificCustomer(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
+            return View(customer);
+        }
+
+        // POST: Customers/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
+        {
+            if (id != customer.CustomerId)
+            {
+                return NotFound();
+            }
+
+            //if (ModelState.IsValid)
+            // {
+            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
+            if(customer != null)
+            {
+                try
+                {
+                    _customerService.Update(customer);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_customerService.CustomerExists(customer.CustomerId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            
+            //}
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
+            return View(customer);
+        }
+
+        // Old school codes
         //GET: Customers
         //public async Task<IActionResult> Index()
         //{
@@ -101,130 +185,45 @@ namespace Lekkerbek.Web.Controllers
         //    return View(customer);
         //}
 
+        //// GET: Customers/Delete/5
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null || _context.Customers == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var customer = await _context.Customers
+        //        .Include(c => c.PreferredDish)
+        //        .FirstOrDefaultAsync(m => m.CustomerId == id);
+        //    if (customer == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(customer);
+        //}
+
+        //// POST: Customers/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Customers == null)
+        //    {
+        //        return Problem("Entity set 'LekkerbekContext.Customers'  is null.");
+        //    }
+        //    var customer = await _context.Customers.FindAsync(id);
+        //    if (customer != null)
+        //    {
+        //        _context.Customers.Remove(customer);
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
 
-        // GET: Customers/Create
-        public IActionResult Create()
-        {
-            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "Name");
-            return View();
-        }
 
-        // POST: Customers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
-        {
-            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
-            //if (ModelState.IsValid)
-            //{
-
-            _context.Add(customer);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-            //}
-            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
-            return View(customer);
-        }
-
-        // GET: Customers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Customers == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "Name", customer.PreferredDishId);
-            return View(customer);
-        }
-
-        // POST: Customers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
-        {
-            if (id != customer.CustomerId)
-            {
-                return NotFound();
-            }
-
-            //if (ModelState.IsValid)
-            // {
-            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
-
-            try
-            {
-                _context.Update(customer);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomerExists(customer.CustomerId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Index));
-            //}
-            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
-            return View(customer);
-        }
-
-        // GET: Customers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Customers == null)
-            {
-                return NotFound();
-            }
-
-            var customer = await _context.Customers
-                .Include(c => c.PreferredDish)
-                .FirstOrDefaultAsync(m => m.CustomerId == id);
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return View(customer);
-        }
-
-        // POST: Customers/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Customers == null)
-            {
-                return Problem("Entity set 'LekkerbekContext.Customers'  is null.");
-            }
-            var customer = await _context.Customers.FindAsync(id);
-            if (customer != null)
-            {
-                _context.Customers.Remove(customer);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CustomerExists(int id)
-        {
-            return _context.Customers.Any(e => e.CustomerId == id);
-        }
     }
 }

@@ -1,5 +1,7 @@
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.NewFolder;
+using Lekkerbek.Web.Repositories;
+using Lekkerbek.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,12 +15,15 @@ new Newtonsoft.Json.Serialization.DefaultContractResolver());
 // Add Kendo UI services to the services container
 builder.Services.AddKendo();
 
+//Services And Repositories
+builder.Services.AddTransient<CustomersRepository>();
+builder.Services.AddTransient<ICustomerService, CustomerService>();
 
 //Congig connection DataBase
 builder.Services.AddDbContext<LekkerbekContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddTransient<CustomerService>();
+
 
 
 
