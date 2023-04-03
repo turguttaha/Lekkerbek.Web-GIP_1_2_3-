@@ -16,8 +16,8 @@ namespace Lekkerbek.Web.Models
         public virtual Order Order { get; set; }
 
         //Foreign Key van Dish
-        public int? DishID { get; set; }
-        public virtual Dish Dish { get; set; }
+        public int? MenuItemId { get; set; }
+        public virtual MenuItem MenuItem { get; set; }
 
 
     }

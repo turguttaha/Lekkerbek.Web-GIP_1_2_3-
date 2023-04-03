@@ -1,4 +1,4 @@
-﻿@model Lekkerbek.Web.Models.Dish
+﻿@model Lekkerbek.Web.Models.MenuItem
 
 @{
     ViewData["Title"] = "Delete";
@@ -32,7 +32,7 @@
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="DishId" />
+        <input type="hidden" asp-for="MenuItemId" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

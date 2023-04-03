@@ -2,9 +2,9 @@
 
 namespace Lekkerbek.Web.Models
 {
-    public class Dish
+    public class MenuItem
     {
-        public int DishId { get; set; }
+        public int MenuItemId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         [Range(0, 1000)]

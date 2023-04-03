@@ -22,19 +22,19 @@ namespace Lekkerbek.Web.Controllers
         // GET: Dishes
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Dishes.ToListAsync());
+              return View(await _context.MenuItems.ToListAsync());
         }
 
         // GET: Dishes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Dishes == null)
+            if (id == null || _context.MenuItems == null)
             {
                 return NotFound();
             }
 
-            var dish = await _context.Dishes
-                .FirstOrDefaultAsync(m => m.DishId == id);
+            var dish = await _context.MenuItems
+                .FirstOrDefaultAsync(m => m.MenuItemId == id);
             if (dish == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DishId,Name,Description,Price")] Dish dish)
+        public async Task<IActionResult> Create([Bind("DishId,Name,Description,Price")] MenuItem dish)
         {
             //if (ModelState.IsValid)
             //{
@@ -68,12 +68,12 @@ namespace Lekkerbek.Web.Controllers
         // GET: Dishes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Dishes == null)
+            if (id == null || _context.MenuItems == null)
             {
                 return NotFound();
             }
 
-            var dish = await _context.Dishes.FindAsync(id);
+            var dish = await _context.MenuItems.FindAsync(id);
             if (dish == null)
             {
                 return NotFound();
@@ -86,9 +86,9 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DishId,Name,Description,Price")] Dish dish)
+        public async Task<IActionResult> Edit(int id, [Bind("DishId,Name,Description,Price")] MenuItem dish)
         {
-            if (id != dish.DishId)
+            if (id != dish.MenuItemId)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace Lekkerbek.Web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DishExists(dish.DishId))
+                    if (!DishExists(dish.MenuItemId))
                     {
                         return NotFound();
                     }
@@ -119,13 +119,13 @@ namespace Lekkerbek.Web.Controllers
         // GET: Dishes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Dishes == null)
+            if (id == null || _context.MenuItems == null)
             {
                 return NotFound();
             }
 
-            var dish = await _context.Dishes
-                .FirstOrDefaultAsync(m => m.DishId == id);
+            var dish = await _context.MenuItems
+                .FirstOrDefaultAsync(m => m.MenuItemId == id);
             if (dish == null)
             {
                 return NotFound();
@@ -139,14 +139,14 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Dishes == null)
+            if (_context.MenuItems == null)
             {
                 return Problem("Entity set 'LekkerbekContext.Dishes'  is null.");
             }
-            var dish = await _context.Dishes.FindAsync(id);
+            var dish = await _context.MenuItems.FindAsync(id);
             if (dish != null)
             {
-                _context.Dishes.Remove(dish);
+                _context.MenuItems.Remove(dish);
             }
             
             await _context.SaveChangesAsync();
@@ -155,7 +155,7 @@ namespace Lekkerbek.Web.Controllers
 
         private bool DishExists(int id)
         {
-          return _context.Dishes.Any(e => e.DishId == id);
+          return _context.MenuItems.Any(e => e.MenuItemId == id);
         }
     }
 }

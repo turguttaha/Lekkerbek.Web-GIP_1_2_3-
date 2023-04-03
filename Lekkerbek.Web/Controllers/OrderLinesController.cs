@@ -23,7 +23,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines/Create
         public IActionResult Create(int id)
         {
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
+            ViewData["DishID"] = new SelectList(_context.MenuItems, "DishId", "Name");
             TempData["Orderid"] = id;
             ViewBag.Id = id; 
             return View();
@@ -43,7 +43,7 @@ namespace Lekkerbek.Web.Controllers
                 await _context.SaveChangesAsync();
             return RedirectToAction("EditOrder", "Orders", new { id = orderLine.OrderID });
             //}
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "DishId", orderLine.DishID);
+            ViewData["DishID"] = new SelectList(_context.MenuItems, "DishId", "DishId", orderLine.MenuItemId);
             ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
             return View(orderLine);
         }
@@ -57,7 +57,7 @@ namespace Lekkerbek.Web.Controllers
             }
 
             var orderLine = await _context.OrderLines
-                .Include(o => o.Dish)
+                .Include(o => o.MenuItem)
                 .Include(o => o.Order)
                 .FirstOrDefaultAsync(m => m.OrderLineID == id);
             if (orderLine == null)

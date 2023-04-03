@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Lekkerbek.Web.Models.Dish>
+﻿@model IEnumerable<Lekkerbek.Web.Models.MenuItem>
 
 @{
     ViewData["Title"] = "Index";
@@ -38,9 +38,9 @@
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.DishId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DishId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.DishId">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.MenuItemId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MenuItemId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MenuItemId">Delete</a>
             </td>
         </tr>
 }
