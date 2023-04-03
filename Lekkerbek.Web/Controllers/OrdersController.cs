@@ -177,6 +177,22 @@ namespace Lekkerbek.Web.Controllers
             var usedTimeSlots = _context.TimeSlots.Where(t => t.StartTimeSlot == timeSlotDateAndTime).ToList();
 
             var allChefId = _context.Chefs.ToList();
+
+            /*
+            Well this is the code, the check is just "is the count of the timeslots on this specific day and time lower than the amount of chefs"
+            Depending on how we want it, we can or keep this button with a "check feature" so the person who is looking for a timeslot can 
+            we can write functions where we look for the amount of chefs that have vacation and subtract that number from allchefId, because that number is the "free chefs"
+            
+             I will keep the rest of the code up so the rest can still be tested, orders right now can be made if you just comment out "TempData["SelectedChef"] = int.Parse(collection["ChefId"]);"
+            this line in selectTimeSlots on line 166
+             */
+            if (usedTimeSlots.Count() < allChefId.Count()) 
+            {
+                Console.WriteLine("Timeslots can be used");
+            }
+
+
+
             List<int> ids = new List<int>();
 
 
