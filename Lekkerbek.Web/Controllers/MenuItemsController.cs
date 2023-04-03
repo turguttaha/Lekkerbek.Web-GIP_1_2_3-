@@ -7,9 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
-using Azure.Core;
-using Kendo.Mvc.Extensions;
-using Kendo.Mvc.UI;
 
 namespace Lekkerbek.Web.Controllers
 {
