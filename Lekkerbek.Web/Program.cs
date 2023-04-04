@@ -18,6 +18,8 @@ builder.Services.AddKendo();
 //Services And Repositories
 builder.Services.AddTransient<CustomersRepository>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
+builder.Services.AddTransient<MenuItemRepository>();
+builder.Services.AddTransient<IMenuItemService, MenuItemService>();
 
 //Congig connection DataBase
 builder.Services.AddDbContext<LekkerbekContext>(options =>
