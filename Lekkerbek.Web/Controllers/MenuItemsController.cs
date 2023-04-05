@@ -45,27 +45,6 @@ namespace Lekkerbek.Web.Controllers
             return Json(new[] { menuItem }.ToDataSourceResult(request));
         }
 
-    // GET: Dishes
-
-
-
-        //// GET: Dishes/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null || _context.MenuItems == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var dish = await _context.MenuItems
-        //        .FirstOrDefaultAsync(m => m.MenuItemId == id);
-        //    if (dish == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(dish);
-        //}
 
         // GET: Dishes/Create
         public IActionResult Create()
@@ -126,8 +105,9 @@ namespace Lekkerbek.Web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MenuItemExists(menuItem.MenuItemId))
+                    if (!_menuItemService.MenuItemExists(menuItem.MenuItemId))
                     {
+                    
                         return NotFound();
                     }
                     else
@@ -140,52 +120,6 @@ namespace Lekkerbek.Web.Controllers
             return View(menuItem);
         }
 
-        //// GET: Dishes/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null || _context.MenuItems == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var menuItem = await _context.MenuItems
-        //        .FirstOrDefaultAsync(m => m.MenuItemId == id);
-        //    if (_context.OrderLines.Any(ol => ol.MenuItemId == menuItem.MenuItemId))
-        //    {
-        //        return RedirectToAction("NoDelete", "Orders", menuItem);
-        //    }
-        //    if (menuItem == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-
-        //    return View(menuItem);
-        //}
-
-        // POST: Dishes/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    if (_context.MenuItems == null)
-        //    {
-        //        return Problem("Entity set 'LekkerbekContext.Dishes'  is null.");
-        //    }
-
-        //    var dish = await _context.MenuItems.FindAsync(id);
-        //    if (dish != null)
-        //    {
-        //        _context.MenuItems.Remove(dish);
-        //    }
-            
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        private bool MenuItemExists(int id)
-        {
-          return _menuItemService.Read().Any(e => e.MenuItemId == id);
-        }
+       
     }
 }

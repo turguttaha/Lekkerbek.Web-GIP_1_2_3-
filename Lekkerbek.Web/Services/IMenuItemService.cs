@@ -9,5 +9,6 @@ namespace Lekkerbek.Web.Services
         public void Create(MenuItem menuItem);
         public MenuItem GetSpecificMenuItem(int? id);
         public void Update(MenuItem menuItem);
+        public bool MenuItemExists(int id);
     }
 }
