@@ -9,8 +9,6 @@ namespace Lekkerbek.Web.Models
         [ScaffoldColumn(false)]
         public int Id { get; set; }
         [Display(Name = "Time Slot")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime StartTimeSlot { get; set; }
         public int? ChefId  { get; set; }
         public virtual Chef Chef { get; set; }
