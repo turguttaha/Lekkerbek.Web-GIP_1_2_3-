@@ -5,6 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRazorPages()
+// Maintain property names during serialization. See:
+// https://github.com/aspnet/Announcements/issues/194
+.AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver =
+new Newtonsoft.Json.Serialization.DefaultContractResolver());
+// Add Kendo UI services to the services container
+builder.Services.AddKendo();
+
 builder.Services.AddTransient<OrdersRepository>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 //Congig connection DataBase
