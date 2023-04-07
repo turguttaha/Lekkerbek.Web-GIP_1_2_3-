@@ -66,6 +66,29 @@ namespace Lekkerbek.Web.Repositories
             }
 
         }
+        public void UpdateOrder(TimeSlot timeSlot, Order order)
+        {
+            _context.Update(timeSlot);
+            _context.SaveChanges();
+
+            var lastTimeSlot = _context.TimeSlots.OrderByDescending(t => t.Id).FirstOrDefault();
+
+            order.TimeSlotID = lastTimeSlot.Id;
+            _context.Update(order);
+            _context.SaveChanges();
+        }
+        public void DeleteOrder(Order order, TimeSlot timeSlot, List<OrderLine> filteredOrderLines)
+        {
+            _context.Orders.Remove(order);
+            _context.TimeSlots.Remove(timeSlot);
+            foreach (var orderLine in filteredOrderLines) { _context.OrderLines.Remove(orderLine); }
+            _context.SaveChanges();
+        }
+        public void UpdateOrderLine(OrderLine orderLine)
+        {
+            _context.Update(orderLine);
+            _context.SaveChanges();
+        }
 
     }
 }

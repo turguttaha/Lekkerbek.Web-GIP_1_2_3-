@@ -27,7 +27,7 @@ namespace Lekkerbek.Web.Controllers
         public IActionResult Index()
         {
             //var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot);
-            return View();
+            return View(_orderService.Read());
         }
 
         //Read func for Kendo
@@ -215,16 +215,13 @@ namespace Lekkerbek.Web.Controllers
                 String selectedDate = collection["TimeSlotID"] + " " + x;
                 DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
                 timeSlot.StartTimeSlot = timeSlotDateAndTime;
-                _context.Add(timeSlot);
-                await _context.SaveChangesAsync();
-                var lastTimeSlot = _context.TimeSlots.OrderByDescending(t => t.Id).FirstOrDefault();
-                order.TimeSlotID = lastTimeSlot.Id;
-                _context.Update(order);
-                    await _context.SaveChangesAsync();
+
+                _orderService.UpdateOrder(timeSlot, order);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.OrderID))
+                    if (!_orderService.OrderExists(order.OrderID))
                     {
                         return NotFound();
                     }
@@ -237,25 +234,25 @@ namespace Lekkerbek.Web.Controllers
 
             return RedirectToAction("index", "Orders");
             //}
-            ViewData["CustomerID"] = new SelectList(_context.Customers, "CustomerId", "Name", order.CustomerID);
-            ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
+            ViewData["CustomerID"] = _orderService.CustomerSelectList( order.CustomerID);
+           // ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
             return View(order);
         }
 
         // GET: OrderLines/Edit/5
         public async Task<IActionResult> EditOrderLine(int? id)
         {
-            if (id == null || _context.OrderLines == null)
+            if (id == null || _orderService.GetOrderLines() == null)
             {
                 return NotFound();
             }
 
-            var orderLine = await _context.OrderLines.FindAsync(id);
+            var orderLine = _orderService.GetSpecificOrderLine(id);
             if (orderLine == null)
             {
                 return NotFound();
             }
-            ViewData["DishID"] = new SelectList(_context.MenuItems, "MenuItemId", "Name", orderLine.MenuItemId);
+            ViewData["DishID"] = _orderService.MenuItemSelectList();
             //ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
             return View(orderLine);
         }
@@ -276,42 +273,38 @@ namespace Lekkerbek.Web.Controllers
             //{
             try
                 {
-                
-                    _context.Update(orderLine);
-                    await _context.SaveChangesAsync();
+
+                _orderService.UpdateOrderLine(orderLine);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                //if (!OrderLineExists(orderLine.OrderLineID))
-                //{
-                //    return NotFound();
-                //}
-                //else
-                //{
-                //    throw;
-                //}
+                if (!_orderService.OrderLineExists(orderLine.OrderLineID))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
             return RedirectToAction("EditOrder", new { id = orderLine.OrderID });
             //}
-            ViewData["DishID"] = new SelectList(_context.MenuItems, "MenuItemId", "MenuItemId", orderLine.MenuItemId);
-            ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
+            //ViewData["DishID"] = new SelectList(_context.MenuItems, "MenuItemId", "MenuItemId", orderLine.MenuItemId);
+            //ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
             return View(orderLine);
         }
 
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null || _orderService.Read() == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.TimeSlot)
-                .FirstOrDefaultAsync(m => m.OrderID == id);
+            var order =  _orderService.GetSpecificOrder(id);
 
-            ViewBag.listOfTheOrder = FilterOrderLines(id);
+            ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
 
             if (order == null)
             {
@@ -326,51 +319,31 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Orders == null)
+            if (_orderService.Read() == null)
             {
                 return Problem("Entity set 'LekkerbekContext.Orders'  is null.");
-            }
-            
+            }   
 
-            var order = await _context.Orders.FindAsync(id);
-            int x = (int)order.CustomerID;
-            order.Customer = _context.Customers.Find(x);
-            
-            if (order != null ) {
-                var timeSlot = await _context.TimeSlots.FindAsync(order.TimeSlotID);
-                DateTime startTimeSlot = timeSlot.StartTimeSlot;
-                DateTime endTimeSlot = startTimeSlot.AddMinutes(15);
-                DateTime now = DateTime.Now;
-                DateTime twoHoursAgo = endTimeSlot.AddMinutes(-120);
+            var order = _orderService.GetSpecificOrder(id);
 
-                List<OrderLine> filteredOrderLines = FilterOrderLines(id);
 
-                if (twoHoursAgo > now) {
-                
-                    //deleting order timeslot orderlines from database
-                    if (timeSlot != null && filteredOrderLines != null)
-                    {
-                        _context.Orders.Remove(order);
-                        _context.TimeSlots.Remove(timeSlot);
-                        foreach (var orderLine in filteredOrderLines) { _context.OrderLines.Remove(orderLine); }
-                    }
-                    await _context.SaveChangesAsync();
+            if (order != null)
+            {
+
+                if (_orderService.DeleteOrder(order))
+                {
                     return RedirectToAction(nameof(Index));
                 }
+      
                 TempData["TimesPast"] = "Order has less than 2 hours to prepare so it cannot be cancelled.";
-                ViewBag.listOfTheOrder = filteredOrderLines;
+                ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
 
                 return View(order);
             }
             return NotFound();
-
-
         }
 
-        private bool OrderExists(int id)
-        {
-          return _context.Orders.Any(e => e.OrderID == id);
-        }
+
 
        
     }

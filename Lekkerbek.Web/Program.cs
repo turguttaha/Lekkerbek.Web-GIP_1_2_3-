@@ -1,8 +1,12 @@
 using Lekkerbek.Web.Data;
+using Lekkerbek.Web.Repositories;
+using Lekkerbek.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddTransient<OrdersRepository>();
+builder.Services.AddTransient<IOrderService, OrderService>();
 //Congig connection DataBase
 builder.Services.AddDbContext<LekkerbekContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

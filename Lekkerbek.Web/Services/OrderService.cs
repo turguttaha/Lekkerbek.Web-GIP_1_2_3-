@@ -15,6 +15,8 @@ namespace Lekkerbek.Web.Services
         {
             _repository = repository;
         }
+       
+        // it is list of the Time Slot for dropdown list
         private readonly List<SelectListItem> TimeSlotsSelectList = new List<SelectListItem>() {
                 new SelectListItem {
                     Text = "12:00", Value = "12:00"
@@ -112,6 +114,14 @@ namespace Lekkerbek.Web.Services
             else
                 return order;
         }
+        public List<OrderLine> GetOrderLines()
+        {
+            return _repository.GetOrderLines();
+        }
+        public OrderLine GetSpecificOrderLine(int? id)
+        {
+            return _repository.GetOrderLines().Find(o=>o.OrderLineID == id);
+        }
         public List<OrderLine> FilterOrderLines(int? orderId)
         {
             if (orderId == null)
@@ -132,11 +142,12 @@ namespace Lekkerbek.Web.Services
             }
             return filteredOrderLines;
         }
+        public SelectList CustomerSelectList()
+        {
+            return new SelectList(_repository.GetCustomers(), "CustomerId", "Name");
+        }
         public SelectList CustomerSelectList(object? selectedValue)
         {
-            if (selectedValue == null)
-            return new SelectList(_repository.GetCustomers(), "CustomerId", "Name");
-            else
                 return new SelectList(_repository.GetCustomers(), "CustomerId", "Name", selectedValue);
         }
         public SelectList MenuItemSelectList()
@@ -162,6 +173,20 @@ namespace Lekkerbek.Web.Services
             var usedTimeSlots = _repository.GetTimeSlots().FindAll(t => t.StartTimeSlot == startTimeSlot);
 
             var allChefId = _repository.GetChefs();
+
+            /*
+            Well this is the code, the check is just "is the count of the timeslots on this specific day and time lower than the amount of chefs"
+            Depending on how we want it, we can or keep this button with a "check feature" so the person who is looking for a timeslot can 
+            we can write functions where we look for the amount of chefs that have vacation and subtract that number from allchefId, because that number is the "free chefs"
+            
+             I will keep the rest of the code up so the rest can still be tested, orders right now can be made if you just comment out "TempData["SelectedChef"] = int.Parse(collection["ChefId"]);"
+            this line in selectTimeSlots on line 166
+             */
+            if (usedTimeSlots.Count() < allChefId.Count())
+            {
+                Console.WriteLine("Timeslots can be used");
+            }
+
 
             List<int> ids = new List<int>();
 
@@ -191,7 +216,53 @@ namespace Lekkerbek.Web.Services
         {
             _repository.CreateOrder(timeSlot, order);
         }
-        
+        public void UpdateOrder(TimeSlot timeSlot, Order order)
+        {
+            _repository.UpdateOrder(timeSlot, order);
+        }
+        public bool OrderExists(int id)
+        {
+            return _repository.GetOrders().Any(e => e.OrderID == id);
+        }
+        public void UpdateOrderLine(OrderLine orderLine)
+        {
+            _repository.UpdateOrderLine(orderLine);
+        }
+        public bool OrderLineExists(int id)
+        {
+            return _repository.GetOrderLines().Any(e => e.OrderLineID == id);
+        }
+        public bool DeleteOrder(Order order)
+        {
+
+                int x = (int)order.CustomerID;
+                order.Customer = GetSpecificCustomer(x);
+                var timeSlot = GetSpecificTimeSlot(order.TimeSlotID);
+                DateTime startTimeSlot = timeSlot.StartTimeSlot;
+                DateTime endTimeSlot = startTimeSlot.AddMinutes(15);
+                DateTime now = DateTime.Now;
+                DateTime twoHoursAgo = endTimeSlot.AddMinutes(-120);
+
+                List<OrderLine> filteredOrderLines = FilterOrderLines(order.OrderID);
+
+                if (twoHoursAgo > now)
+                {
+
+                    //deleting order timeslot orderlines from database
+                    if (timeSlot != null && filteredOrderLines != null)
+                    {
+                        _repository.DeleteOrder(order, timeSlot, filteredOrderLines);
+                        return true;
+                    }
+                   
+                }
+                return false;
+                
+        }
+        public Customer GetSpecificCustomer(int? id)
+        {
+           return _repository.GetCustomers().Find(c=> c.CustomerId == id);
+        }
 
     }
 }
