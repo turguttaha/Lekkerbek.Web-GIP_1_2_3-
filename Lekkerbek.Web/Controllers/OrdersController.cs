@@ -114,7 +114,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines/Create
         public IActionResult AddOrderLine()
         {
-            ViewData["DishID"] = new SelectList(_context.Dishes, "DishId", "Name");
+            ViewData["DishID"] = _orderService.MenuItemSelectList();
             ViewBag.TemproraryCart = Order.TemproraryCart;
             return View();
         }
@@ -149,7 +149,7 @@ namespace Lekkerbek.Web.Controllers
             timeSlot.ChefId =(int)TempData["SelectedChef"];
 
             Order order = new Order();
-            order.CustomerID = (int)TempData["SelectedCustomerId"];
+            order.CustomerId = (int)TempData["SelectedCustomerId"];
 
             _orderService.CreateOrder(timeSlot, order);
 
@@ -183,7 +183,7 @@ namespace Lekkerbek.Web.Controllers
 
             if (twoHoursAgo > now)
             {
-                ViewData["CustomerID"] = _orderService.CustomerSelectList(order.CustomerID);
+                ViewData["CustomerID"] = _orderService.CustomerSelectList(order.CustomerId);
 
                 TempData["SelectDate"] = timeSlotItem.StartTimeSlot.ToString("yyyy-MM-dd");
                 TempData["time"] = timeSlotItem.StartTimeSlot.ToString("H:mm");
@@ -240,7 +240,7 @@ namespace Lekkerbek.Web.Controllers
 
             return RedirectToAction("index", "Orders");
             //}
-            ViewData["CustomerID"] = _orderService.CustomerSelectList( order.CustomerID);
+            ViewData["CustomerID"] = _orderService.CustomerSelectList( order.CustomerId);
            // ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
             return View(order);
         }

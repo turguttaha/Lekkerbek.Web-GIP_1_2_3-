@@ -22,7 +22,7 @@ namespace Lekkerbek.Web.Repositories
             {
                 OrderID = order.OrderID,
                 Finished = order.Finished,
-                CustomerID = order.CustomerID,
+                CustomerId = order.CustomerId,
                 Discount = order.Discount,
                 TimeSlotID = order.TimeSlotID,
                 TimeSlot = new TimeSlot()

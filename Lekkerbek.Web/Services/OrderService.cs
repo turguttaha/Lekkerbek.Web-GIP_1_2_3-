@@ -235,7 +235,7 @@ namespace Lekkerbek.Web.Services
         public bool DeleteOrder(Order order)
         {
 
-                int x = (int)order.CustomerID;
+                int x = (int)order.CustomerId;
                 order.Customer = GetSpecificCustomer(x);
                 var timeSlot = GetSpecificTimeSlot(order.TimeSlotID);
                 DateTime startTimeSlot = timeSlot.StartTimeSlot;
