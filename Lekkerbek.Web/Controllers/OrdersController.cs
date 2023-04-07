@@ -28,7 +28,6 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders
         public IActionResult Index()
         {
-           
             return View();
         }
         public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
