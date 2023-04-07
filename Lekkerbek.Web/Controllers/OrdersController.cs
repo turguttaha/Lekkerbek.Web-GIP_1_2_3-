@@ -11,6 +11,8 @@ using Microsoft.Data.SqlClient;
 using System.Net.Mail;
 using System.Net;
 using Lekkerbek.Web.Services;
+using Kendo.Mvc.UI;
+using Kendo.Mvc.Extensions;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -26,8 +28,12 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders
         public IActionResult Index()
         {
-            //var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot);
-            return View(_orderService.Read());
+           
+            return View();
+        }
+        public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_orderService.Read().ToDataSourceResult(request));
         }
 
         //Read func for Kendo

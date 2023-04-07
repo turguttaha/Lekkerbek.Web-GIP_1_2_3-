@@ -17,7 +17,39 @@ namespace Lekkerbek.Web.Repositories
 
         public List<Order> GetOrders()
         {
-            return _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).ToList();
+            var result = _context.Orders.Select(order => new Order
+            //This is another way to make a new object
+            {
+                OrderID = order.OrderID,
+                Finished = order.Finished,
+                CustomerID = order.CustomerID,
+                Discount = order.Discount,
+                TimeSlotID = order.TimeSlotID,
+                TimeSlot = new TimeSlot()
+                {
+                    StartTimeSlot = order.TimeSlot.StartTimeSlot,
+                    ChefId = order.TimeSlot.ChefId,
+                    Id = order.TimeSlot.Id
+                },
+                Customer = new Customer()
+                {
+                    CustomerId = order.Customer.CustomerId,
+                    FName = order.Customer.Name,
+                    LName = order.Customer.Name,
+                    Address = order.Customer.Address,
+                    Birthday = order.Customer.Birthday,
+                    LoyaltyScore = order.Customer.LoyaltyScore,
+                    Email = order.Customer.Email,
+                    PhoneNumber = order.Customer.PhoneNumber,
+                    PreferredDishId = order.Customer.PreferredDishId,
+
+                }
+
+
+            }).ToList();
+
+            return result;
+            // return _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).ToList();
 
         }
         public List<OrderLine> GetOrderLines()
@@ -79,6 +111,7 @@ namespace Lekkerbek.Web.Repositories
         }
         public void DeleteOrder(Order order, TimeSlot timeSlot, List<OrderLine> filteredOrderLines)
         {
+            _context.Orders.Attach(order);
             _context.Orders.Remove(order);
             _context.TimeSlots.Remove(timeSlot);
             foreach (var orderLine in filteredOrderLines) { _context.OrderLines.Remove(orderLine); }
