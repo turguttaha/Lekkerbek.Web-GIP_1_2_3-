@@ -35,7 +35,7 @@
             <div class="form-group">
                 
                 <label asp-for="StartTimeSlot" class="control-label"></label>
-                <input value="@TempData["SelectDate"]" asp-for="StartTimeSlot" type="date" class="form-control" />
+                <input id="date" value="@TempData["SelectDate"]" asp-for="StartTimeSlot" type="date" class="form-control" />
                
                 
                 
@@ -43,20 +43,84 @@
             <div class="form-group">
 
                 <label asp-for="StartTimeSlot" class="control-label"></label>
-                @Html.DropDownList("TimeSlotsSelectList", (IEnumerable<SelectListItem>)ViewBag.TimeSlotsSelectList)
+                @Html.DropDownList("TimeSlotsSelectList", (IEnumerable<SelectListItem>)ViewBag.TimeSlotsSelectList, new{@id="time"})
                 <span asp-validation-for="StartTimeSlot" class="text-danger"></span>
 
 
             </div>
-            <p class="text-danger">@TempData["ChefError"]</p>
+            <div class="form-group">
+                <label asp-for="ChefId" class="control-label">Chef Name</label>
+                <select asp-for="ChefId" id="chefs" class="form-control" asp-items="ViewBag.ChefId"></select>
+            </div>
+
+
+            <div class="form-group">
+                <input type="button" value="Send" class="btn btn-primary" id="sendButton">
+            </div>
+
+
+            <p id="chefError" class="text-danger"></p>
             <div class="form-group">
                 <input type="submit" value="Next Step" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+     $(function () {
+     $("#sendButton").click(function () {
+     $.ajax(
+     {
+             // Hier kan je kiezen tussen GET, POST, PUT, DELETE....
+             // Elk van deze keywords heeft een andere nut,
+             // zie de les frontend.
+             type: "POST",
+             // Hier geven we de action naam en controler naam mee.
+                        url: '@Url.Action("LookUpChefs", "Orders")',
+             // Hier gaan we data meegeven in een JSON formaat.
+                        data: { "date": $("#date").val(), "time": $("#time").val() },
+             dataType: "json",
+             // Hier gaan we jQuery/javascript code schrijven indien onze
+             // request successvol is.
+             success: function (response) {
+             console.log(response);
+            // Hier gaan we de span met id "statusSpan" ophalen
+            // en de text vervangen met de status.
+            // Status krijgen we van de action Message mee.
+            if(response.chefs.length==0)
+            {
+                //Javascript shows this always, idk why, it also wont reset in the else, in other words the pop up if no chefs are availible is broken
+                $("#chefError").html("No chefs availible");
+                console.log("test")
+            }
+            else
+            {
+                $("#chefError").html("");
+                let s;
+                for (var i = 0; i < response.chefs.length; i++) {
+                    s += '<option value="' + response.chefs[i].chefId + '">' + response.chefs[i].chefName + '</option>';
+                }
+            
+                $("#chefs").html(s);
+            }
+   
+     },
+     error: function (response) {
+     // Indien onze request faalt, kunnen we hier een mooie
+    // foutmelding tonen.
+    // In ons geval gaan we een alert tonen op het scherm
+     // (in praktijk moet je dit beter afhandelen!).
+     
+     }
+     });
+     });
+     })
+</script>
+
+

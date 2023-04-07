@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Lekkerbek.Web.Models.Order>
+﻿@using Kendo.Mvc.UI;
+@using Lekkerbek.Web.Models;
 
 @{
     ViewData["Title"] = "Index";
@@ -6,47 +7,51 @@
 }
 
 <h1>Orders</h1>
-
-<p>
-    <a asp-action="SelectCustomer">New Order</a>
-</p>
 <p class="text-danger">@TempData["TimesPast"]</p>
-<table class="table">
-    <thead>
-        <tr>
-           
-            <th>
-                @Html.DisplayNameFor(model => model.Finished)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Customer)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TimeSlot.StartTimeSlot)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-           
-            <td>
-                @Html.DisplayFor(modelItem => item.Finished)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Customer.FName)
-                @Html.DisplayFor(modelItem => item.Customer.LName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeSlot.StartTimeSlot)
-            </td>
-            <td>
-                <a asp-action="EditOrder" asp-route-id="@item.OrderID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OrderID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.OrderID">Cancel</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+@(Html.Kendo().Grid<Order>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.OrderID);
+        columns.Bound(p => p.Customer.Name);
+        columns.Bound(p => p.Finished);
+        columns.Bound(p => p.TimeSlot.StartTimeSlot);
+        columns.Bound(p => p.OrderID)
+                                .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/EditOrder/#=OrderID#'>Edit</a></div>");
+        columns.Bound(p => p.OrderID)
+                                .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Details/#=OrderID#'>Details</a></div>");
+        columns.Bound(p => p.OrderID)
+        .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Delete/#=OrderID#'>Delete</a></div>");
+
+    })
+    .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Orders/SelectCustomer'>Add New Order</a></div>"))
+    .Pageable()
+    .Sortable()
+    .Scrollable()
+    .HtmlAttributes(new { style = "height:550px;" })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .Events(events => events.Error("error_handler"))
+        .Model(model => model.Id(p => p.OrderID))
+        .Create(update => update.Action("EditingPopup_Create", "Orders"))
+        .Read(read => read.Action("EditingPopup_Read", "Orders"))
+        .Destroy(update => update.Action("EditingPopup_Destroy", "Orders"))
+    )
+)
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>
