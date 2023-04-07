@@ -1,5 +1,5 @@
 ﻿using Lekkerbek.Web.Models;
-using Lekkerbek.Web.Repository;
+using Lekkerbek.Web.Repositories;
 
 namespace Lekkerbek.Web.Services
 {

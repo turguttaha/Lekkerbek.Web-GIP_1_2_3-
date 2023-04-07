@@ -15,33 +15,37 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Threading;
 using Lekkerbek.Web.Services;
+using Kendo.Mvc.UI;
+using Kendo.Mvc.Extensions;
 
 namespace Lekkerbek.Web.Controllers
 {
     public class OrdersCashierController : Controller
     {
         private readonly IOrderCashierService _orderCashierService;
+        private readonly IOrderService _orderService;
 
-        public OrdersCashierController(IOrderCashierService orderCashierService)
+        public OrdersCashierController(IOrderCashierService orderCashierService, IOrderService orderService)
         {
+            _orderService = orderService;
             _orderCashierService = orderCashierService;
         }
 
         // GET: Orders according to finished property
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             var orderCashier = _orderCashierService.Read();
             return View(orderCashier);
+            //var lekkerBekContext = _orderCashierService.Read();
+            return View();
             //var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).Where(c=>c.Finished==false);
             //return View(await lekkerbekContext.ToListAsync());
         }
-        /*
-         public ActionResult EditingPopup_Read([DataSourceRequest] CataSourceRequest request)
-         {
-             return Json(_orderCashierService.Read().ToDataSourceResult(request));
-         }
-         
-         */
+        public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_orderService.Read().ToDataSourceResult(request));
+        }
+        
         // Pay Off page Get: order to pay
         public async Task<IActionResult> Bill(int? id)
         {

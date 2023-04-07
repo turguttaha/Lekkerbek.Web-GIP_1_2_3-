@@ -1,7 +1,7 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
 
-namespace Lekkerbek.Web.Repository
+namespace Lekkerbek.Web.Repositories
 {
     public class OrdersCashierRepository
     {
@@ -19,21 +19,28 @@ namespace Lekkerbek.Web.Repository
                 Finished = order.Finished,
                 CustomerId = order.CustomerId,
                 Discount = order.Discount,
-                Customer = order.Customer,
-                OrderLines = order.OrderLines,
+                TimeSlotID = order.TimeSlotID,
                 TimeSlot = new TimeSlot()
                 {
-                    Id = order.TimeSlot.Id,
                     StartTimeSlot = order.TimeSlot.StartTimeSlot,
-                    Chef = new Chef() 
-                    { 
-                        ChefId = order.TimeSlot.Chef.ChefId,
-                        ChefName = order.TimeSlot.Chef.ChefName
-                        
-                    }
+                    ChefId = order.TimeSlot.ChefId,
+                    Id = order.TimeSlot.Id
+                },
+                Customer = new Customer()
+                {
+                    CustomerId = order.Customer.CustomerId,
+                    FName = order.Customer.Name,
+                    LName = order.Customer.Name,
+                    Address = order.Customer.Address,
+                    Birthday = order.Customer.Birthday,
+                    LoyaltyScore = order.Customer.LoyaltyScore,
+                    Email = order.Customer.Email,
+                    PhoneNumber = order.Customer.PhoneNumber,
+                    PreferredDishId = order.Customer.PreferredDishId,
+
                 }
 
-            }).Where(c=>c.Finished==false).ToList();
+            }).Where(c => c.Finished == false).ToList();
 
         }
         public List<Customer> GetAllCustomers()
@@ -59,24 +66,24 @@ namespace Lekkerbek.Web.Repository
             return _context.PreferredDishes.Select(prefDish => new PreferredDish
             //This is another way to make a new object
             {
-                
+
                 PreferredDishId = prefDish.PreferredDishId,
                 Name = prefDish.Name
-                
+
 
             }).ToList();
 
         }
-        public List<Order> getOrders(int? id) 
+        public List<Order> getOrders(int? id)
         {
             return _context.Orders.Select(order => new Order
             {
                 OrderID = order.OrderID,
                 CustomerId = order.CustomerId
-            }).Where(c=> c.CustomerId == id).ToList();
+            }).Where(c => c.CustomerId == id).ToList();
         }
 
-        public List<OrderLine> getAllOrderLines(int id) 
+        public List<OrderLine> getAllOrderLines(int id)
         {
             return _context.OrderLines.Select(orderLine => new OrderLine
             //This is another way to make a new object
@@ -85,7 +92,7 @@ namespace Lekkerbek.Web.Repository
                 ExtraDetails = orderLine.ExtraDetails,
                 DishAmount = orderLine.DishAmount,
                 //we don't need order details themselves for this i think
-                MenuItem = new MenuItem() 
+                MenuItem = new MenuItem()
                 {
                     MenuItemId = orderLine.MenuItem.MenuItemId,
                     Name = orderLine.MenuItem.Name,
@@ -93,9 +100,9 @@ namespace Lekkerbek.Web.Repository
                     Description = orderLine.MenuItem.Description
                 }
 
-            }).Where(c => c.OrderID==id).ToList();
+            }).Where(c => c.OrderID == id).ToList();
         }
-        public void UpdateOrder(Order order) 
+        public void UpdateOrder(Order order)
         {
             _context.Update(order);
             _context.SaveChanges();
