@@ -75,7 +75,7 @@ namespace Lekkerbek.Web.Services
 
         public Order GetSpecificOrder(int? id)
         {
-            var customer = _repository.GetOrders().Find(x => x.CustomerID == id);
+            var customer = _repository.GetOrders().Find(x => x.CustomerId == id);
             if (customer == null)
             {
                 return null;
@@ -88,7 +88,7 @@ namespace Lekkerbek.Web.Services
 
         public bool OrderExists(int id)
         {
-            return _repository.GetOrders().Any(e=>e.CustomerID == id);
+            return _repository.GetOrders().Any(e=>e.CustomerId == id);
         }
 
         public List<OrderLine> OrderLineRead(int? id)

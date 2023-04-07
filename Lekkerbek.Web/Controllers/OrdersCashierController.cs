@@ -30,8 +30,8 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders according to finished property
         public async Task<IActionResult> Index()
         {
-            var lekkerBekContext = _orderCashierService.Read();
-            return View();
+            var orderCashier = _orderCashierService.Read();
+            return View(orderCashier);
             //var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).Where(c=>c.Finished==false);
             //return View(await lekkerbekContext.ToListAsync());
         }
@@ -86,7 +86,7 @@ namespace Lekkerbek.Web.Controllers
             ViewBag.totalPrice = totalPrice;
 
             //var orderCount = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
-            var orderCount = _orderCashierService.GetOrders(order.CustomerID);
+            var orderCount = _orderCashierService.GetOrders(order.CustomerId);
             
             if (orderCount.Count() >= 3)
             {
@@ -187,7 +187,7 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
             //var orderCount = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
-            var orderCount = _orderCashierService.GetOrders(order.CustomerID);
+            var orderCount = _orderCashierService.GetOrders(order.CustomerId);
 
             if (orderCount.Count() >= 3)
             {

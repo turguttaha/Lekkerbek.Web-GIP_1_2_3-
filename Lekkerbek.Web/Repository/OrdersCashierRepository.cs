@@ -17,7 +17,7 @@ namespace Lekkerbek.Web.Repository
             {
                 OrderID = order.OrderID,
                 Finished = order.Finished,
-                CustomerID = order.CustomerID,
+                CustomerId = order.CustomerId,
                 Discount = order.Discount,
                 Customer = order.Customer,
                 OrderLines = order.OrderLines,
@@ -72,8 +72,8 @@ namespace Lekkerbek.Web.Repository
             return _context.Orders.Select(order => new Order
             {
                 OrderID = order.OrderID,
-                CustomerID = order.CustomerID
-            }).Where(c=> c.CustomerID == id).ToList();
+                CustomerId = order.CustomerId
+            }).Where(c=> c.CustomerId == id).ToList();
         }
 
         public List<OrderLine> getAllOrderLines(int id) 
