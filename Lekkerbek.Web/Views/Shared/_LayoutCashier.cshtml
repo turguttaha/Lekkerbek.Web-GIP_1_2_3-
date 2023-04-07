@@ -7,6 +7,22 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Lekkerbek.Web.styles.css" asp-append-version="true" />
+
+    <!--Styles.Render("~/UIFramework/KendoUI/kendo/kendoui.web/styles/kendo.common.min.css")-->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet"
+          href="https://kendo.cdn.telerik.com/themes/6.2.0/bootstrap/bootstrap-main.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ood_les6_prep_kendo.styles.css" asp-append-
+          version="true" />
+    <link rel="stylesheet"
+          href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.kendostatic.com/2023.1.314/js/kendo.all.min.js"></script>
+    <script src="https://cdn.kendostatic.com/2023.1.314/js/kendo.aspnetmvc.min.js"></script>
+    <script src="~/js/kendo-ui-license.js"></script>
 </head>
 <body>
     <header>
@@ -42,9 +58,9 @@
             &copy; 2023 - <b>Group - 2 (Frederik - Taha - Sora - Mathijs)  </b>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+@*    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -34,10 +34,10 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders according to finished property
         public IActionResult Index()
         {
-            var orderCashier = _orderCashierService.Read();
-            return View(orderCashier);
-            //var lekkerBekContext = _orderCashierService.Read();
+            //var orderCashier = _orderCashierService.Read();
             return View();
+            //var lekkerBekContext = _orderCashierService.Read();
+            //return View();
             //var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).Where(c=>c.Finished==false);
             //return View(await lekkerbekContext.ToListAsync());
         }
