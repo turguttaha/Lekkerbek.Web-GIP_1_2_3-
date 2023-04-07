@@ -38,20 +38,22 @@ namespace Lekkerbek.Web.Services
         {
             return GetAllPrefferedDishes();
         }
-        private IList<OrderLine> getOrderLines(int id) 
+        private List<OrderLine> getOrderLines(int? id) 
         {
             var result = _repository.getAllOrderLines(id);
             return result;
         }
-        public IEnumerable<OrderLine> orderLineRead(int id) 
+        public List<OrderLine> OrderLineRead(int? id)
         {
             return getOrderLines(id);
         }
-        private IList<Order> GetOrders(int? id) 
-        { 
+        
+        List<Order> IOrderCashierService.GetOrders(int? id)
+        {
             var result = _repository.getOrders(id);
             return result;
         }
+
         public void Update(Order order) 
         {
             _repository.UpdateOrder(order);
@@ -75,14 +77,14 @@ namespace Lekkerbek.Web.Services
 
         public Order GetSpecificOrder(int? id)
         {
-            var customer = _repository.GetOrders().Find(x => x.CustomerId == id);
-            if (customer == null)
+            var order = _repository.GetOrders().Find(x => x.OrderID == id);
+            if (order == null)
             {
                 return null;
             }
             else 
             {
-                return customer;
+                return order;
             }
         }
 
@@ -91,15 +93,8 @@ namespace Lekkerbek.Web.Services
             return _repository.GetOrders().Any(e=>e.CustomerId == id);
         }
 
-        public List<OrderLine> OrderLineRead(int? id)
-        {
-            throw new NotImplementedException();
-        }
-
-        List<Order> IOrderCashierService.GetOrders(int? id)
-        {
-            throw new NotImplementedException();
-        }
+        
+        
 
         List<Customer> IOrderCashierService.GetAllCustomers()
         {
@@ -110,5 +105,7 @@ namespace Lekkerbek.Web.Services
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

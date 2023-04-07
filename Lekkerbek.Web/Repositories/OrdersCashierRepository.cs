@@ -83,12 +83,13 @@ namespace Lekkerbek.Web.Repositories
             }).Where(c => c.CustomerId == id).ToList();
         }
 
-        public List<OrderLine> getAllOrderLines(int id)
+        public List<OrderLine> getAllOrderLines(int? id)
         {
             return _context.OrderLines.Select(orderLine => new OrderLine
             //This is another way to make a new object
             {
                 OrderLineID = orderLine.OrderLineID,
+                OrderID = orderLine.OrderID,
                 ExtraDetails = orderLine.ExtraDetails,
                 DishAmount = orderLine.DishAmount,
                 //we don't need order details themselves for this i think
