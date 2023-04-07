@@ -58,16 +58,16 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem=>item.Dish.Name)
+                    @Html.DisplayFor(modelItem=>item.MenuItem.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem=>item.Dish.Price)
+                    @Html.DisplayFor(modelItem=>item.MenuItem.Price)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DishAmount)
                 </td>
                 <td>
-                    @(item.Dish.Price * item.DishAmount)
+                    @(item.MenuItem.Price * item.DishAmount)
                 </td>
                 <td></td>
             </tr>

@@ -26,7 +26,7 @@ namespace Lekkerbek.Web.Data
         public DbSet<PreferredDish> PreferredDishes { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderLine> OrderLines { get; set; }
-        public DbSet<Dish> Dishes { get; set; }
+        public DbSet<MenuItem> MenuItems { get; set; }
 
 
 

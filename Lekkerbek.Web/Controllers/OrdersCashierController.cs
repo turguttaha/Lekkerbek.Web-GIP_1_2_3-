@@ -20,40 +20,47 @@ namespace Lekkerbek.Web.Controllers
 {
     public class OrdersCashierController : Controller
     {
-        private readonly LekkerbekContext _context;
+        private readonly IOrderCashierService _orderCashierService;
 
-        public OrdersCashierController(LekkerbekContext context)
+        public OrdersCashierController(IOrderCashierService orderCashierService)
         {
-            _context = context;
+            _orderCashierService = orderCashierService;
         }
 
         // GET: Orders according to finished property
         public async Task<IActionResult> Index()
         {
-            var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).Where(c=>c.Finished==false);
-            return View(await lekkerbekContext.ToListAsync());
+            var lekkerBekContext = _orderCashierService.Read();
+            return View();
+            //var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).Where(c=>c.Finished==false);
+            //return View(await lekkerbekContext.ToListAsync());
         }
-
+        /*
+         public ActionResult EditingPopup_Read([DataSourceRequest] CataSourceRequest request)
+         {
+             return Json(_orderCashierService.Read().ToDataSourceResult(request));
+         }
+         
+         */
         // Pay Off page Get: order to pay
         public async Task<IActionResult> Bill(int? id)
         {
-            if (id == null || _context.Orders == null)
+            if (id == null || _orderCashierService.Read() == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.TimeSlot)
-                .FirstOrDefaultAsync(m => m.OrderID == id);
+            var order = _orderCashierService.GetSpecificOrder(id);
             TempData["OrderIdFromBill"] = id;
             int x = (int)id;
             TempData["OrderID"] = x;
 
 
-            //filtering orderlines occording to orderId
-            List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
-            List<OrderLine> filteredOrderLines = new List<OrderLine>();
+            //filtering orderlines according to orderId
+            //List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
+            List<OrderLine> allOrderLines = _orderCashierService.OrderLineRead(id);
+
+            List <OrderLine> filteredOrderLines = new List<OrderLine>();
 
             foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
             {
@@ -61,7 +68,7 @@ namespace Lekkerbek.Web.Controllers
                     filteredOrderLines.Add(orderLine);
 
             }
-            ViewBag.Dishes = _context.Dishes;
+            //ViewBag.Dishes = _context.Dishes;
 
 
             ViewBag.listOfTheOrder = filteredOrderLines;
@@ -74,12 +81,14 @@ namespace Lekkerbek.Web.Controllers
             double totalPrice = 0;
             foreach (var oorder in filteredOrderLines)
             {
-                totalPrice += oorder.Dish.Price * oorder.DishAmount;
+                totalPrice += oorder.MenuItem.Price * oorder.DishAmount;
             }
             ViewBag.totalPrice = totalPrice;
 
-            var test = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
-            if (test.Count() >= 3)
+            //var orderCount = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
+            var orderCount = _orderCashierService.GetOrders(order.CustomerID);
+            
+            if (orderCount.Count() >= 3)
             {
                 ViewBag.Korting = true;
             }
@@ -98,8 +107,8 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Bill(int id, [Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order orderInfo, IFormCollection collection)
         {
-            var orderFinish = _context.Orders.Where(c => c.OrderID == id).FirstOrDefault();
-
+            //var orderFinish = _context.Orders.Where(c => c.OrderID == id).FirstOrDefault();
+            var orderFinish = _orderCashierService.GetSpecificOrder(id);
             //if (ModelState.IsValid)
             //{
             try
@@ -107,7 +116,8 @@ namespace Lekkerbek.Web.Controllers
                 var discount = collection["Discount"];
                 // Order.TemproraryCart.Add(orderLine);
 
-                List<OrderLine> allOrderLines2 = _context.OrderLines.Include(c => c.Dish).ToList();
+                //List<OrderLine> allOrderLines2 = _context.OrderLines.Include(c => c.Dish).ToList();
+                List<OrderLine> allOrderLines2 = _orderCashierService.OrderLineRead(id);
                 List<OrderLine> filteredOrderLines2 = new List<OrderLine>();
 
                 foreach (var orderLine in allOrderLines2.Where(c => c.OrderID == id))
@@ -119,7 +129,7 @@ namespace Lekkerbek.Web.Controllers
                 double totalPrice = 0;
                 foreach (var oorder in filteredOrderLines2)
                 {
-                    totalPrice += oorder.Dish.Price * oorder.DishAmount;
+                    totalPrice += oorder.MenuItem.Price * oorder.DishAmount;
                 }
 
 
@@ -130,9 +140,11 @@ namespace Lekkerbek.Web.Controllers
                     orderFinish.Discount = int.Parse(collection["Discount"]);
                     ViewBag.totalPrice = totalPrice * (100 - orderFinish.Discount) / 100;
                     ViewBag.discount = discount;
+
+                    //_context.Update(orderFinish);
+                    //await _context.SaveChangesAsync();
+                    _orderCashierService.Update(orderFinish);
                     
-                    _context.Update(orderFinish);
-                    await _context.SaveChangesAsync();
                 }
                 
                 
@@ -148,18 +160,15 @@ namespace Lekkerbek.Web.Controllers
                     throw;
                 }
             }
-            if (id == null || _context.Orders == null)
+            if (id == null || _orderCashierService.Read() == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.TimeSlot)
-                .FirstOrDefaultAsync(m => m.OrderID == id);
+            var order = _orderCashierService.GetSpecificOrder(id);
 
             //filtering orderlines occording to orderId
-            List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
+            List<OrderLine> allOrderLines = _orderCashierService.OrderLineRead(id);
             List<OrderLine> filteredOrderLines = new List<OrderLine>();
 
             foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
@@ -168,7 +177,7 @@ namespace Lekkerbek.Web.Controllers
                     filteredOrderLines.Add(orderLine);
 
             }
-            ViewBag.Dishes = _context.Dishes;
+            //ViewBag.Dishes = _context.Dishes;
 
 
             ViewBag.listOfTheOrder = filteredOrderLines;
@@ -177,8 +186,10 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            var test = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
-            if (test.Count() >= 3)
+            //var orderCount = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
+            var orderCount = _orderCashierService.GetOrders(order.CustomerID);
+
+            if (orderCount.Count() >= 3)
             {
                 ViewBag.Korting = true;
             }
@@ -197,7 +208,7 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Pay(int id, [Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order order)
         {
-            var orderFinish = _context.Orders.Where(c => c.OrderID == id).FirstOrDefault();
+            var orderFinish = _orderCashierService.GetSpecificOrder(id);
 
             //if (ModelState.IsValid)
             //{
@@ -205,9 +216,9 @@ namespace Lekkerbek.Web.Controllers
             {
 
                 orderFinish.Finished = true;
-
-                _context.Update(orderFinish);
-                await _context.SaveChangesAsync();
+                _orderCashierService.Update(orderFinish);
+                //_context.Update(orderFinish);
+                //await _context.SaveChangesAsync();
                 String testMail = @"<table class=""table"">
                 <thead>
                     <tr>
@@ -232,7 +243,7 @@ namespace Lekkerbek.Web.Controllers
                 
 
                 //filtering orderlines occording to orderId
-                List<OrderLine> allOrderLines = _context.OrderLines.Include(c => c.Dish).ToList();
+                List<OrderLine> allOrderLines = _orderCashierService.OrderLineRead(id);
                 List<OrderLine> filteredOrderLines = new List<OrderLine>();
 
                 foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
@@ -246,28 +257,28 @@ namespace Lekkerbek.Web.Controllers
                 {
                             testMail += @" <tr>
                         <td>
-                            " + item.Dish.Name + @"
+                            " + item.MenuItem.Name + @"
                         </td>
                         <td>
-                            " + item.Dish.Price + @"
+                            " + item.MenuItem.Price + @"
                         </td>
                         <td>
                             " + item.DishAmount + @"
                         </td>
                         <td>
-                            " + item.Dish.Price * item.DishAmount + @"
+                            " + item.MenuItem.Price * item.DishAmount + @"
                         </td>
                         <td>
                             
                         </td>
                     </tr>";
-                    totalPrice += item.Dish.Price * item.DishAmount;
+                    totalPrice += item.MenuItem.Price * item.DishAmount;
                 }
                 
                 bool discountBool = false;
-                var orderFinishMail = _context.Orders.Where(c => c.OrderID == id).FirstOrDefault();
-                
-                
+                var orderFinishMail = _orderCashierService.GetSpecificOrder(id);
+
+
                 if (orderFinishMail != null|| orderFinishMail.Discount !=0) 
                 {
                     discountBool = true;
@@ -349,17 +360,17 @@ namespace Lekkerbek.Web.Controllers
         // GET: Customers/Edit/5
         public async Task<IActionResult> EditCustomer(int? id)
         {
-            if (id == null || _context.Customers == null)
+            if (id == null || _orderCashierService.GetAllCustomers == null)
             {
                 return NotFound();
             }
 
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = _orderCashierService.GetSpecificCustomer(id);
             if (customer == null)
             {
                 return NotFound();
             }
-            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "Name", customer.PreferredDishId);
+            ViewData["PreferredDishId"] = new SelectList(_orderCashierService.GetAllPrefferedDishes(), "PreferredDishId", "Name", customer.PreferredDishId);
             return View(customer);
         }
 
@@ -381,8 +392,9 @@ namespace Lekkerbek.Web.Controllers
 
             try
             {
-                _context.Update(customer);
-                await _context.SaveChangesAsync();
+                _orderCashierService.UpdateCustomer(customer);
+                //_context.Update(customer);
+                //await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -397,16 +409,28 @@ namespace Lekkerbek.Web.Controllers
             }
             return RedirectToAction("Bill", new { id = (int)TempData["OrderIdFromBill"] });
             //}
-            ViewData["PreferredDishId"] = new SelectList(_context.PreferredDishes, "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
+            ViewData["PreferredDishId"] = new SelectList(_orderCashierService.GetAllPrefferedDishes(), "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
             return View(customer);
         }
         private bool CustomerExists(int id)
         {
-            return _context.Customers.Any(e => e.CustomerId == id);
+            bool exist = false;
+            if (_orderCashierService.GetSpecificCustomer(id) != null) 
+            {
+                exist = true;
+            }
+            return exist;
+            //return _context.Customers.Any(e => e.CustomerId == id);
         }
         private bool OrderExists(int id)
         {
-            return _context.Orders.Any(e => e.OrderID == id);
+            bool exist = false;
+            if (_orderCashierService.GetSpecificOrder(id) != null)
+            {
+                exist = true;
+            }
+            return exist;
+            //return _context.Orders.Any(e => e.OrderID == id);
         }
     }
 }

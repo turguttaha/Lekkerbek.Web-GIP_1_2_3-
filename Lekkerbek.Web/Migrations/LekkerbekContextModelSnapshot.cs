@@ -85,11 +85,11 @@ namespace Lekkerbek.Web.Migrations
 
             modelBuilder.Entity("Lekkerbek.Web.Models.Dish", b =>
                 {
-                    b.Property<int>("DishId")
+                    b.Property<int>("MenuItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DishId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MenuItemId"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -102,9 +102,9 @@ namespace Lekkerbek.Web.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.HasKey("DishId");
+                    b.HasKey("MenuItemId");
 
-                    b.ToTable("Dishes");
+                    b.ToTable("MenuItems");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.Order", b =>
@@ -147,7 +147,7 @@ namespace Lekkerbek.Web.Migrations
                     b.Property<int>("DishAmount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DishID")
+                    b.Property<int?>("MenuItemId")
                         .HasColumnType("int");
 
                     b.Property<string>("ExtraDetails")
@@ -158,7 +158,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("OrderLineID");
 
-                    b.HasIndex("DishID");
+                    b.HasIndex("MenuItemId");
 
                     b.HasIndex("OrderID");
 
@@ -229,15 +229,15 @@ namespace Lekkerbek.Web.Migrations
 
             modelBuilder.Entity("Lekkerbek.Web.Models.OrderLine", b =>
                 {
-                    b.HasOne("Lekkerbek.Web.Models.Dish", "Dish")
+                    b.HasOne("Lekkerbek.Web.Models.MenuItem", "MenuItem")
                         .WithMany("OrderLines")
-                        .HasForeignKey("DishID");
+                        .HasForeignKey("MenuItemID");
 
                     b.HasOne("Lekkerbek.Web.Models.Order", "Order")
                         .WithMany("OrderLines")
                         .HasForeignKey("OrderID");
 
-                    b.Navigation("Dish");
+                    b.Navigation("MenuItem");
 
                     b.Navigation("Order");
                 });

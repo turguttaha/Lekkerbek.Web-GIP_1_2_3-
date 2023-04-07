@@ -1,19 +1,25 @@
 using Lekkerbek.Web.Data;
+using Lekkerbek.Web.Repository;
+using Lekkerbek.Web.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+
+
+// Add services to the container.
+builder.Services.AddTransient<OrdersCashierRepository>();
+builder.Services.AddTransient<IOrderCashierService, OrderCashierService>();
 
 //Congig connection DataBase
 builder.Services.AddDbContext<LekkerbekContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
 var app = builder.Build();
-
-
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
