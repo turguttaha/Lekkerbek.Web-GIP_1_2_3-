@@ -20,6 +20,10 @@ builder.Services.AddTransient<CustomersRepository>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();
 builder.Services.AddTransient<MenuItemRepository>();
 builder.Services.AddTransient<IMenuItemService, MenuItemService>();
+builder.Services.AddTransient<OrdersRepository>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<OrdersCashierRepository>();
+builder.Services.AddTransient<IOrderCashierService, OrderCashierService>();
 
 //Congig connection DataBase
 builder.Services.AddDbContext<LekkerbekContext>(options =>

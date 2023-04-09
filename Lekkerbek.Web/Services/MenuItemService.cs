@@ -56,5 +56,10 @@ namespace Lekkerbek.Web.Services
         {
         _repository.UpdateIntoDataBase(menuItem);
         }
+
+        public bool MenuItemExists(int id)
+        {
+            return GetAll().Any(e => e.MenuItemId == id);
+        }
     }
 }
