@@ -17,20 +17,51 @@ namespace Lekkerbek.Web.Models
         [Display(Name = "Last Name")]
         public string LName { get; set; } = string.Empty;
 
-        [Display(Name = "E-mail")]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
-
         [Display(Name = "GSM")]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
-        public string Address { get; set; } = string.Empty;
+        //public string Address { get; set; } = string.Empty;
 
         [Display(Name = "Date of Birthday")]
         [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
 
         public DateTime Birthday { get; set; }
+
+        [StringLength(30, ErrorMessage = "Your Firm Name can contain only 30 characters")]
+        [Display(Name = "Firm Name")]
+        public string? FirmName { get; set; } = string.Empty;
+
+        [StringLength(30, ErrorMessage = "Your contact person can contain only 30 characters")]
+        [Display(Name = "Contact Person")]
+        public string? ContactPerson { get; set; } = string.Empty;
+
+        [StringLength(20, ErrorMessage = "Your street name can contain only 20 characters")]
+        [Display(Name = "Street name")]
+        public string StreetName { get; set; } = string.Empty;
+
+        [StringLength(20, ErrorMessage = "Your city can contain only 20 characters")]
+        [Display(Name = "City")]
+        public string City { get; set; } = string.Empty;
+
+        [Display(Name = "Postal code")]
+        public int PostalCode { get; set; }
+
+        [StringLength(20, ErrorMessage = "Your BTW can contain only 20 characters")]
+        [Display(Name = "BTW")]
+        public string Btw { get; set; } = string.Empty;
+
+        [Display(Name = "BTW number")]
+        public double BtwNumber { get; set; }
+
+        [Display(Name = "E-mail")]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        [Display(Name = "Password")]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = string.Empty;
+         
 
 
 

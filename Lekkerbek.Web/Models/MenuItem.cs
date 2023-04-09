@@ -9,6 +9,8 @@ namespace Lekkerbek.Web.Models
         public string Description { get; set; } = string.Empty;
         [Range(0, 1000)]
         public double Price { get; set; }
+        public double BtwNumber { get; set; }
+        public string Sort { get; set; } = string.Empty;
         public virtual ICollection<OrderLine> OrderLines { get; set; }
 
     }
