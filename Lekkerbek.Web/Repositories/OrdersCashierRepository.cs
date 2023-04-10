@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Repositories
 {
@@ -31,7 +32,11 @@ namespace Lekkerbek.Web.Repositories
                     CustomerId = order.Customer.CustomerId,
                     FName = order.Customer.Name,
                     LName = order.Customer.Name,
-                    Address = order.Customer.Address,
+                    BtwNumber = order.Customer.BtwNumber,
+                    Btw = order.Customer.Btw,
+                    City = order.Customer.City,
+                    ContactPerson = order.Customer.ContactPerson,
+                    //Address = order.Customer.Address,
                     Birthday = order.Customer.Birthday,
                     LoyaltyScore = order.Customer.LoyaltyScore,
                     Email = order.Customer.Email,
@@ -102,9 +107,11 @@ namespace Lekkerbek.Web.Repositories
                 }
 
             }).Where(c => c.OrderID == id).ToList();
+            
         }
         public void UpdateOrder(Order order)
         {
+
             _context.Update(order);
             _context.SaveChanges();
         }

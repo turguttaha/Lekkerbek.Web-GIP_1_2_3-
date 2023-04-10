@@ -23,11 +23,10 @@ namespace Lekkerbek.Web.Controllers
     public class OrdersCashierController : Controller
     {
         private readonly IOrderCashierService _orderCashierService;
-        private readonly IOrderService _orderService;
 
-        public OrdersCashierController(IOrderCashierService orderCashierService, IOrderService orderService)
+        public OrdersCashierController(IOrderCashierService orderCashierService)
         {
-            _orderService = orderService;
+            
             _orderCashierService = orderCashierService;
         }
 
@@ -43,7 +42,7 @@ namespace Lekkerbek.Web.Controllers
         }
         public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
         {
-            return Json(_orderService.Read().ToDataSourceResult(request));
+            return Json(_orderCashierService.Read().ToDataSourceResult(request));
         }
         
         // Pay Off page Get: order to pay

@@ -42,17 +42,17 @@ namespace Lekkerbek.Web.Models
 
         [StringLength(20, ErrorMessage = "Your city can contain only 20 characters")]
         [Display(Name = "City")]
-        public string City { get; set; } = string.Empty;
+        public string? City { get; set; } = string.Empty;
 
         [Display(Name = "Postal code")]
         public int PostalCode { get; set; }
 
         [StringLength(20, ErrorMessage = "Your BTW can contain only 20 characters")]
         [Display(Name = "BTW")]
-        public string Btw { get; set; } = string.Empty;
+        public string? Btw { get; set; } = string.Empty;
 
         [Display(Name = "BTW number")]
-        public double BtwNumber { get; set; }
+        public double? BtwNumber { get; set; }
 
         [Display(Name = "E-mail")]
         [DataType(DataType.EmailAddress)]
