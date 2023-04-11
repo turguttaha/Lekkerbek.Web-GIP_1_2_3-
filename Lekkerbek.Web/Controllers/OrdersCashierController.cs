@@ -206,6 +206,8 @@ namespace Lekkerbek.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+      
+        
         // Pay off page payment func sending mail
         [HttpPost]
         [ValidateAntiForgeryToken]

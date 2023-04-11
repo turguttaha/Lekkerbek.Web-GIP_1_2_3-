@@ -13,6 +13,7 @@ namespace Lekkerbek.Web.Repositories
         }
         public List<Order> GetOrders()
         {
+            //_context.Orders.Find(id);
             return _context.Orders.Select(order => new Order
             //This is another way to make a new object
             {
@@ -47,6 +48,11 @@ namespace Lekkerbek.Web.Repositories
 
             }).Where(c => c.Finished == false).ToList();
 
+        }
+
+        public Order GetOrder(int? id)
+        {
+           return  _context.Orders.Find(id);
         }
         public List<Customer> GetAllCustomers()
         {
@@ -85,7 +91,7 @@ namespace Lekkerbek.Web.Repositories
             {
                 OrderID = order.OrderID,
                 CustomerId = order.CustomerId
-            }).Where(c => c.CustomerId == id).ToList();
+            }).Where(c => c.OrderID == id).ToList();
         }
 
         public List<OrderLine> getAllOrderLines(int? id)

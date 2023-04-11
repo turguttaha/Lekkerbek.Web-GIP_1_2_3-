@@ -79,7 +79,9 @@ namespace Lekkerbek.Web.Services
 
         public Order GetSpecificOrder(int? id)
         {
-            var order = _repository.GetOrders().Find(x => x.OrderID == id);
+            //var order = _repository.GetOrders().Find(x => x.OrderID == id);
+            var order = _repository.GetOrder(id);
+
             if (order == null)
             {
                 return null;
