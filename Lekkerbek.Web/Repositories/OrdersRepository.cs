@@ -2,6 +2,7 @@
 using Lekkerbek.Web.Migrations;
 using Lekkerbek.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
 using NuGet.Protocol.Core.Types;
 
 namespace Lekkerbek.Web.Repositories
@@ -71,9 +72,13 @@ namespace Lekkerbek.Web.Repositories
             return _context.TimeSlots.Include(o=>o.Chef).ToList();
         }
 
-        public List<Chef> GetChefs()
+        public DbSet<Chef> GetChefs()
         {
-            return _context.Chefs.ToList();
+            var a = _context.Chefs;
+
+
+
+            return a;
         }
 
         public List<MenuItem> GetMenuItems()

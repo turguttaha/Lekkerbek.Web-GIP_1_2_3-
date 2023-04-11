@@ -94,7 +94,7 @@ namespace Lekkerbek.Web.Controllers
             String selectedDate = collection["StartTimeSlot"] + " "+ x;
             DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
             TempData["SelectedDateTime"] = timeSlotDateAndTime;
-            TempData["SelectedChef"] = int.Parse(collection["ChefId"]);
+            //TempData["SelectedChef"] = int.Parse(collection["ChefId"]);
             
             return RedirectToAction("AddOrderLine", "Orders");
         }
@@ -106,14 +106,15 @@ namespace Lekkerbek.Web.Controllers
             DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate + " " + time);
 
             ViewData["ChefId"] = _orderService.CheckChefs(timeSlotDateAndTime);
-
+            
+            
             return Json(new { chefs = ViewData["ChefId"] });
         }
 
         // GET: OrderLines/Create
         public IActionResult AddOrderLine()
         {
-            ViewData["DishID"] = _orderService.MenuItemSelectList();
+            ViewData["MenuItemId"] = _orderService.MenuItemSelectList();
             ViewBag.TemproraryCart = Order.TemproraryCart;
             return View();
         }
@@ -145,7 +146,7 @@ namespace Lekkerbek.Web.Controllers
 
             TimeSlot timeSlot = new TimeSlot();
             timeSlot.StartTimeSlot = (DateTime)TempData["SelectedDateTime"];
-            timeSlot.ChefId =(int)TempData["SelectedChef"];
+            //timeSlot.ChefId =(int)TempData["SelectedChef"];
 
             Order order = new Order();
             order.CustomerId = (int)TempData["SelectedCustomerId"];

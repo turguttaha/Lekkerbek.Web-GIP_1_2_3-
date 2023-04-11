@@ -222,8 +222,7 @@ namespace Lekkerbek.Web.Controllers
 
                 orderFinish.Finished = true;
                 _orderCashierService.Update(orderFinish);
-                //_context.Update(orderFinish);
-                //await _context.SaveChangesAsync();
+              
                 String testMail = @"<table class=""table"">
                 <thead>
                     <tr>
@@ -284,7 +283,7 @@ namespace Lekkerbek.Web.Controllers
                 var orderFinishMail = _orderCashierService.GetSpecificOrder(id);
 
 
-                if (orderFinishMail != null|| orderFinishMail.Discount !=0) 
+                if (orderFinishMail != null && orderFinishMail.Discount !=0 && orderFinishMail.Discount!=null) 
                 {
                     discountBool = true;
                 }

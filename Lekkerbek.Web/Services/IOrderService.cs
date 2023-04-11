@@ -12,7 +12,7 @@ namespace Lekkerbek.Web.Services
         public List<OrderLine> FilterOrderLines(int? orderId);
         public SelectList CustomerSelectList();
         public SelectList CustomerSelectList(object selectedValue);
-        public List<Chef> CheckChefs(DateTime? startTimeSlot);
+        public IQueryable<Chef> CheckChefs(DateTime? startTimeSlot);
         public SelectList MenuItemSelectList();
         public MenuItem GetSpecificMenuItem(int? id);
         public void CreateOrder(TimeSlot timeSlot, Order order);

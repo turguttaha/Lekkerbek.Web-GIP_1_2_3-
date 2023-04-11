@@ -164,7 +164,7 @@ namespace Lekkerbek.Web.Services
             return _repository.GetTimeSlots().Find(o => o.Id == id);
 
         }
-        public List<Chef> CheckChefs(DateTime? startTimeSlot)
+        public IQueryable<Chef> CheckChefs(DateTime? startTimeSlot)
         {
             
             //return _repository.GetTimeSlots().FindAll(t => t.StartTimeSlot == startTimeSlot);
@@ -204,7 +204,10 @@ namespace Lekkerbek.Web.Services
             }
             if (ids.Count() < 2)
             {
-                return _repository.GetChefs().FindAll(r => ids.Contains(r.ChefId) == false);
+
+                var a = _repository.GetChefs().Where(r => ids.Contains(r.ChefId) == false);
+                   
+                return a;
 
             }
             else
