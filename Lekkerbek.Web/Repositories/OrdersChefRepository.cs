@@ -2,6 +2,7 @@
 using Lekkerbek.Web.Migrations;
 using Lekkerbek.Web.Models;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
 
 namespace Lekkerbek.Web.Repositories
 {
@@ -15,7 +16,7 @@ namespace Lekkerbek.Web.Repositories
         public List<Order> GetOrders()
         {
             //_context.Orders.Find(id);
-            return _context.Orders.Select(order => new Order
+            var a=  _context.Orders.Select(order => new Order
             //This is another way to make a new object
             {
                 OrderID = order.OrderID,
@@ -44,17 +45,90 @@ namespace Lekkerbek.Web.Repositories
                     Email = order.Customer.Email,
                     PhoneNumber = order.Customer.PhoneNumber,
                     PreferredDishId = order.Customer.PreferredDishId,
-
                 }
 
-            }).Where(c => c.Finished == false).ToList();
-
+            }).Where(c => c.Finished == false && c.TimeSlot.ChefId == null).ToList();
+            return a;
         }
 
         public Order GetOrder(int? id)
         {
-           return  _context.Orders.Find(id);
+            return _context.Orders.Include("TimeSlot").Select(order => new Order
+            //This is another way to make a new object
+            {
+                OrderID = order.OrderID,
+                Finished = order.Finished,
+                CustomerId = order.CustomerId,
+                Discount = order.Discount,
+                TimeSlotID = order.TimeSlotID,
+                TimeSlot = new TimeSlot()
+                {
+                    StartTimeSlot = order.TimeSlot.StartTimeSlot,
+                    ChefId = order.TimeSlot.ChefId,
+                    Id = order.TimeSlot.Id
+                },
+                
+
+            }).Where(c => c.OrderID == id).ToList()[0];
         }
+        public TimeSlot GetTimeSlot(int? id)
+        {
+            return _context.TimeSlots.Find(id);
+        }
+        public List<TimeSlot> GetTimeSlots()
+        {
+            return _context.TimeSlots.ToList();
+
+        }
+        public Order GetFirstTimeSlot()
+        {
+            //&& where finished is false
+            var a = _context.Orders.Select(order => new Order
+            //This is another way to make a new object
+            {
+                OrderID = order.OrderID,
+                Finished = order.Finished,
+                CustomerId = order.CustomerId,
+                Discount = order.Discount,
+                TimeSlotID = order.TimeSlotID,
+                TimeSlot = new TimeSlot()
+                {
+                    StartTimeSlot = order.TimeSlot.StartTimeSlot,
+                    ChefId = order.TimeSlot.ChefId,
+                    Id = order.TimeSlot.Id
+                },
+                Customer = new Customer()
+                {
+                    CustomerId = order.Customer.CustomerId,
+                    FName = order.Customer.Name,
+                    LName = order.Customer.Name,
+                    BtwNumber = order.Customer.BtwNumber,
+                    Btw = order.Customer.Btw,
+                    City = order.Customer.City,
+                    ContactPerson = order.Customer.ContactPerson,
+                    //Address = order.Customer.Address,
+                    Birthday = order.Customer.Birthday,
+                    LoyaltyScore = order.Customer.LoyaltyScore,
+                    Email = order.Customer.Email,
+                    PhoneNumber = order.Customer.PhoneNumber,
+                    PreferredDishId = order.Customer.PreferredDishId,
+                }
+
+            }).Where(c => c.Finished == false && c.TimeSlot.ChefId == null).ToList().FirstOrDefault();
+
+            return a;
+
+        }
+        public List<Chef> GetChefs()
+        {
+            var a = _context.Chefs.ToList();
+            return a;
+        }
+        public List<Chef> GetChefsList(List<int> ids)
+        {
+            return _context.Chefs.Where(r => ids.Contains(r.ChefId)==false).ToList();
+        }
+        
         public List<Customer> GetAllCustomers()
         {
             return _context.Customers.Select(customer => new Customer
@@ -130,6 +204,11 @@ namespace Lekkerbek.Web.Repositories
         public void UpdateCustomer(Customer customer)
         {
             _context.Update(customer);
+            _context.SaveChanges();
+        }
+        public void UpdateTimeSlot(TimeSlot timeSlot) 
+        {
+            _context.Update(timeSlot);
             _context.SaveChanges();
         }
     }

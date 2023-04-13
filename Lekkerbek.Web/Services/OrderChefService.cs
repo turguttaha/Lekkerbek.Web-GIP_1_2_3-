@@ -1,15 +1,16 @@
 ﻿using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Lekkerbek.Web.Services
 {
     public class OrderChefService : IOrderChefService
     {
         private static bool UpdateDatabase = true;
-        private readonly OrdersCashierRepository _repository;
-        public OrderChefService(OrdersCashierRepository ordersCashierRepository) 
+        private readonly OrdersChefRepository _repository;
+        public OrderChefService(OrdersChefRepository ordersChefRepository) 
         { 
-            _repository = ordersCashierRepository;
+            _repository = ordersChefRepository;
         }
         private IList<Order> GetAll() 
         { 
@@ -81,7 +82,7 @@ namespace Lekkerbek.Web.Services
         {
             //var order = _repository.GetOrders().Find(x => x.OrderID == id);
             var order = _repository.GetOrder(id);
-
+            
             if (order == null)
             {
                 return null;
@@ -91,7 +92,19 @@ namespace Lekkerbek.Web.Services
                 return order;
             }
         }
+        public TimeSlot GetTimeSlot(int? id)
+        {
+            var timeSlot = _repository.GetTimeSlot(id);
 
+            if (timeSlot == null)
+            {
+                return null;
+            }
+            else
+            {
+                return timeSlot;
+            }
+        }
         public bool OrderExists(int id)
         {
             return _repository.GetOrders().Any(e=>e.CustomerId == id);
@@ -109,6 +122,76 @@ namespace Lekkerbek.Web.Services
         {
             return _repository.GetOrders().Find(c => c.OrderID == id);
              
+        }
+
+        public List<SelectListItem> ChefSelectList(DateTime startTimeSlot)
+        {
+
+            var usedTimeSlots = _repository.GetTimeSlots().FindAll(t => t.StartTimeSlot == startTimeSlot);
+
+            var allChefId = _repository.GetChefs();
+
+            List<int> ids = new List<int>();
+
+
+            if (usedTimeSlots.Count() != 0)
+            {
+                foreach (var test in usedTimeSlots)
+                {
+                    if (test.ChefId != null)
+                    {
+                        ids.Add((int)test.ChefId);
+                    }
+
+                }
+            }
+            if (ids.Count() < 2)
+            {
+
+                var a = _repository.GetChefs().Where(r => ids.Contains(r.ChefId) == false);
+                List<SelectListItem> item = _repository.GetChefsList(ids).ConvertAll(a =>
+                            {
+                                return new SelectListItem()
+                                {
+                                    Text = a.ChefName.ToString(),
+                                    Value = a.ChefId.ToString(),
+                                    Selected = false
+                                };
+                            });
+                return item;
+
+            }
+            else
+            {
+                return null;
+            }
+
+            
+        }
+
+        public void UpdateTimeSlot(TimeSlot timeSlot)
+        {
+            _repository.UpdateTimeSlot(timeSlot);
+        }
+
+        public bool GetChefTimeSlot(int? id, DateTime startTime)
+        {
+            throw new NotImplementedException();
+            
+        }
+
+        public Order GetFirstTimeSlot()
+        {
+            var timeSlot = _repository.GetFirstTimeSlot();
+
+            if (timeSlot == null)
+            {
+                return null;
+            }
+            else
+            {
+                return timeSlot;
+            }
         }
     }
 }

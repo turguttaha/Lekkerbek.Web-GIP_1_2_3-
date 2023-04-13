@@ -1,5 +1,6 @@
 ﻿@model Lekkerbek.Web.Models.Order
 
+
 @{
     List<OrderLine> listOfTheOrder = ViewBag.listOfTheOrder;
     ViewData["Title"] = "Details";
@@ -7,7 +8,7 @@
 }
 
 <h1>Order Details</h1>
-
+<form asp-action="OrderDetails" asp-route-id="@Model?.OrderID">
 <div>
     <hr />
     <dl class="row">
@@ -65,8 +66,11 @@
     </tbody>
 </table>
 
-<form asp-action="Pay" asp-route-id="@Model?.OrderID">
-    <input type="submit" value="Pay" class="btn btn-primary mt-3" />
+
+
+    @Html.DropDownList("ChefSelectList", (IEnumerable<SelectListItem>)ViewBag.ChefSelectList, new{@id="Chef"})
+    <p class="text-danger">@ViewData["TimeSlotError"] </p>
+    <input type="submit" value="Prepare This Order" class="btn btn-primary mt-3" />
 </form>
 <div>
     <a asp-action="Index">Back to List</a>

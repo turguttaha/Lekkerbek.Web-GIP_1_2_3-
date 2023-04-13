@@ -1,5 +1,6 @@
 ﻿@using Kendo.Mvc.UI;
 @using Lekkerbek.Web.Models;
+@model Lekkerbek.Web.Models.Chef;
 @{
     ViewData["Title"] = "Index";
     Layout = "_LayoutCashier";
@@ -23,18 +24,17 @@
 
     })
     .Pageable()
-    .Sortable()
     .Scrollable()
     .HtmlAttributes(new { style = "height:550px;" })
     .DataSource(dataSource => dataSource
         .Ajax()
-        .Sort(read=>read.Add("TimeSlot").Descending())
+        .Sort(sort=>sort.Add("TimeSlot.StartTimeSlot").Ascending())
         .PageSize(20)
         .Events(events => events.Error("error_handler"))
         .Model(model => model.Id(p => p.OrderID))
-        .Create(update => update.Action("EditingPopup_Create", "OrdersCashier"))
-        .Read(read => read.Action("EditingPopup_Read", "OrdersCashier"))
-        .Destroy(update => update.Action("EditingPopup_Destroy", "OrdersCashier"))
+        .Create(update => update.Action("EditingPopup_Create", "OrdersChef"))
+        .Read(read => read.Action("EditingPopup_Read", "OrdersChef"))
+        .Destroy(update => update.Action("EditingPopup_Destroy", "OrdersChef"))
     )
 )
 
@@ -52,4 +52,6 @@
             alert(message);
         }
     }
+
+
 </script>
