@@ -16,9 +16,11 @@ namespace Lekkerbek.Web.Controllers
     public class MenuItemsController : Controller
     {
         private readonly IMenuItemService _menuItemService;
-        public MenuItemsController(IMenuItemService menuItemService)
+        private readonly IOrderService _orderService;
+        public MenuItemsController(IMenuItemService menuItemService, IOrderService orderService)
         {
             _menuItemService = menuItemService;
+            _orderService = orderService;
         }
         public IActionResult Index()
         {
@@ -33,16 +35,20 @@ namespace Lekkerbek.Web.Controllers
 
         public IActionResult DeleteMenuItem([DataSourceRequest] DataSourceRequest request, Models.MenuItem menuItem)
         {
-            //if (_context.OrderLines.Any(ol => ol.MenuItemId == menuItem.MenuItemId))
-            //{
-            //    return RedirectToAction("NoDelete", "Orders", menuItem);
-            //}
+            if (_orderService.GetOrderLines().Any(ol => ol.MenuItemId == menuItem.MenuItemId))
+            {
+                ModelState.AddModelError("Model", "Unable to delete (present in (an) order(s))!");
+            }
+            else if(menuItem != null)
+            {
+                // Delete the item in the data base or follow with the dummy data.
 
-            // Delete the item in the data base or follow with the dummy data.
+                _menuItemService.Destroy(menuItem);
+            }
 
-            _menuItemService.Destroy(menuItem);
+
             // Return a collection which contains only the destroyed item.
-            return Json(new[] { menuItem }.ToDataSourceResult(request));
+            return Json(new[] { menuItem }.ToDataSourceResult(request, ModelState));
         }
 
 

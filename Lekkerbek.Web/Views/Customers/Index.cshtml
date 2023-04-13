@@ -6,126 +6,60 @@
     Layout = "_LayoutAdmin";
 }
 
-<h1>Index</h1>
+<h1>Customer List</h1>
+<p id="error_text" class="text-danger fw-bold" ></p>
 
 @(Html.Kendo().Grid<Customer>()
-    .Name("grid")
-    .Columns(columns =>
-    {
-        columns.Bound(p => p.Name);
-        columns.Bound(p => p.Email);
-        columns.Bound(p => p.PhoneNumber);
-        columns.Bound(p => p.FirmName);
-        columns.Bound(p => p.ContactPerson);
-        columns.Bound(p => p.City);
-        columns.Bound(p => p.PostalCode);
-        columns.Bound(p => p.StreetName);
-        columns.Bound(p => p.Btw);
-        columns.Bound(p => p.BtwNumber);
-        columns.Bound(p => p.Birthday);
-        columns.Bound(p => p.PreferredDish.Name).Title("Preferred Dish");
-        columns.Bound(p => p.CustomerId)
-                                .Title("  ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Customers/Edit/#=CustomerId#'>Edit</a></div>");
+                            .Name("grid")
+                            .Columns(columns =>
+                            {
+                                columns.Bound(p => p.Name);
+                                columns.Bound(p => p.Email);
+                                columns.Bound(p => p.PhoneNumber);
+                                columns.Bound(p => p.FirmName);
+                                columns.Bound(p => p.ContactPerson);
+                                columns.Bound(p => p.City);
+                                columns.Bound(p => p.PostalCode);
+                                columns.Bound(p => p.StreetName);
+                                columns.Bound(p => p.Btw);
+                                columns.Bound(p => p.BtwNumber);
+                                columns.Bound(p => p.Birthday);
+                                columns.Bound(p => p.PreferredDish.Name).Title("Preferred Dish");
+                                columns.Bound(p => p.CustomerId).Title("  ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Customers/Edit/#=CustomerId#'>Edit</a></div>");
+                                columns.Command(command => { command.Destroy(); }).Width(200);
 
-        @*columns.Bound(p => p.CustomerId)
-                                .Title("Add").ClientTemplate("<a href='/Customers/Create?id=#=CustomerId#'>Add</a>");*@
-
-
-        columns.Command(command => { command.Destroy(); }).Width(200);
-
-    })
-    .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Customers/Create'>Add New Customer</a></div>"))
-    .Pageable()
-    .Sortable()
-    .Scrollable()
-    .HtmlAttributes(new { style = "height:550px;" })
-    .DataSource(dataSource => dataSource
-        .Ajax()
-        .PageSize(20)
-        .Events(events => events.Error("error_handler"))
-        .Model(model => model.Id(p => p.CustomerId))
-        .Create(update => update.Action("EditingPopup_Create", "Customers"))
-        .Read(read => read.Action("EditingPopup_Read", "Customers"))
-        .Destroy(update => update.Action("EditingPopup_Destroy", "Customers"))
-    )
-)
+                            })
+                            .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Customers/Create'>Add New Customer</a></div>"))
+                            .Pageable()
+                            .Sortable()
+                            .Scrollable()
+                            .HtmlAttributes(new { style = "height:550px;" })
+                            .DataSource(dataSource => dataSource
+                                .Ajax()
+                                .PageSize(20)
+                                .Events(events => events.Error("error_handler"))
+                                .Model(model => model.Id(p => p.CustomerId))
+                                .Create(update => update.Action("EditingPopup_Create", "Customers"))
+                                .Read(read => read.Action("EditingPopup_Read", "Customers"))
+                                .Destroy(update => update.Action("EditingPopup_Destroy", "Customers"))
+                            ))
 <script type="text/javascript">
     function error_handler(e) {
         if (e.errors) {
-            var message = "Errors:\n";
+            var grid = $("#grid").data("kendoGrid");
+            grid.cancelChanges();
+            var message = " ";
             $.each(e.errors, function (key, value) {
                 if ('errors' in value) {
                     $.each(value.errors, function () {
-                        message += this + "\n";
+                        message +="- "+ this + "\n";
                     });
                 }
             });
-            alert(message);
+            document.getElementById("error_text").innerText = message;
+            //alert(message);
         }
     }
+
 </script>
 
-@*<!--<p>
-    <a asp-action="Create">Add Customer</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Birthday)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PreferredDish)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Birthday)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PreferredDish.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CustomerId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CustomerId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CustomerId">Delete</a>
-            </td>
-        </tr><--->
-}
-    </tbody>
-</table>
-*@

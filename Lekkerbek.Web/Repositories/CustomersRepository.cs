@@ -61,17 +61,17 @@ namespace Lekkerbek.Web.Repositories
 
             _context.Customers.Remove(entity);
 
-            var orders = _context.Orders.Where(pd => pd.CustomerId == entity.CustomerId);
-            var orderLines = _context.OrderLines.Where(pd => pd.Order.CustomerId == entity.CustomerId);
-            foreach (var orderLine in orderLines)
-            {
-                _context.OrderLines.Remove(orderLine);
-            }
+            //var orders = _context.Orders.Where(pd => pd.CustomerId == entity.CustomerId);
+            //var orderLines = _context.OrderLines.Where(pd => pd.Order.CustomerId == entity.CustomerId);
+            //foreach (var orderLine in orderLines)
+            //{
+            //    _context.OrderLines.Remove(orderLine);
+            //}
 
-            foreach (var order in orders)
-            {
-                _context.Orders.Remove(order);
-            }
+            //foreach (var order in orders)
+            //{
+            //    _context.Orders.Remove(order);
+            //}
 
             _context.SaveChanges();
         }
