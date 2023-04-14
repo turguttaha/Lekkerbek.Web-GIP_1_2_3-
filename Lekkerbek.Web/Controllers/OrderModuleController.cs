@@ -1,4 +1,6 @@
-﻿using Lekkerbek.Web.Models;
+﻿using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
+using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +22,12 @@ namespace Lekkerbek.Web.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult EditingPopup_Read(int? id,[DataSourceRequest] DataSourceRequest request)
+        {
+            
+            return Json(_orderService.FilterOrdersForCustomer(id).ToDataSourceResult(request));
         }
 
         //// GET: Customers/Create
@@ -51,7 +59,7 @@ namespace Lekkerbek.Web.Controllers
         //}
 
         // GET: Customers/Edit/5
-        
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _customerService.Read() == null)
@@ -113,12 +121,12 @@ namespace Lekkerbek.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
        
-       public async Task<JsonResult> AddOrderLine(string id)
+       public async Task<JsonResult> AddOrderLine(string menuItemId, string dishAmount, string extraDetails)
         {
             OrderLine orderLine = new OrderLine();
-            orderLine.MenuItemId = int.Parse(id);
-            orderLine.DishAmount = 
-            orderLine.ExtraDetails=
+            orderLine.MenuItemId = int.Parse(menuItemId);
+            orderLine.DishAmount = int.Parse(dishAmount);
+            orderLine.ExtraDetails = extraDetails;
 
             orderLine.MenuItem = _orderService.GetSpecificMenuItem(orderLine.MenuItemId);
             Order.TemproraryCart.Add(orderLine);
@@ -135,5 +143,34 @@ namespace Lekkerbek.Web.Controllers
             //ViewData["Message"] = "Your Dish is added";
 
         }
+
+        public IActionResult CompleteOrder(int? id)
+        {
+            // here we can add temporary Cart list to send it to view
+
+            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList();
+            var customer = _customerService.GetSpecificCustomer(id);
+            TempData["SelectedCustomerId"] = customer.CustomerId;
+            return View(customer);
+        }
+        public async Task<IActionResult> CompleteOrder(string date, string time)
+        {
+            //it might be IFormCollection???
+            string x = time;
+            String selectedDate = date + " " + x;
+            DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
+            //TimeSlot Object aanmaken
+
+            TimeSlot timeSlot = new TimeSlot();
+            timeSlot.StartTimeSlot = (DateTime)TempData["SelectedDateTime"]; // add from view via ajax
+            //timeSlot.ChefId =(int)TempData["SelectedChef"];
+
+            Order order = new Order();
+            order.CustomerId = (int)TempData["SelectedCustomerId"];
+
+            _orderService.CreateOrder(timeSlot, order);
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
