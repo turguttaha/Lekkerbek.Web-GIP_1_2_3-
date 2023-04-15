@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\OrderModule\" />
+    <None Include="wwwroot\img\add-to-cart.png" />
   </ItemGroup>
 
 </Project>

@@ -1,30 +1,28 @@
 ﻿@using Kendo.Mvc.UI;
 
 
-
 @{
     ViewData["Title"] = "Index";
     Layout = "_LayoutAdmin";
 }
 <h1>Menu</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
+<img src="\Lekkerbek.Web\wwwroot\img\add-to-cart.png" alt="My Icon">
+<a href="https://www.flaticon.com/free-icons/add-to-cart" title="add to cart icons">Add to cart icons created by Freepik - Flaticon</a>
 
 @(Html.Kendo().Grid<Lekkerbek.Web.Models.MenuItem>()
 .Name("grid")
-.ToolBar(tools =>
-{
-    tools.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/MenuItems/Create'>Add New Menu Item</a></div>"); ;
-})
+
 .Columns(columns =>
 {
     columns.Bound(f => f.MenuItemId);
     columns.Bound(f => f.Name);
     columns.Bound(f => f.Description);
     columns.Bound(f => f.Price);
+    //columns.Bound(f => f.Amount).Title("Amount");//select amount
     columns.Bound(f => f.Sort);
-    columns.Bound(f => f.BtwNumber);
-        columns.Bound(p => p.MenuItemId)
-.Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/MenuItems/Edit/#=MenuItemId#'>Edit</a></div>");
+    columns.Bound(p => p.MenuItemId)
+.Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/MenuItems/Edit/#=MenuItemId#'>Add this to order</a></div>"); //edit the /MenuItemsController/EditAction/
 
     columns.Command(command =>
     {
@@ -32,6 +30,18 @@
     });
 })
 .Editable(editable => editable.Mode(GridEditMode.PopUp))
+
+.Sortable()
+.Filterable(filterable => filterable
+    .Extra(false)
+    .Operators(operators => operators
+        .ForString(str => str.Clear()
+            .StartsWith("Starts with")
+            .IsEqualTo("Is equal to")
+            .IsNotEqualTo("Is not equal to")
+                   )
+               )
+    )
 .DataSource(d =>
 {
     d.Ajax()
@@ -43,7 +53,11 @@
     .Events(events => events.Error("error_handler"))
     .Create(create => create.Action("CreateMenuItem", "MenuItems")) // Action invoked when the user saves a new data item.
     .Read(read => read.Action("ReadMenuItems", "MenuItems"))  // Action invoked when the Grid needs data.
+    .Read(read => read.Action("ReadAmount", "Amount")
+        .Data("amount")
+    )
     .Update(update => update.Action("UpdateMenuItems", "MenuItems"))  // Action invoked when the user saves an updated data item.
+    //.Update(update => update.Action("UpdateProduct", "Product"))
     .Destroy(delete => delete.Action("DeleteMenuItem", "MenuItems")); // Action invoked when the user removes a data item.
 })
     )
