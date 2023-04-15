@@ -12,11 +12,13 @@ namespace Lekkerbek.Web.Controllers
 
         private readonly ICustomerService _customerService;
         private readonly IOrderService _orderService;
+        private readonly IMenuItemService _menuItemService;
 
-        public OrderModuleController(ICustomerService customerService, IOrderService orderService)
+        public OrderModuleController(ICustomerService customerService, IOrderService orderService, IMenuItemService menuItemService)
         {
             _customerService = customerService;
             _orderService = orderService;
+            _menuItemService = menuItemService;
         }
 
         public IActionResult Index()
@@ -60,7 +62,7 @@ namespace Lekkerbek.Web.Controllers
 
         // GET: Customers/Edit/5
 
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> EditCustomer(int? id)
         {
             if (id == null || _customerService.Read() == null)
             {
@@ -82,7 +84,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> EditCustomer(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
         {
             if (id != customer.CustomerId)
             {
@@ -115,24 +117,35 @@ namespace Lekkerbek.Web.Controllers
             return View(customer);
         }
 
+        public IActionResult MenuItemList()
+        {
+
+            return View();
+        }
+        public IActionResult ReadMenuItems([DataSourceRequest] DataSourceRequest request)
+        {
+            var menuItems = _menuItemService.Read();
+            return Json(menuItems.ToDataSourceResult(request));
+        }
+
         // POST: OrderLines/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-       
-       public async Task<JsonResult> AddOrderLine(string menuItemId, string dishAmount, string extraDetails)
+
+       public async Task<JsonResult> AddOrderLine(string menuItemId, string menuItemAmount, string extraDetails)
         {
             OrderLine orderLine = new OrderLine();
             orderLine.MenuItemId = int.Parse(menuItemId);
-            orderLine.DishAmount = int.Parse(dishAmount);
+            orderLine.DishAmount = int.Parse(menuItemAmount);
             orderLine.ExtraDetails = extraDetails;
 
             orderLine.MenuItem = _orderService.GetSpecificMenuItem(orderLine.MenuItemId);
+
             Order.TemproraryCart.Add(orderLine);
             
 
             ViewBag.TemproraryCart = Order.TemproraryCart;
+
             //ViewData["DishID"] = _orderService.MenuItemSelectList();
             //ModelState.Clear();
             return Json(new { status = "Your Menu Item is Added!"});

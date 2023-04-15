@@ -2,13 +2,32 @@
 
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Menu";
     Layout = "_LayoutAdmin";
 }
 <h1>Menu</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 <img src="\Lekkerbek.Web\wwwroot\img\add-to-cart.png" alt="My Icon">
 <a href="https://www.flaticon.com/free-icons/add-to-cart" title="add to cart icons">Add to cart icons created by Freepik - Flaticon</a>
+
+@* Pop Up HTML*@
+<div class="popup">
+    <div class="popuptext" id="myPopup">
+
+        <label for="id">Menu Item Id:</label><br>
+        <input id="id" type="number" name="id" value=" " readonly><br>
+        <label for="extraDetails">Extra Details:</label><br>
+        <input type="text" id="extraDetails" name="extraDetails" value=" "><br>
+        <label for="amount">Amount: </label><br>
+        <input type="number" id="amount" name="amount" value="0"><br><br>
+
+        <input type="Button" onclick="sendInfoToController()" value="Add">
+    </div>
+
+</div>
+@*---------*@
+
+
 
 @(Html.Kendo().Grid<Lekkerbek.Web.Models.MenuItem>()
 .Name("grid")
@@ -19,15 +38,12 @@
     columns.Bound(f => f.Name);
     columns.Bound(f => f.Description);
     columns.Bound(f => f.Price);
-    //columns.Bound(f => f.Amount).Title("Amount");//select amount
     columns.Bound(f => f.Sort);
-    columns.Bound(p => p.MenuItemId)
-.Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/MenuItems/Edit/#=MenuItemId#'>Add this to order</a></div>"); //edit the /MenuItemsController/EditAction/
+    columns.Bound(p => p.MenuItemId);
+    columns.Bound(c => c.MenuItemId)
+              .Title(" ")
+              .ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary'> <a onclick=\"OpenPopUp('#= MenuItemId #')\" href='\\#'> Add </a> </div>");
 
-    columns.Command(command =>
-    {
-        command.Destroy();
-    });
 })
 .Editable(editable => editable.Mode(GridEditMode.PopUp))
 
@@ -51,14 +67,11 @@
         model.Field(product => product.MenuItemId).Editable(false); // Make the OrderID property not editable.
     })
     .Events(events => events.Error("error_handler"))
-    .Create(create => create.Action("CreateMenuItem", "MenuItems")) // Action invoked when the user saves a new data item.
-    .Read(read => read.Action("ReadMenuItems", "MenuItems"))  // Action invoked when the Grid needs data.
-    .Read(read => read.Action("ReadAmount", "Amount")
-        .Data("amount")
-    )
-    .Update(update => update.Action("UpdateMenuItems", "MenuItems"))  // Action invoked when the user saves an updated data item.
+    .Create(create => create.Action("CreateMenuItem", "OrderModule")) // Action invoked when the user saves a new data item.
+    .Read(read => read.Action("ReadMenuItems", "OrderModule"))  // Action invoked when the Grid needs data.
+    .Update(update => update.Action("UpdateMenuItems", "OrderModule"))  // Action invoked when the user saves an updated data item.
     //.Update(update => update.Action("UpdateProduct", "Product"))
-    .Destroy(delete => delete.Action("DeleteMenuItem", "MenuItems")); // Action invoked when the user removes a data item.
+    .Destroy(delete => delete.Action("DeleteMenuItem", "OrderModule")); // Action invoked when the user removes a data item.
 })
     )
 
@@ -79,5 +92,52 @@
             //alert(message);
         }
     }
+
+</script>
+
+<script type="text/javascript">
+// When the user clicks on div, open the popup
+    function OpenPopUp(MenuItemId) {
+  var popup = document.getElementById("myPopup");
+  popup.classList.add("show");
+        document.getElementById("id").value = MenuItemId;
+}
+    function sendInfoToController() {
+        let id = document.getElementById("id").value;
+        let amount = document.getElementById("amount").value;
+        let extraDetails = document.getElementById("extraDetails").value;
+        
+        $.ajax({
+            // Hier kan je kiezen tussen GET, POST, PUT, DELETE....
+            // Elk van deze keywords heeft een andere nut,
+            // zie de les frontend.
+            type: "POST",
+            // Hier geven we de action naam en controler naam mee.
+            url: '@Url.Action("AddOrderLine", "OrderModule")',
+            // Hier gaan we data meegeven in een JSON formaat.
+            data: { "menuItemId": id, "menuItemAmount": amount, "extraDetails": extraDetails },
+            dataType: "json",
+            // Hier gaan we jQuery/javascript code schrijven indien onze
+            // request successvol is.
+            success: function (response) {
+                console.log(response);
+                // Hier gaan we de span met id "statusSpan" ophalen
+                // en de text vervangen met de status.
+                // Status krijgen we van de action Message mee.
+                //$("#statusSpan").text(response.status);
+            },
+            error: function (response) {
+                // Indien onze request faalt, kunnen we hier een mooie
+                // foutmelding tonen.
+                // In ons geval gaan we een alert tonen op het scherm
+                // (in praktijk moet je dit beter afhandelen!).
+                alert(response);
+            }
+        });
+  var popup = document.getElementById("myPopup");
+  popup.classList.remove("show");
+}
+
+
 
 </script>
