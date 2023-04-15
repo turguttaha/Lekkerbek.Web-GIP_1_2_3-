@@ -43,6 +43,9 @@
                 Dish Price
             </th>
             <th>
+                BTW
+            </th>
+            <th>
                 Dish Amount
             </th>
             <th>
@@ -64,10 +67,13 @@
                     @Html.DisplayFor(modelItem=>item.MenuItem.Price)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem=>item.MenuItem.BtwNumber)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.DishAmount)
                 </td>
                 <td>
-                    @(item.MenuItem.Price * item.DishAmount)
+                    @(item.MenuItem.Price * item.DishAmount *(1-(item.MenuItem.BtwNumber/100)))
                 </td>
                 <td></td>
             </tr>
@@ -87,6 +93,8 @@
                     <td>
                     </td>
                     <td>
+                    </td>
+                    <td>
                         <input class="form-control" min="0" max="80" type="number" value="@ViewBag.Discount" id="discountField" asp-for="Discount" />
                     </td>
                     <td>
@@ -100,6 +108,8 @@
                     </td>
                     <td>
 
+                    </td>
+                    <td>
                     </td>
                     
                     <td>

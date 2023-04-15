@@ -23,6 +23,8 @@ namespace Lekkerbek.Web.Repositories
                 Price = item.Price,
                 Description = item.Description,
                 Name = item.Name,
+                BtwNumber = item.BtwNumber,
+                Sort = item.Sort,
             }).ToList();
         }
 

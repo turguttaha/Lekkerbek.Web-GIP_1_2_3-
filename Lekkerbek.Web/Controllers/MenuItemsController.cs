@@ -57,7 +57,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DishId,Name,Description,Price")] Models.MenuItem dish)
+        public async Task<IActionResult> Create([Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem dish)
         {
             //if (ModelState.IsValid)
             //{
@@ -89,7 +89,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MenuItemId,Name,Description,Price")] Models.MenuItem menuItem)
+        public async Task<IActionResult> Edit(int id, [Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem)
         {
             if (id != menuItem.MenuItemId)
             {
