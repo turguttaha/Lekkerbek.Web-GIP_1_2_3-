@@ -21,6 +21,8 @@ namespace Lekkerbek.Web.Repositories
             {
                 MenuItemId = item.MenuItemId,
                 Price = item.Price,
+                Sort = item.Sort,
+                BtwNumber = item.BtwNumber,
                 Description = item.Description,
                 Name = item.Name,
             }).ToList();

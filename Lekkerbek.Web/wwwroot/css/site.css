@@ -169,7 +169,7 @@ body {
 .popup {
     position: relative;
     display: inline-block;
-    cursor: pointer;
+/*    cursor: pointer;*/
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -192,7 +192,7 @@ body {
     margin-left: -80px;
 }
 
-/* Popup arrow 
+ Popup arrow 
 .popup .popuptext::after {
   content: "";
   position: absolute;
@@ -202,7 +202,7 @@ body {
   border-width: 5px;
   border-style: solid;
   border-color: #555 transparent transparent transparent;
-}*/
+}
 
 /* Toggle this class - hide and show the popup */
 .show {

@@ -26,9 +26,9 @@ namespace Lekkerbek.Web.Controllers
             return View();
         }
 
-        public ActionResult EditingPopup_Read(int? id,[DataSourceRequest] DataSourceRequest request)
+        public ActionResult EditingPopup_Read(int? id, [DataSourceRequest] DataSourceRequest request)
         {
-            
+
             return Json(_orderService.FilterOrdersForCustomer(id).ToDataSourceResult(request));
         }
 
@@ -93,7 +93,7 @@ namespace Lekkerbek.Web.Controllers
 
             if (ModelState.IsValid)
             {
-               
+
                 try
                 {
                     _customerService.Update(customer);
@@ -132,7 +132,7 @@ namespace Lekkerbek.Web.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
 
-       public async Task<JsonResult> AddOrderLine(string menuItemId, string menuItemAmount, string extraDetails)
+        public async Task<JsonResult> AddOrderLine(string menuItemId, string menuItemAmount, string extraDetails)
         {
             OrderLine orderLine = new OrderLine();
             orderLine.MenuItemId = int.Parse(menuItemId);
@@ -142,19 +142,26 @@ namespace Lekkerbek.Web.Controllers
             orderLine.MenuItem = _orderService.GetSpecificMenuItem(orderLine.MenuItemId);
 
             Order.TemproraryCart.Add(orderLine);
-            
 
-            ViewBag.TemproraryCart = Order.TemproraryCart;
+
+            // ViewBag.TemproraryCart = Order.TemproraryCart;
 
             //ViewData["DishID"] = _orderService.MenuItemSelectList();
             //ModelState.Clear();
-            return Json(new { status = "Your Menu Item is Added!"});
+            return Json(new { status = "Your Menu Item is Added!" });
             // go to database and get dish name via id
             //orderLine.MenuItem = _orderService.GetSpecificMenuItem(orderLine.MenuItemId);
             //Order.TemproraryCart.Add(orderLine);
 
             //ViewData["Message"] = "Your Dish is added";
 
+        }
+
+
+        public async Task<JsonResult> TemporaryCart()
+        {
+            var list = Order.TemproraryCart;
+            return Json(new { temporaryCart = list });
         }
 
         public IActionResult CompleteOrder(int? id)
