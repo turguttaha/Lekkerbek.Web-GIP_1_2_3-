@@ -52,8 +52,11 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            
+            //gets the selected order
             var order = _orderChefService.GetChefOrders(id);
+            
+            //gets the chefs that are able to prepare the selected meal (that don't have to prepare another one at that time)
+            //In this function we can later on add looking up if a chef has vacation periods and then remove them if they aren't working
             ViewBag.ChefSelectList = _orderChefService.ChefSelectList(order.TimeSlot.StartTimeSlot);
             TempData["OrderIdFromBill"] = id;
             int x = (int)id;
