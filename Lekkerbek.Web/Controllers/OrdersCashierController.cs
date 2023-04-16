@@ -84,7 +84,7 @@ namespace Lekkerbek.Web.Controllers
             double totalPrice = 0;
             foreach (var oorder in filteredOrderLines)
             {
-                totalPrice += oorder.MenuItem.Price * oorder.DishAmount;
+                totalPrice += oorder.MenuItem.Price * oorder.DishAmount *(1+(oorder.MenuItem.BtwNumber/100));
             }
             ViewBag.totalPrice = totalPrice;
 
@@ -132,7 +132,7 @@ namespace Lekkerbek.Web.Controllers
                 double totalPrice = 0;
                 foreach (var oorder in filteredOrderLines2)
                 {
-                    totalPrice += oorder.MenuItem.Price * oorder.DishAmount;
+                    totalPrice += oorder.MenuItem.Price * oorder.DishAmount * (1 + (oorder.MenuItem.BtwNumber / 100));
                 }
 
 
@@ -233,6 +233,9 @@ namespace Lekkerbek.Web.Controllers
                             Dish Price
                         </th>
                         <th>
+                            BTW
+                        </th>
+                        <th>
                             Dish Amount
                         </th>
                         <th>
@@ -266,6 +269,7 @@ namespace Lekkerbek.Web.Controllers
                         <td>
                             " + item.MenuItem.Price + @"
                         </td>
+                            " + item.MenuItem.BtwNumber + @"
                         <td>
                             " + item.DishAmount + @"
                         </td>
@@ -276,7 +280,7 @@ namespace Lekkerbek.Web.Controllers
                             
                         </td>
                     </tr>";
-                    totalPrice += item.MenuItem.Price * item.DishAmount;
+                    totalPrice += item.MenuItem.Price* item.DishAmount * (1 + (item.MenuItem.BtwNumber / 100));
                 }
                 
                 bool discountBool = false;
@@ -327,13 +331,13 @@ namespace Lekkerbek.Web.Controllers
                     <td>
 
                     </td>
-
+                    <td>
+                    </td>
 
                     <td>
                         " + totalPrice + @"
                     </td>
-                    <td>
-                    </td>
+                    
                 </tr>
                 </form></tbody></table>";
 

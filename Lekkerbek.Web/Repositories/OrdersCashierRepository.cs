@@ -52,7 +52,7 @@ namespace Lekkerbek.Web.Repositories
 
         public Order GetOrder(int? id)
         {
-           return  _context.Orders.Find(id);
+           return _context.Orders.Include("OrderLines.MenuItem").Where(c => c.OrderID == id).ToList()[0];
         }
         public List<Customer> GetAllCustomers()
         {
@@ -109,7 +109,9 @@ namespace Lekkerbek.Web.Repositories
                     MenuItemId = orderLine.MenuItem.MenuItemId,
                     Name = orderLine.MenuItem.Name,
                     Price = orderLine.MenuItem.Price,
-                    Description = orderLine.MenuItem.Description
+                    Description = orderLine.MenuItem.Description,
+                    BtwNumber = orderLine.MenuItem.BtwNumber,
+                    Sort = orderLine.MenuItem.Sort,
                 }
 
             }).Where(c => c.OrderID == id).ToList();

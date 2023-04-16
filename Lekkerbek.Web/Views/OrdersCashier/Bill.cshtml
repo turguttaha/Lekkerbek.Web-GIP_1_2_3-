@@ -73,7 +73,7 @@
                     @Html.DisplayFor(modelItem => item.DishAmount)
                 </td>
                 <td>
-                    @(item.MenuItem.Price * item.DishAmount *(1-(item.MenuItem.BtwNumber/100)))
+                    @(item.MenuItem.Price * item.DishAmount *(1+(item.MenuItem.BtwNumber/100)))
                 </td>
                 <td></td>
             </tr>
@@ -111,6 +111,7 @@
                     </td>
                     <td>
                     </td>
+
                     
                     <td>
                     </td>
@@ -132,7 +133,8 @@
                     </td>
                     <td>
                     </td>
-
+                    <td>
+                    </td>
                     <td>
                     </td>
                     <td>
