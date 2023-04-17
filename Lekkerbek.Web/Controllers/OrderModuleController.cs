@@ -152,33 +152,44 @@ namespace Lekkerbek.Web.Controllers
             return Json(new { temporaryCart = list });
         }
 
-        public IActionResult CompleteOrder(int? id)
+        public IActionResult CompleteOrder()
         {
-            // here we can add temporary Cart list to send it to view
 
-            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList();
-            var customer = _customerService.GetSpecificCustomer(id);
-            TempData["SelectedCustomerId"] = customer.CustomerId;
-            return View(customer);
+            //here we can add temporary Cart list to send it to view
+
+             ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList();
+            //var customer = _customerService.GetSpecificCustomer(id);
+            //TempData["SelectedCustomerId"] = customer.CustomerId;
+            return View();
         }
-        public async Task<IActionResult> CompleteOrder(string date, string time)
-        {
-            //it might be IFormCollection???
-            string x = time;
-            String selectedDate = date + " " + x;
-            DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
-            //TimeSlot Object aanmaken
 
-            TimeSlot timeSlot = new TimeSlot();
-            timeSlot.StartTimeSlot = (DateTime)TempData["SelectedDateTime"]; // add from view via ajax
-            //timeSlot.ChefId =(int)TempData["SelectedChef"];
+        //public IActionResult CompleteOrder(int? id)
+        //{
+        //    // here we can add temporary Cart list to send it to view
 
-            Order order = new Order();
-            order.CustomerId = (int)TempData["SelectedCustomerId"];
+        //    ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList();
+        //    //var customer = _customerService.GetSpecificCustomer(id);
+        //    //TempData["SelectedCustomerId"] = customer.CustomerId;
+        //    return View();
+        //}
+        //public async Task<IActionResult> CompleteOrder(string date, string time)
+        //{
+        //    //it might be IFormCollection???
+        //    string x = time;
+        //    String selectedDate = date + " " + x;
+        //    DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
+        //    //TimeSlot Object aanmaken
 
-            _orderService.CreateOrder(timeSlot, order);
-            return RedirectToAction(nameof(Index));
-        }
+        //    TimeSlot timeSlot = new TimeSlot();
+        //    timeSlot.StartTimeSlot = (DateTime)TempData["SelectedDateTime"]; // add from view via ajax
+        //    //timeSlot.ChefId =(int)TempData["SelectedChef"];
+
+        //    Order order = new Order();
+        //    order.CustomerId = (int)TempData["SelectedCustomerId"];
+
+        //    _orderService.CreateOrder(timeSlot, order);
+        //    return RedirectToAction(nameof(Index));
+        //}
 
     }
 }

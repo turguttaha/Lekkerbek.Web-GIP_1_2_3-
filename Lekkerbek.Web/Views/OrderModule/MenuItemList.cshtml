@@ -10,10 +10,12 @@
 <img id="CartImg" onclick="OpenCart()" width="60px" style="margin:10px;  cursor: pointer;" src="~/img/add-to-cart.png" alt="My Icon">
 
 
+
 @* Pop Up HTML*@
 <div class="popup">
     <div class="popuptext" id="myPopup">
-        <input class="btn btn-danger mt-1 mb-1" " type="Button" onclick="ClosePopUp()" value="X"><br>
+
+        <input class="btn btn-danger mt-1 mb-1" type="Button" onclick="ClosePopUp()" value="X"><br>
 
         <label for="id">Menu Item Id:</label><br>
         <input id="id" type="number" name="id" value=" " readonly><br>
@@ -26,10 +28,12 @@
     </div>
 
 </div>
-@*---------*@
+
+
 @* Cart*@
 <div class="popup" id="CartContainer">
     <div class="popuptext" id="myCart">
+        
         <table class="table">
             <thead>
                 <tr>
@@ -47,14 +51,13 @@
 
             </tbody>
         </table>
-
-        <form asp-action="Index">
-            <input type="submit" value="Complete Order" class="btn btn-danger mt-3" />
+        <form asp-action="CompleteOrder">
+            <input type="submit" value="Complete Order" class="btn btn-danger mt-3">
         </form>
-    </div>
 
+    </div>
 </div>
-@*---------*@
+
 
 @(Html.Kendo().Grid<Lekkerbek.Web.Models.MenuItem>()
 .Name("grid")
@@ -96,7 +99,11 @@
     .Read(read => read.Action("ReadMenuItems", "OrderModule")); // Action invoked when the Grid needs data.
 })
     )
-
+        @section Scripts {
+            @{
+                await Html.RenderPartialAsync("_ValidationScriptsPartial");
+            }
+        }
 <script type="text/javascript">
     function error_handler(e) {
         if (e.errors) {
@@ -226,3 +233,4 @@
     });
 
 </script>
+
