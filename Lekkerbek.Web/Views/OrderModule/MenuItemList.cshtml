@@ -14,9 +14,9 @@
 @* Pop Up HTML*@
 <div class="popup">
     <div class="popuptext" id="myPopup">
-        <input class="btn btn-danger mt-1 mb-1" " type="Button" onclick="ClosePopUp()" value="X"><br>
+        <input class="popup-danger" type="Button" onclick="ClosePopUp()" value="X"><br>
 
-        <input class="btn btn-danger mt-1 mb-1" type="Button" onclick="ClosePopUp()" value="X"><br>
+        @*<input class="btn btn-danger mt-1 mb-1" type="Button" onclick="ClosePopUp()" value="X"><br>*@
 
         <label for="id">Menu Item Id:</label><br>
         <input id="id" type="number" name="id" value=" " readonly><br>
@@ -37,20 +37,20 @@
 
 @* Cart*@
 <div class="popup" id="CartContainer">
-    <div class="popuptext" id="myCart">
+    <div class="popuptext-cart" id="myCart">
         
         <table class="table">
             <thead>
                 <tr>
-                    <th>
+                    <th class ="popup-th">
                        Name
                     </th>
-                    <th>
+                    <th class="popup-th">
                        Amount
                     </th>
                 </tr>
             </thead>
-            <tbody id="CartBody">
+            <tbody class="popup-tbody" id="CartBody">
 
 
 
