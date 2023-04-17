@@ -14,6 +14,7 @@
 @* Pop Up HTML*@
 <div class="popup">
     <div class="popuptext" id="myPopup">
+        <input class="btn btn-danger mt-1 mb-1" " type="Button" onclick="ClosePopUp()" value="X"><br>
 
         <input class="btn btn-danger mt-1 mb-1" type="Button" onclick="ClosePopUp()" value="X"><br>
 
@@ -29,6 +30,10 @@
 
 </div>
 
+        <form asp-action="Index">
+            <input type="submit" value="Complete Order" class="btn btn-danger mt-3" />
+        </form>
+    </div>
 
 @* Cart*@
 <div class="popup" id="CartContainer">
