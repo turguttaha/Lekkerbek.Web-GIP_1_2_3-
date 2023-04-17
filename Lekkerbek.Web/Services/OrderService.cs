@@ -2,6 +2,7 @@
 using Lekkerbek.Web.Repositories;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Lekkerbek.Web.Services
 {
@@ -91,8 +92,32 @@ namespace Lekkerbek.Web.Services
                     Text = "21:45", Value = "21:45"
                 },
             };
-        public List<SelectListItem> GetTimeDropDownList()
+        public List<SelectListItem> GetTimeDropDownList(DateTime askDateTime)
         {
+            //filter out the timeslots that are already fully booked
+            
+            //gets the timeslot of a specific day
+            List<TimeSlot> a = _repository.GetUsedTimeSlots(askDateTime);
+            List<SelectListItem> test = TimeSlotsSelectList;
+            List<SelectListItem> tempTest = TimeSlotsSelectList;
+
+            foreach (var item in test.ToList()) 
+            {
+                foreach (TimeSlot time in a) 
+                {
+
+                    if (a.Where(c=>c.StartTimeSlot.ToString("HH:mm") == item.Value).Count()==2) 
+                    {
+                        tempTest.Remove(item);
+                    }
+
+                   
+                }
+                
+            }
+            
+            
+            
             return TimeSlotsSelectList;
         }
         private IList<Order> GetAll()

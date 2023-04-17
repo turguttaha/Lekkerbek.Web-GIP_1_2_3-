@@ -81,8 +81,9 @@ namespace Lekkerbek.Web.Controllers
         }
         public IActionResult SelectTimeSlot()
         {
-          
-            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList();
+            //get datetime of today for first check instead of hardcoded value
+            DateTime timeSlotDateAndTime = Convert.ToDateTime("30/04/2023 12:00");
+            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotDateAndTime);
             return View();
         }
 
@@ -189,7 +190,7 @@ namespace Lekkerbek.Web.Controllers
                 TempData["time"] = timeSlotItem.StartTimeSlot.ToString("H:mm");
 
                
-                ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList();
+                ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(startTimeSlot);
 
                 ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
 

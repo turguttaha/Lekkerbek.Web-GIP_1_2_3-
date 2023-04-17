@@ -6,7 +6,7 @@ namespace Lekkerbek.Web.Services
 {
     public interface IOrderService
     {
-        public List<SelectListItem> GetTimeDropDownList();
+        public List<SelectListItem> GetTimeDropDownList(DateTime askDateTime);
         public IEnumerable<Order> Read();
         public Order GetSpecificOrder(int? id);
         public List<OrderLine> FilterOrderLines(int? orderId);
