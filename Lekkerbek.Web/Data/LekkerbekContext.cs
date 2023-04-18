@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Data
 {
-    public class LekkerbekContext : DbContext
+    public class LekkerbekContext : IdentityDbContext
     {
         public LekkerbekContext()
         {

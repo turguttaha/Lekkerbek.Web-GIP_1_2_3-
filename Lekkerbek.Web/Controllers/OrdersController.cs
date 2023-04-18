@@ -84,6 +84,7 @@ namespace Lekkerbek.Web.Controllers
           
             ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList();
             return View();
+            
         }
 
         [HttpPost]

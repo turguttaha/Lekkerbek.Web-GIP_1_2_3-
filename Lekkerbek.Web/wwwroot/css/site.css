@@ -165,44 +165,108 @@ body {
     padding-right: var(--spacing);
 }
 
+.popup-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    display: flex;
+}
+
 /* Popup container - can be anything you want */
 .popup {
-    position: relative;
-    display: inline-block;
-    cursor: pointer;
-    -webkit-user-select: none;
+    /*display: flex;
+    justify-content: center;*/
+    /*position: relative;*/
+    /*display: inline-block;*/
+    /*    cursor: pointer;*/
+   /* -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none;
+    user-select: none;*/
+   /* position: absolute;
+    left: 50%;
+    right: 50%;
+    top: 50%;
+    bottom: 50%;
+    width: 100%;
+    height: 100%;*/
 }
 
 /* The actual popup */
 .popuptext {
     visibility: hidden;
     width: 320px;
-    background-color: slategrey;
+    background-color: #767676;
     color: #fff;
     text-align: center;
     border-radius: 6px;
     padding: 8px 12px;
     position: absolute;
     z-index: 3;
-     Top: 125%;
-    left: 50%;
-    margin-left: -80px;
+    right: 50%;
+    /*  Top: 125%;*/
+    left: 40%;
+    /*box-shadow: inset 0px 5px 10px 0px rgba(0, 0, 0, 0.5);*/
+    box-shadow: 0px 5px 10px 0px rgba(0,255,255,0.7);
+    /*box-shadow: inset 0px 5px 10px 0px rgba(0,255,255,0.7);*/
 }
 
-/* Popup arrow 
-.popup .popuptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
+.popuptext-cart {
+    visibility: hidden;
+    width: 320px;
+    background-color: #767676;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 3;
+    right: 50%;
+    /*  Top: 125%;*/
+    left: 1%;
+    /*box-shadow: inset 0px 5px 10px 0px rgba(0, 0, 0, 0.5);*/
+    box-shadow: 0px 5px 10px 0px rgba(0,255,255,0.7);
+    /*box-shadow: inset 0px 5px 10px 0px rgba(0,255,255,0.7);*/
+}
+
+.btn-danger mt-1 mb-1{
+    display: flex;
+}
+
+/*.popup-table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    caption-side: bottom;
+    box-sizing: border-box;
+    border-spacing: 2px;
+    vertical-align: top;
+    text-indent: initial;
 }*/
+
+.popup-th{
+    color: white;
+}
+
+.popup-tbody{
+    color: white;
+}
+
+/*.popup-body{
+    color: white;
+}*/
+
+Popup arrow
+.popup .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
 
 /* Toggle this class - hide and show the popup */
 .show {
