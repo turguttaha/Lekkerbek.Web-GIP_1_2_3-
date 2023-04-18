@@ -20,17 +20,48 @@ namespace Lekkerbek.Web.Controllers
             _orderService = orderService;
             _menuItemService = menuItemService;
         }
+        public ActionResult Hierarchy()
+        {
+            return View();
+        }
 
+        public ActionResult HierarchyBinding_Order([DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_orderService.Read().ToDataSourceResult(request));//sends order to view
+        }
+
+        public ActionResult HierarchyBinding_Orderline(int orderID, [DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_orderService.GetOrderLines() //sends orderlist to view
+                .Where(orderline => orderline.OrderID == orderID)
+                .ToDataSourceResult(request));
+        }
+        public ActionResult DetailTemplate()
+        {
+            return View();
+        }
+
+        public ActionResult DetailTemplate_HierarchyBinding_Order([DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_orderService.Read().ToDataSourceResult(request));
+        }
+
+        public ActionResult DetailTemplate_HierarchyBinding_Orderline(int orderID, [DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_orderService.GetOrderLines()
+                .Where(orderline => orderline.OrderID == orderID)
+                .ToDataSourceResult(request));
+        }
         public IActionResult Index()
         {
             return View();
         }
 
-        public ActionResult EditingPopup_Read(int? id,[DataSourceRequest] DataSourceRequest request)
-        {
+        //public ActionResult EditingPopup_Read(int? id,[DataSourceRequest] DataSourceRequest request)
+        //{
             
-            return Json(_orderService.FilterOrdersForCustomer(id).ToDataSourceResult(request));
-        }
+        //    return Json(_orderService.FilterOrdersForCustomer(id).ToDataSourceResult(request));
+        //}
 
         //// GET: Customers/Create
         //public IActionResult Create()

@@ -58,10 +58,13 @@ namespace Lekkerbek.Web.Repositories
         }
         public List<OrderLine> GetOrderLines()
         {
-            return _context.OrderLines.Include(o=>o.MenuItem).ToList();
+           // return _context.OrderLines.Include(o=>o.MenuItem).ToList()
 
-        }
-        public List<Customer> GetCustomers()
+			return _context.OrderLines.ToList();
+
+
+		}
+		public List<Customer> GetCustomers()
         {
             return _context.Customers.Include(o=>o.PreferredDish).ToList();
         }
