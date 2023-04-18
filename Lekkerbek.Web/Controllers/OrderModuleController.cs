@@ -2,11 +2,13 @@
 using Kendo.Mvc.UI;
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Controllers
 {
+    [Authorize]
     public class OrderModuleController : Controller
     {
 
