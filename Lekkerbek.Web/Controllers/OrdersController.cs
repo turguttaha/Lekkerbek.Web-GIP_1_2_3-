@@ -82,7 +82,7 @@ namespace Lekkerbek.Web.Controllers
         public IActionResult SelectTimeSlot()
         {
             //get datetime of today for first check instead of hardcoded value
-            DateTime timeSlotDateAndTime = Convert.ToDateTime("30/04/2023 12:00");
+            DateTime timeSlotDateAndTime = DateTime.Now;
             ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotDateAndTime);
             return View();
         }
@@ -102,14 +102,12 @@ namespace Lekkerbek.Web.Controllers
         public async Task<JsonResult> LookUpChefs(string date, string time)
         {
 
-            string x = time;
-            String selectedDate = date;
-            DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate + " " + time);
+            //get datetime of today for first check instead of hardcoded value
+            DateTime timeSlotDateAndTime = Convert.ToDateTime(date + " 00:00");
+            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotDateAndTime);
 
-            ViewData["ChefId"] = _orderService.CheckChefs(timeSlotDateAndTime);
-            
-            
-            return Json(new { chefs = ViewData["ChefId"] });
+
+            return Json(new { timeSlots = ViewBag.TimeSlotsSelectList });
         }
 
         // GET: OrderLines/Create

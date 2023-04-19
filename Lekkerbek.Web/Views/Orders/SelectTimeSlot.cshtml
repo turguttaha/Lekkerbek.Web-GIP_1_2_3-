@@ -48,15 +48,7 @@
 
 
             </div>
-            <div class="form-group">
-                <label asp-for="ChefId" class="control-label">Chef Name</label>
-                <select asp-for="ChefId" id="chefs" class="form-control" asp-items="ViewBag.ChefId"></select>
-            </div>
-
-
-            <div class="form-group">
-                <input type="button" value="Send" class="btn btn-primary" id="sendButton">
-            </div>
+           
 
 
             <p id="chefError" class="text-danger"></p>
@@ -74,7 +66,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
      $(function () {
-        $("#sendButton").click(function () {
+        $("#date").change(function () {
      $.ajax(
      {
                     
@@ -85,7 +77,7 @@
              // Hier geven we de action naam en controler naam mee.
                         url: '@Url.Action("LookUpChefs", "Orders")',
              // Hier gaan we data meegeven in een JSON formaat.
-                        data: { "date": $("#date").val(), "time": $("#time").val() },
+                        data: { "date": $("#date").val() },
              dataType: "json",
              // Hier gaan we jQuery/javascript code schrijven indien onze
              // request successvol is.
@@ -94,7 +86,7 @@
             // Hier gaan we de span met id "statusSpan" ophalen
             // en de text vervangen met de status.
             // Status krijgen we van de action Message mee.
-            if(response.chefs.length==0)
+            if(response.timeSlots.length==0)
             {
                 //Javascript shows this always, idk why, it also wont reset in the else, in other words the pop up if no chefs are availible is broken
                 $("#chefError").html("No chefs availible");
@@ -102,15 +94,15 @@
             }
             else
             {
-                            console.log("test");
+                            console.log(response);
                 $("#chefError").html("");
                 let s;
-                for (var i = 0; i < response.chefs.length; i++) {
-                    s += '<option value="' + response.chefs[i].ChefId + '">' + response.chefs[i].ChefName + '</option>';
-                                    console.log(response.chefs[i].ChefId);
+                for (var i = 0; i < response.timeSlots.length; i++) {
+                                    s += '<option value="' + response.timeSlots[i].Value + '">' + response.timeSlots[i].Text + '</option>';
+                                    
                 }
             
-                $("#chefs").html(s);
+                $("#time").html(s);
             }
    
      },
