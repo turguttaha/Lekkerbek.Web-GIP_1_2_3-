@@ -3,10 +3,26 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Lekkerbek.Web</title>
+    <title>@ViewData["Title"] - LEKKERBEK</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Lekkerbek.Web.styles.css" asp-append-version="true" />
+
+    <!--Styles.Render("~/UIFramework/KendoUI/kendo/kendoui.web/styles/kendo.common.min.css")-->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet"
+          href="https://kendo.cdn.telerik.com/themes/6.2.0/bootstrap/bootstrap-main.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/ood_les6_prep_kendo.styles.css" asp-append-
+          version="true" />
+    <link rel="stylesheet"
+          href="https://code.jquery.com/ui/1.13.0/themes/smoothness/jquery-ui.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.kendostatic.com/2023.1.314/js/kendo.all.min.js"></script>
+    <script src="https://cdn.kendostatic.com/2023.1.314/js/kendo.aspnetmvc.min.js"></script>
+    <script src="~/js/kendo-ui-license.js"></script>
 </head>
 <body>
     <header>
@@ -22,25 +38,36 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Customers</a>
-                        </li>
-                                                <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TimeSlots" asp-action="Index">Time Slots</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Dish" asp-action="Index">Dishes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="OrdersCashier" asp-action="Index">OrdersCashier</a>
-                        </li>
-
+                        @if(User.IsInRole("Administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Customers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MenuItems" asp-action="Index">Menu Items</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Cashier"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="OrdersCashier" asp-action="Index">Orders </a>
+                            </li>
+                        }
+                        @if (User.IsInRole("Chef"))
+                        {
+@*                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="OrdersCashier" asp-action="Index">Orders </a>
+                            </li>*@
+                        }
+                        @if (User.IsInRole("Customer"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="OrderModule" asp-action="Index">Orders</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -55,12 +82,12 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - Lekkerbek.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2023 - <b>Group - 2 (Frederik - Taha - Sora - Mathijs - Imdat)  </b>
         </div>
-    </footer>
+    </footer>@*
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>*@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -12,9 +12,11 @@ using Lekkerbek.Web.Models;
 using System.ComponentModel.DataAnnotations;
 using Lekkerbek.Web.NewFolder;
 using Lekkerbek.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek.Web.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class CustomersController : Controller
     {
         private readonly ICustomerService _customerService;
@@ -25,12 +27,13 @@ namespace Lekkerbek.Web.Controllers
             _customerService = customerService;
             _orderService = orderService;
         }
-
+    
         public ActionResult Index()
         {
           
             return View();
         }
+ 
 
         public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
         {

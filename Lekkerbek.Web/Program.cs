@@ -31,6 +31,7 @@ builder.Services.AddDbContext<LekkerbekContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<LekkerbekContext>();
 
 
@@ -74,7 +75,18 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
+var serviceProvider = app.Services.CreateScope().ServiceProvider;
+var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+await roleManager.CreateAsync(new IdentityRole("Administrator"));
+await roleManager.CreateAsync(new IdentityRole("Cashier"));
+await roleManager.CreateAsync(new IdentityRole("Chef"));
+await roleManager.CreateAsync(new IdentityRole("Customer"));
 
+
+
+//var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+//var adminUser = await userManager.FindByEmailAsync("gip_admin@gmail.com");
+//await userManager.AddToRoleAsync(adminUser, "Administrator");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
