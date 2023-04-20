@@ -45,6 +45,7 @@ namespace Lekkerbek.Web.Repositories
                     Email = order.Customer.Email,
                     PhoneNumber = order.Customer.PhoneNumber,
                     PreferredDishId = order.Customer.PreferredDishId,
+
                 }
 
             }).Where(c => c.Finished == false && c.TimeSlot.ChefId == null).ToList();
@@ -114,7 +115,7 @@ namespace Lekkerbek.Web.Repositories
                     PreferredDishId = order.Customer.PreferredDishId,
                 }
 
-            }).Where(c => c.Finished == false && c.TimeSlot.ChefId == null).ToList().FirstOrDefault();
+            }).Where(c => c.Finished == false && c.TimeSlot.ChefId == null).ToList().OrderBy(c=>c.TimeSlot.StartTimeSlot).FirstOrDefault();
 
             return a;
 
