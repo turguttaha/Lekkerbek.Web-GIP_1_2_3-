@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek.Web.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    [Migration("20230418001030_CreateIdentitySchema")]
-    partial class CreateIdentitySchema
+    [Migration("20230420114304_DbInitV2")]
+    partial class DbInitV2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

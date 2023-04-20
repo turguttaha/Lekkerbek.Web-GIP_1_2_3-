@@ -30,4 +30,8 @@
     <None Include="wwwroot\img\add-to-cart.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
