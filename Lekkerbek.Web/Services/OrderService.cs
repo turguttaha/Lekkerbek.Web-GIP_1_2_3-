@@ -97,28 +97,22 @@ namespace Lekkerbek.Web.Services
             //filter out the timeslots that are already fully booked
             
             //gets the timeslot of a specific day
-            List<TimeSlot> a = _repository.GetUsedTimeSlots(askDateTime);
+            List<TimeSlot> usedTimeSlots = _repository.GetUsedTimeSlots(askDateTime);
             List<SelectListItem> test = TimeSlotsSelectList;
             List<SelectListItem> tempTest = TimeSlotsSelectList;
 
-            foreach (var item in test.ToList()) 
+            foreach (var item in test) 
             {
-                foreach (TimeSlot time in a) 
-                {
-
-                    if (a.Where(c=>c.StartTimeSlot.ToString("HH:mm") == item.Value).Count()==2) 
+                
+                    if (usedTimeSlots.Where(c=>c.StartTimeSlot.ToString("HH:mm") == item.Value).Count()==2) 
                     {
                         tempTest.Remove(item);
                     }
-
-                   
-                }
-                
             }
             
             
             
-            return TimeSlotsSelectList;
+            return tempTest;
         }
         private IList<Order> GetAll()
         {

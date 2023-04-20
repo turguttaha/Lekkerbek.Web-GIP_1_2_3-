@@ -98,7 +98,7 @@ namespace Lekkerbek.Web.Controllers
             
             return RedirectToAction("AddOrderLine", "Orders");
         }
-        public async Task<JsonResult> LookUpChefs(string date, string time)
+        public async Task<JsonResult> LookUpChefs(string date)
         {
 
             //get datetime of today for first check instead of hardcoded value
