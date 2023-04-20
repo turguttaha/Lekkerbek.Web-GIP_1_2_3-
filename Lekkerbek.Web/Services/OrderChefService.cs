@@ -136,28 +136,28 @@ namespace Lekkerbek.Web.Services
 
             if (usedTimeSlots.Count() != 0)
             {
-                foreach (var test in usedTimeSlots)
+                foreach (var currentTimeSlot in usedTimeSlots)
                 {
-                    if (test.ChefId != null)
+                    if (currentTimeSlot.ChefId != null)
                     {
-                        ids.Add((int)test.ChefId);
+                        ids.Add((int)currentTimeSlot.ChefId);
                     }
 
                 }
             }
-            if (ids.Count() < 2)
+            if (ids.Count() < allChefId.Count())
             {
 
-                var a = _repository.GetChefs().Where(r => ids.Contains(r.ChefId) == false);
-                List<SelectListItem> item = _repository.GetChefsList(ids).ConvertAll(a =>
+                List<SelectListItem> item = _repository.GetChefsList(ids).ConvertAll(notWorkingChefs =>
                             {
                                 return new SelectListItem()
                                 {
-                                    Text = a.ChefName.ToString(),
-                                    Value = a.ChefId.ToString(),
+                                    Text = notWorkingChefs.ChefName.ToString(),
+                                    Value = notWorkingChefs.ChefId.ToString(),
                                     Selected = false
                                 };
                             });
+                //this will return all the chefs that are still free
                 return item;
 
             }

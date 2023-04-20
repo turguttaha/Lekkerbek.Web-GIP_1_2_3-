@@ -202,7 +202,7 @@ namespace Lekkerbek.Web.Services
 
                 }
             }
-            if (ids.Count() < 2)
+            if (ids.Count() < allChefId.Count())
             {
 
                 var a = _repository.GetChefs().Where(r => ids.Contains(r.ChefId) == false);
