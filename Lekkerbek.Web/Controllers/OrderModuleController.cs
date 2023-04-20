@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class OrderModuleController : Controller
     {
 
@@ -59,19 +59,12 @@ namespace Lekkerbek.Web.Controllers
             return View();
         }
 
-<<<<<<< HEAD
         //public ActionResult EditingPopup_Read(int? id,[DataSourceRequest] DataSourceRequest request)
         //{
             
         //    return Json(_orderService.FilterOrdersForCustomer(id).ToDataSourceResult(request));
         //}
-=======
-        public ActionResult EditingPopup_Read(int? id, [DataSourceRequest] DataSourceRequest request)
-        {
 
-            return Json(_orderService.FilterOrdersForCustomer(id).ToDataSourceResult(request));
-        }
->>>>>>> 0b4717675442d3def940bd3049a3d6d3a1c852b7
 
         //// GET: Customers/Create
         //public IActionResult Create()
