@@ -2,12 +2,14 @@
 using Kendo.Mvc.UI;
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Controllers
 {
-	public class DetailTemplateController : Controller
+    [Authorize(Roles = "Customer")]
+    public class DetailTemplateController : Controller
 	{
 		private readonly ICustomerService _customerService;
 		private readonly IOrderService _orderService;

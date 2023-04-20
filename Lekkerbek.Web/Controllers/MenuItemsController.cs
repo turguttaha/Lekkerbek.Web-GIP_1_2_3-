@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek.Web.Controllers
 {
-    [Authorize(Roles = "Administrator, Customer")]
+    [Authorize(Roles = "Administrator")]
 
     public class MenuItemsController : Controller
     {

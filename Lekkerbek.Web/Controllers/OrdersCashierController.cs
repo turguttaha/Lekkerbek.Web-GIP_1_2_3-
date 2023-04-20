@@ -21,7 +21,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek.Web.Controllers
 {
-
+    [Authorize(Roles = "Cashier")]
 
     public class OrdersCashierController : Controller
     {
