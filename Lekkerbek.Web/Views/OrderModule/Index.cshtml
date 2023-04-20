@@ -57,8 +57,7 @@
                         {
                                     columns.Bound(o => o.MenuItemId).Title("ID").Width(100);
                                     columns.Bound(o => o.DishAmount).Width(150);
-                                    columns.Bound(o => o.ExtraDetails).Width(150); // escaped template expression, to be evaluated in the child/detail context
-                                    //columns.Bound(o => o.ShipName).Width(190);
+                                    columns.Bound(o => o.ExtraDetails).Width(150); 
                                 })
                         .DataSource(dataSource => dataSource
                             .Ajax()
