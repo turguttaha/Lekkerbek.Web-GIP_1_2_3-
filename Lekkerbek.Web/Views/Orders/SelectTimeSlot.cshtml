@@ -94,12 +94,11 @@
             }
             else
             {
-                            console.log(response);
+                console.log(response);
                 $("#chefError").html("");
                 let s;
                 for (var i = 0; i < response.timeSlots.length; i++) {
                                     s += '<option value="' + response.timeSlots[i].Value + '">' + response.timeSlots[i].Text + '</option>';
-                                    
                 }
             
                 $("#time").html(s);

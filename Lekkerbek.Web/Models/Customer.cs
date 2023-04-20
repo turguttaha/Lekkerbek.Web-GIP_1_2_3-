@@ -58,12 +58,6 @@ namespace Lekkerbek.Web.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [Display(Name = "Password")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; } = string.Empty;
-         
-
-
 
 
         // als loyaltyScore true is(meer dan 2 betelling is al gedaan), dan betekent dat klant 10% korting kan hebben 

@@ -86,13 +86,12 @@ namespace Lekkerbek.Web.Controllers
             ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotDateAndTime);
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult SelectTimeSlot(IFormCollection collection)
         {
             string x = collection["TimeSlotsSelectList"];
-            String selectedDate = collection["StartTimeSlot"] + " "+ x;
+            string selectedDate = collection["StartTimeSlot"] + " "+ x;
             DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
             TempData["SelectedDateTime"] = timeSlotDateAndTime;
             //TempData["SelectedChef"] = int.Parse(collection["ChefId"]);
