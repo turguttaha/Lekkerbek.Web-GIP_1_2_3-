@@ -22,22 +22,6 @@ namespace Lekkerbek.Web.Controllers
             _orderService = orderService;
             _menuItemService = menuItemService;
         }
-        public ActionResult Hierarchy()
-        {
-            return View();
-        }
-
-        public ActionResult HierarchyBinding_Order([DataSourceRequest] DataSourceRequest request)
-        {
-            return Json(_orderService.Read().ToDataSourceResult(request));//sends order to view
-        }
-
-        public ActionResult HierarchyBinding_Orderline(int orderID, [DataSourceRequest] DataSourceRequest request)
-        {
-            return Json(_orderService.GetOrderLines() //sends orderlist to view
-                .Where(orderline => orderline.OrderID == orderID)
-                .ToDataSourceResult(request));
-        }
         public ActionResult DetailTemplate()
         {
             return View();
