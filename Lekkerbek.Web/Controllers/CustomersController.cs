@@ -86,7 +86,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> Create([Bind("FName,LName,Email,PhoneNumber,Birthday,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,PreferredDishId")] Customer customer)
         {
             //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
             //if (ModelState.IsValid)
@@ -123,7 +123,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("FName,LName,Email,PhoneNumber,Birthday,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,PreferredDishId")] Customer customer)
         {
             if (id != customer.CustomerId)
             {

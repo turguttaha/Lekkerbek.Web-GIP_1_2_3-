@@ -94,25 +94,23 @@ namespace Lekkerbek.Web.Services
             };
         public List<SelectListItem> GetTimeDropDownList(DateTime askDateTime)
         {
-            //filter out the timeslots that are already fully booked
-            
-            //gets the timeslot of a specific day
-            List<TimeSlot> usedTimeSlots = _repository.GetUsedTimeSlots(askDateTime);
-            List<SelectListItem> test = TimeSlotsSelectList;
-            List<SelectListItem> tempTest = TimeSlotsSelectList;
 
-            foreach (var item in test) 
+            //filter out the timeslots that are already fully booked
+
+            //gets the timeslot of a specific day
+            List<TimeSlot> timeSlotOfADay = _repository.GetUsedTimeSlots(askDateTime);
+            List<SelectListItem> timeSlotSelectList = TimeSlotsSelectList;
+            List<SelectListItem> tempTimeSlotSelectList = TimeSlotsSelectList;
+            int chefCount = _repository.GetChefs().Count();
+            foreach (var item in timeSlotSelectList.ToList())
             {
-                
-                    if (usedTimeSlots.Where(c=>c.StartTimeSlot.ToString("HH:mm") == item.Value).Count()==2) 
+                    if (timeSlotOfADay.Where(c => c.StartTimeSlot.ToString("HH:mm") == item.Value).Count() == chefCount)
                     {
-                        tempTest.Remove(item);
+                        tempTimeSlotSelectList.Remove(item);
                     }
             }
-            
-            
-            
-            return tempTest;
+
+            return tempTimeSlotSelectList;
         }
         private IList<Order> GetAll()
         {
@@ -183,57 +181,57 @@ namespace Lekkerbek.Web.Services
             return _repository.GetTimeSlots().Find(o => o.Id == id);
 
         }
-        public IQueryable<Chef> CheckChefs(DateTime? startTimeSlot)
-        {
+        ////public IQueryable<Chef> CheckChefs(DateTime? startTimeSlot)
+        ////{
             
-            //return _repository.GetTimeSlots().FindAll(t => t.StartTimeSlot == startTimeSlot);
+        ////    //return _repository.GetTimeSlots().FindAll(t => t.StartTimeSlot == startTimeSlot);
 
 
-            var usedTimeSlots = _repository.GetTimeSlots().FindAll(t => t.StartTimeSlot == startTimeSlot);
+        ////    var usedTimeSlots = _repository.GetTimeSlots().FindAll(t => t.StartTimeSlot == startTimeSlot);
 
-            var allChefId = _repository.GetChefs();
+        ////    var allChefId = _repository.GetChefs();
 
-            /*
-            Well this is the code, the check is just "is the count of the timeslots on this specific day and time lower than the amount of chefs"
-            Depending on how we want it, we can or keep this button with a "check feature" so the person who is looking for a timeslot can 
-            we can write functions where we look for the amount of chefs that have vacation and subtract that number from allchefId, because that number is the "free chefs"
+        ////    /*
+        ////    Well this is the code, the check is just "is the count of the timeslots on this specific day and time lower than the amount of chefs"
+        ////    Depending on how we want it, we can or keep this button with a "check feature" so the person who is looking for a timeslot can 
+        ////    we can write functions where we look for the amount of chefs that have vacation and subtract that number from allchefId, because that number is the "free chefs"
             
-             I will keep the rest of the code up so the rest can still be tested, orders right now can be made if you just comment out "TempData["SelectedChef"] = int.Parse(collection["ChefId"]);"
-            this line in selectTimeSlots on line 166
-             */
-            if (usedTimeSlots.Count() < allChefId.Count())
-            {
-                Console.WriteLine("Timeslots can be used");
-            }
+        ////     I will keep the rest of the code up so the rest can still be tested, orders right now can be made if you just comment out "TempData["SelectedChef"] = int.Parse(collection["ChefId"]);"
+        ////    this line in selectTimeSlots on line 166
+        ////     */
+        ////    if (usedTimeSlots.Count() < allChefId.Count())
+        ////    {
+        ////        Console.WriteLine("Timeslots can be used");
+        ////    }
 
 
-            List<int> ids = new List<int>();
+        ////    List<int> ids = new List<int>();
 
 
-            if (usedTimeSlots.Count() != 0)
-            {
-                foreach (var test in usedTimeSlots)
-                {
-                    if (test.ChefId != null)
-                    {
-                        ids.Add((int)test.ChefId);
-                    }
+        ////    if (usedTimeSlots.Count() != 0)
+        ////    {
+        ////        foreach (var test in usedTimeSlots)
+        ////        {
+        ////            if (test.ChefId != null)
+        ////            {
+        ////                ids.Add((int)test.ChefId);
+        ////            }
 
-                }
-            }
-            if (ids.Count() < 2)
-            {
+        ////        }
+        ////    }
+        ////    if (ids.Count() < allChefId.Count())
+        ////    {
 
-                var a = _repository.GetChefs().Where(r => ids.Contains(r.ChefId) == false);
+        ////        var a = _repository.GetChefs().Where(r => ids.Contains(r.ChefId) == false);
                    
-                return a;
+        ////        return a;
 
-            }
-            else
-            {
-               return  null;
-            }
-        }
+        ////    }
+        ////    else
+        ////    {
+        ////       return  null;
+        ////    }
+        ////}
         public void CreateOrder(TimeSlot timeSlot, Order order)
         {
             _repository.CreateOrder(timeSlot, order);
