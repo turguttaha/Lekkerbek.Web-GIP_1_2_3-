@@ -23,7 +23,7 @@ namespace Lekkerbek.Web.Repositories
                 LName = customer.LName,
                 Email = customer.Email,
                 PhoneNumber = customer.PhoneNumber,
-                //Address = customer.Address,
+               // Address = customer.Address,
                 Btw = customer.Btw,
                 BtwNumber = customer.BtwNumber,
                 PostalCode = customer.PostalCode,
@@ -33,11 +33,13 @@ namespace Lekkerbek.Web.Repositories
                 FirmName = customer.FirmName,
                 Birthday = customer.Birthday,
                 PreferredDishId = customer.PreferredDishId,
+                IdentityUser = customer.IdentityUser,
                 PreferredDish = new PreferredDish()
                 {
-                    PreferredDishId = customer.PreferredDish.PreferredDishId,
+                    //PreferredDishId = customer.PreferredDish.PreferredDishId,
                     Name = customer.PreferredDish.Name
                 }
+                
 
             }).ToList();
 

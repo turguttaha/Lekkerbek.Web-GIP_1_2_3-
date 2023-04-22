@@ -75,13 +75,12 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 var app = builder.Build();
 
-var serviceProvider = app.Services.CreateScope().ServiceProvider;
-var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-await roleManager.CreateAsync(new IdentityRole("Administrator"));
-await roleManager.CreateAsync(new IdentityRole("Cashier"));
-await roleManager.CreateAsync(new IdentityRole("Chef"));
-await roleManager.CreateAsync(new IdentityRole("Customer"));
-
+//var serviceProvider = app.Services.CreateScope().ServiceProvider;
+//var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//await roleManager.CreateAsync(new IdentityRole("Administrator"));
+//await roleManager.CreateAsync(new IdentityRole("Cashier"));
+//await roleManager.CreateAsync(new IdentityRole("Chef"));
+//await roleManager.CreateAsync(new IdentityRole("Customer"));
 
 
 //var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();

@@ -4,6 +4,7 @@ using Lekkerbek.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lekkerbek.Web.Migrations
 {
     [DbContext(typeof(LekkerbekContext))]
-    partial class LekkerbekContextModelSnapshot : ModelSnapshot
+    [Migration("20230422003329_DbCustomerNullableAdjustment")]
+    partial class DbCustomerNullableAdjustment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasIndex("WorkerScheduleId");
 
-                    b.ToTable("Chefs", (string)null);
+                    b.ToTable("Chefs");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.Customer", b =>
@@ -112,7 +115,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasIndex("PreferredDishId");
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.MenuItem", b =>
@@ -143,7 +146,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("MenuItemId");
 
-                    b.ToTable("MenuItems", (string)null);
+                    b.ToTable("MenuItems");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.Order", b =>
@@ -172,7 +175,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasIndex("TimeSlotID");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.OrderLine", b =>
@@ -201,7 +204,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasIndex("OrderID");
 
-                    b.ToTable("OrderLines", (string)null);
+                    b.ToTable("OrderLines");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.PreferredDish", b =>
@@ -218,7 +221,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("PreferredDishId");
 
-                    b.ToTable("PreferredDishes", (string)null);
+                    b.ToTable("PreferredDishes");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.TimeSlot", b =>
@@ -239,7 +242,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasIndex("ChefId");
 
-                    b.ToTable("TimeSlots", (string)null);
+                    b.ToTable("TimeSlots");
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.WorkerSchedule", b =>
@@ -265,7 +268,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("WorkerScheduleId");
 
-                    b.ToTable("WorkerSchedules", (string)null);
+                    b.ToTable("WorkerSchedules");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

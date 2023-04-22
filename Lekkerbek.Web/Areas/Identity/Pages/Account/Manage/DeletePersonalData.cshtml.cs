@@ -5,6 +5,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,15 +18,17 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<DeletePersonalDataModel> _logger;
-
+        private readonly ICustomerService _customerService;
         public DeletePersonalDataModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            ILogger<DeletePersonalDataModel> logger,
+            ICustomerService customerService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _customerService = customerService;
         }
 
         /// <summary>
@@ -85,9 +88,12 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
-
+            var customer = _customerService.Read().Where(b => b.IdentityUser == user).FirstOrDefault();
+            _customerService.Destroy(customer);
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
+            
+
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException($"Unexpected error occurred deleting user.");

@@ -13,24 +13,27 @@ using System.ComponentModel.DataAnnotations;
 using Lekkerbek.Web.NewFolder;
 using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Lekkerbek.Web.Controllers
 {
     [Authorize(Roles = "Administrator")]
     public class CustomersController : Controller
     {
+        private UserManager<IdentityUser> _userManager;
+
         private readonly ICustomerService _customerService;
         private readonly IOrderService _orderService;
 
-        public CustomersController( ICustomerService customerService, IOrderService orderService)
+        public CustomersController( ICustomerService customerService, IOrderService orderService, UserManager<IdentityUser> userManager)
         {
             _customerService = customerService;
             _orderService = orderService;
+            _userManager = userManager;
         }
     
         public ActionResult Index()
-        {
-          
+        { 
             return View();
         }
  
