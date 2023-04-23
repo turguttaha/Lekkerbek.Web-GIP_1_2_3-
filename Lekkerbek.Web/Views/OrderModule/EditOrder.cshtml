@@ -14,12 +14,8 @@
         <form asp-action="EditOrder">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="OrderID" />
-            
-            <div class="form-group">
-                <label asp-for="CustomerId" class="control-label">Customer Name</label>
-                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerID"></select>
-                <span asp-validation-for="CustomerId" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="CustomerId" />
+
             <div class="form-group">
 
                 <label asp-for="TimeSlotID" class="control-label">Date</label>

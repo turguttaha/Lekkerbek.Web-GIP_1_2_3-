@@ -1,22 +1,28 @@
 ﻿@model Lekkerbek.Web.Models.OrderLine
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>Create</h1>
+<h1>Edit</h1>
 
 <h4>OrderLine</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="EditOrderLine" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="OrderLineID" />
+            <div class="form-group">
+                <label asp-for="OrderID" class="control-label"></label>
+                <input asp-for="OrderID" class="form-control" readonly />
+                <span asp-validation-for="OrderID" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="MenuItemId" class="control-label"></label>
                 <select asp-for="MenuItemId" class="form-control" asp-items="ViewBag.DishID"></select>
+                <span asp-validation-for="MenuItemId" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="DishAmount" class="control-label"></label>
                 <input asp-for="DishAmount" class="form-control" />
@@ -28,24 +34,15 @@
                 <span asp-validation-for="ExtraDetails" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-@if (User.IsInRole("Adinistrator"))
-{
-    <div>
-        <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
-    </div>
-}
-else
-{
-    <div>
-        <a asp-controller="OrderModule" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
-    </div>
-}
 
+<div>
+    <a asp-action="EditOrder" asp-route-id="@Model?.OrderID">Back to List</a>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

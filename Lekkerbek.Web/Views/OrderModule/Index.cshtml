@@ -19,9 +19,9 @@
         columns.Bound(p => p.Finished);
         columns.Bound(p => p.TimeSlot.StartTimeSlot);
         columns.Bound(p => p.OrderID)
-               .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/EditOrder/#=OrderID#'>Edit</a></div>");
+               .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/EditOrder/#=OrderID#'>Edit</a></div>");
         columns.Bound(p => p.OrderID)
-               .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Delete/#=OrderID#'>Delete</a></div>");
+               .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/Delete/#=OrderID#'>Delete</a></div>");
 
     })
     @*.ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Orders/SelectCustomer'>Add New Order</a></div>"))*@
@@ -36,7 +36,7 @@
         .Events(events => events.Error("error_handler"))
         @*.Model(model => model(p => p.OrderID))*@
         @*.Create(update => update.Action("EditingPopup_Create", "Orders"))*@
-        .Read(read => read.Action("DetailTemplate_HierarchyBinding_Order", "DetailTemplate"))
+        .Read(read => read.Action("DetailTemplate_HierarchyBinding_Order", "OrderModule"))
         @*.Destroy(update => update.Action("EditingPopup_Destroy", "Orders"))*@
     )
     .Events(events => events.DataBound("dataBound"))
@@ -62,7 +62,7 @@
                         .DataSource(dataSource => dataSource
                             .Ajax()
                             .PageSize(5)
-                            .Read(read => read.Action("DetailTemplate_HierarchyBinding_Orderline", "DetailTemplate", new { orderID = "#=OrderID#" }))
+                            .Read(read => read.Action("DetailTemplate_HierarchyBinding_Orderline", "OrderModule", new { orderID = "#=OrderID#" }))
                         )
                         .Pageable()
                         .Sortable()

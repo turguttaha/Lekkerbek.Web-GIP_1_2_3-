@@ -153,7 +153,7 @@ namespace Lekkerbek.Web.Services
         }
         public SelectList CustomerSelectList(object? selectedValue)
         {
-                return new SelectList(_repository.GetCustomers(), "CustomerId", "Name", selectedValue);
+                return new SelectList(_repository.GetCustomers(), "CustomerId", "FName", selectedValue);
         }
         public SelectList MenuItemSelectList()
         {

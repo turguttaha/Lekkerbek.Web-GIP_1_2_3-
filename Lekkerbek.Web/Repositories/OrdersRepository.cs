@@ -118,9 +118,9 @@ namespace Lekkerbek.Web.Repositories
         }
         public void DeleteOrder(Order order, TimeSlot timeSlot, List<OrderLine> filteredOrderLines)
         {
-            _context.Orders.Attach(order);
-            _context.Orders.Remove(order);
+            //_context.Orders.Attach(order);
             _context.TimeSlots.Remove(timeSlot);
+            _context.Orders.Remove(order);          
             foreach (var orderLine in filteredOrderLines) { _context.OrderLines.Remove(orderLine); }
             _context.SaveChanges();
         }

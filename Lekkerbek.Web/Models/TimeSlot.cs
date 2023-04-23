@@ -6,7 +6,7 @@ namespace Lekkerbek.Web.Models
 {
     public class TimeSlot
     {
-        [ScaffoldColumn(false)]
+        //[ScaffoldColumn(false)]
         public int Id { get; set; }
         [Display(Name = "Time Slot")]
         public DateTime StartTimeSlot { get; set; }
