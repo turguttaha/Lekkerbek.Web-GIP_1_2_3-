@@ -73,6 +73,11 @@ namespace Lekkerbek.Web.Repositories
         {
             return _context.TimeSlots.Include(o=>o.Chef).ToList();
         }
+        public List<TimeSlot> GetUsedTimeSlots(DateTime askDateTime)
+        {
+
+            return _context.TimeSlots.Include(o => o.Chef).Where(c => c.StartTimeSlot.Date == askDateTime.Date).ToList();
+        }
 
         public List<Chef> GetChefs()
         {

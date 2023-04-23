@@ -8,7 +8,7 @@
 <h1>Menu</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 <img id="CartImg" onclick="OpenCart()" width="60px" style="margin:10px;  cursor: pointer;" src="~/img/add-to-cart.png" alt="My Icon">
-
+<p class="text-danger">@TempData["temporaryCartError"]</p>
 
 
 @* Pop Up HTML*@
@@ -49,7 +49,7 @@
 
             </tbody>
         </table>
-        <form asp-action="CompleteOrder">
+        <form asp-action="CompleteOrder" >
             <input type="submit" value="Complete Order" class="btn btn-danger mt-3">
         </form>
 

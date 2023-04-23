@@ -91,9 +91,25 @@ namespace Lekkerbek.Web.Services
                     Text = "21:45", Value = "21:45"
                 },
             };
-        public List<SelectListItem> GetTimeDropDownList()
+        public List<SelectListItem> GetTimeDropDownList(DateTime askDateTime)
         {
-            return TimeSlotsSelectList;
+
+            //filter out the timeslots that are already fully booked
+
+            //gets the timeslot of a specific day
+            List<TimeSlot> timeSlotOfADay = _repository.GetUsedTimeSlots(askDateTime);
+            List<SelectListItem> timeSlotSelectList = TimeSlotsSelectList;
+            List<SelectListItem> tempTimeSlotSelectList = TimeSlotsSelectList;
+            int chefCount = _repository.GetChefs().Count();
+            foreach (var item in timeSlotSelectList.ToList())
+            {
+                if (timeSlotOfADay.Where(c => c.StartTimeSlot.ToString("HH:mm") == item.Value).Count() == chefCount)
+                {
+                    tempTimeSlotSelectList.Remove(item);
+                }
+            }
+
+            return tempTimeSlotSelectList;
         }
         private IList<Order> GetAll()
         {

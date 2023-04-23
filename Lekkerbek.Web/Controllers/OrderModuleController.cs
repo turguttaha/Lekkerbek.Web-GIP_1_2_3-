@@ -5,6 +5,7 @@ using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Controllers
@@ -17,12 +18,19 @@ namespace Lekkerbek.Web.Controllers
         private readonly IOrderService _orderService;
         private readonly IMenuItemService _menuItemService;
 
+
         public OrderModuleController(ICustomerService customerService, IOrderService orderService, IMenuItemService menuItemService, UserManager<IdentityUser> userManager)
         {
             _customerService = customerService;
             _orderService = orderService;
             _menuItemService = menuItemService;
             _userManager = userManager;
+        }
+        private async Task<Customer> GetCustomerAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var customer = _customerService.Read().Where(c => c.IdentityUser == user).FirstOrDefault();
+            return customer;
         }
         public IActionResult Index()
         {
@@ -71,7 +79,7 @@ namespace Lekkerbek.Web.Controllers
                 TempData["SelectDate"] = timeSlotItem.StartTimeSlot.ToString("yyyy-MM-dd");
                 TempData["time"] = timeSlotItem.StartTimeSlot.ToString("H:mm");
 
-                ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList();
+                ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotItem.StartTimeSlot);
 
                 ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
 
@@ -235,60 +243,61 @@ namespace Lekkerbek.Web.Controllers
 
         //// GET: Customers/Edit/5
 
-        //public async Task<IActionResult> EditCustomer(int? id)
-        //{
-        //    if (id == null || _customerService.Read() == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> EditCustomer()
+        {
+           
+            if ( _customerService.Read() == null)
+            {
+                return NotFound();
+            }
 
-        //    var customer = _customerService.GetSpecificCustomer(id);
+            Customer customer = await GetCustomerAsync();
 
-        //    if (customer == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
-        //    return View(customer);
-        //}
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
+            return View(customer);
+        }
 
         // POST: Customers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> EditCustomer(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
-        //{
-        //    if (id != customer.CustomerId)
-        //    {
-        //        return NotFound();
-        //    }
+        //For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCustomer(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
+        {
+            if (id != customer.CustomerId)
+            {
+                return NotFound();
+            }
 
-        //    if (ModelState.IsValid)
-        //    {
+            if (ModelState.IsValid)
+            {
 
-        //        try
-        //        {
-        //            _customerService.Update(customer);
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!_customerService.CustomerExists(customer.CustomerId))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
+                try
+                {
+                    _customerService.Update(customer);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_customerService.CustomerExists(customer.CustomerId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
 
 
-        //    }
-        //    ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
-        //    return View(customer);
-        //}
+            }
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
+            return View(customer);
+        }
 
         public IActionResult MenuItemList()
         {
@@ -325,44 +334,78 @@ namespace Lekkerbek.Web.Controllers
             return Json(new { temporaryCart = list });
         }
 
-        public IActionResult CompleteOrder()
+        public async Task<IActionResult> CompleteOrder()
         {
+            if(Order.TemproraryCart.Count == 0)
+            {
+                TempData["temporaryCartError"] = "You have to add at least 1 Menu Item before continue!";
+                return RedirectToAction(nameof(MenuItemList));
+            }
+            DateTime now = DateTime.Now;
+            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(now);
+            Customer customer = await GetCustomerAsync();
+            TempData["Street"] = customer.StreetName;
+            TempData["City"] = customer.City;
+            TempData["PostalCode"] = customer.PostalCode;
 
-            //here we can add temporary Cart list to send it to view
-
-             ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList();
-            //var customer = _customerService.GetSpecificCustomer(id);
-            //TempData["SelectedCustomerId"] = customer.CustomerId;
             return View();
         }
+        public async Task<JsonResult> LookUpChefs(string date)
+        {
 
-        //public IActionResult CompleteOrder(int? id)
-        //{
-        //    // here we can add temporary Cart list to send it to view
+            //get datetime of today for first check instead of hardcoded value
+            DateTime timeSlotDateAndTime = Convert.ToDateTime(date + " 00:00");
+            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotDateAndTime);
+            foreach (SelectListItem item in _orderService.GetTimeDropDownList(timeSlotDateAndTime))
+            {
+                Console.WriteLine(item.Value);
+            }
 
-        //    ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList();
-        //    //var customer = _customerService.GetSpecificCustomer(id);
-        //    //TempData["SelectedCustomerId"] = customer.CustomerId;
-        //    return View();
-        //}
-        //public async Task<IActionResult> CompleteOrder(string date, string time)
-        //{
-        //    //it might be IFormCollection???
-        //    string x = time;
-        //    String selectedDate = date + " " + x;
-        //    DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
-        //    //TimeSlot Object aanmaken
+            return Json(new { timeSlots = ViewBag.TimeSlotsSelectList });
+        }
+        public async Task<JsonResult> UpdateAdress(string street, string city , string postalCode)
+        {
+            try
+            {
+                Customer customer = await GetCustomerAsync();
+                customer.StreetName = street;
+                customer.City = city;
+                customer.PostalCode = int.Parse(postalCode);
 
-        //    TimeSlot timeSlot = new TimeSlot();
-        //    timeSlot.StartTimeSlot = (DateTime)TempData["SelectedDateTime"]; // add from view via ajax
-        //    //timeSlot.ChefId =(int)TempData["SelectedChef"];
+                _customerService.Update(customer);
+                return Json(new { status = "Your adress is succesfully updated" });
+            }
+            catch {
+                return Json(new { status = "Error" });
+            }
 
-        //    Order order = new Order();
-        //    order.CustomerId = (int)TempData["SelectedCustomerId"];
+           
+        }
 
-        //    _orderService.CreateOrder(timeSlot, order);
-        //    return RedirectToAction(nameof(Index));
-        //}
+        public async Task<IActionResult> CompleteOrderFinal(IFormCollection collection)
+        {
+            Customer customer = await GetCustomerAsync();
+            if (customer.StreetName == null || customer.City == null || customer.PostalCode == null)
+            {
+                TempData["CreateError"] = "Please update your adress before complete the order ";
+                return RedirectToAction(nameof(CompleteOrder));
+            }
+            //it might be IFormCollection???
+
+            string x = collection["TimeSlotsSelectList"];
+            String selectedDate = collection["StartTimeSlot"] + " " + x;
+            DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
+            //TimeSlot Object aanmaken
+
+            TimeSlot timeSlot = new TimeSlot();
+            timeSlot.StartTimeSlot = timeSlotDateAndTime; 
+
+            Order order = new Order();
+            order.CustomerId = customer.CustomerId;
+
+            _orderService.CreateOrder(timeSlot, order);
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }

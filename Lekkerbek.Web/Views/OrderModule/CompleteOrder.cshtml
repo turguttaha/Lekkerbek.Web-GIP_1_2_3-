@@ -1,40 +1,71 @@
 ﻿@model Lekkerbek.Web.Models.TimeSlot
-
 @{
     ViewData["Title"] = "View";
 }
 
 <h1>Create Order</h1>
+<h4>Your adress</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+
+
+            <div class="form-group">
+                <label for="Street" class="control-label">Street </label>
+                <input name="Street" id="Street" value="@TempData["Street"]" type="text" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="City" class="control-label">City </label>
+                <input name="City" id="City" value="@TempData["City"]" type="text" class="form-control" />
+
+            </div>
+            <div class="form-group">
+                <label for="PostalCode" class="control-label">Post Code </label>
+                <input name="PostalCode" id="PostalCode" value="@TempData["PostalCode"]" type="text" class="form-control" maxlength="100" />
+            </div>
+           <p id="adressResponse" class="text-danger"></p>
+            <div class="form-group">
+            <input onclick="UpdateAdress()" type="submit" value="Save" class="btn btn-success mt-2 mb-4" />
+            </div>
+
+    </div>
+</div>
 
 <h4>Select Time Slot</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="SelectTimeSlot">
-            <div asp-validation-summary="ModelOnly" ></div>
-            <div class="form-group mb-2">
-                
-                <label asp-for="StartTimeSlot" class="control-label"></label>
-                <input id="date" value="@TempData["SelectDate"]" asp-for="StartTimeSlot" type="date" class="form-control" />
-               
-                
-                
-            </div>
-            <div class="form-group mb-2">
+        <form asp-action="CompleteOrderFinal">
+            <div asp-validation-summary="ModelOnly"></div>
+            
+            <div class="form-group">
 
-                <label asp-for="StartTimeSlot" class=" control-label"></label><br>
+                <label asp-for="StartTimeSlot" class="control-label">Date</label>
+                <input id="date" value="@TempData["SelectDate"]" asp-for="StartTimeSlot" type="date" class="form-control" />
+
+
+
+            </div>
+            
+            <div class="form-group">
+
+                <label asp-for="StartTimeSlot" class="control-label">Time</label> <br>
                 @Html.DropDownList("TimeSlotsSelectList", (IEnumerable<SelectListItem>)ViewBag.TimeSlotsSelectList, new{@id="time"})
                 <span asp-validation-for="StartTimeSlot" class="text-danger"></span>
 
 
             </div>
+
+
+
+            <p id="createError" class="text-danger">@TempData["CreateError"]</p>
             <div class="form-group">
-                <input type="submit" value="Complete Order" class=" mt-2 btn btn-danger" />
+                <input type="submit" value="Complete Order" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
 
 
 @section Scripts {
@@ -42,6 +73,92 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     }
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(function () {
+        $("#date").change(function () {
+            $.ajax(
+                {
+
+                    // Hier kan je kiezen tussen GET, POST, PUT, DELETE....
+                    // Elk van deze keywords heeft een andere nut,
+                    // zie de les frontend.
+                    type: "POST",
+                    // Hier geven we de action naam en controler naam mee.
+                    url: '@Url.Action("LookUpChefs", "OrderModule")',
+                    // Hier gaan we data meegeven in een JSON formaat.
+                    data: { "date": $("#date").val() },
+                    dataType: "json",
+                    // Hier gaan we jQuery/javascript code schrijven indien onze
+                    // request successvol is.
+                    success: function (response) {
+                        console.log(response);
+                        // Hier gaan we de span met id "statusSpan" ophalen
+                        // en de text vervangen met de status.
+                        // Status krijgen we van de action Message mee.
+                        if (response.timeSlots.length == 0) {
+                            //Javascript shows this always, idk why, it also wont reset in the else, in other words the pop up if no chefs are availible is broken
+                            $("#chefError").html("No chefs availible");
+                            console.log("test");
+                        }
+                        else {
+                            console.log(response);
+                            $("#chefError").html("");
+                            let s;
+                            for (var i = 0; i < response.timeSlots.length; i++) {
+                                s += '<option value="' + response.timeSlots[i].Value + '">' + response.timeSlots[i].Text + '</option>';
+                            }
+
+                            $("#time").html(s);
+                        }
+
+                    },
+                    error: function (response) {
+
+                        // Indien onze request faalt, kunnen we hier een mooie
+                        // foutmelding tonen.
+                        // In ons geval gaan we een alert tonen op het scherm
+                        // (in praktijk moet je dit beter afhandelen!).
+
+                    }
+                });
+        });
+    })
+    function UpdateAdress() {
+            $.ajax(
+                {
+
+                    // Hier kan je kiezen tussen GET, POST, PUT, DELETE....
+                    // Elk van deze keywords heeft een andere nut,
+                    // zie de les frontend.
+                    type: "POST",
+                    // Hier geven we de action naam en controler naam mee.
+                    url: '@Url.Action("UpdateAdress", "OrderModule")',
+                    // Hier gaan we data meegeven in een JSON formaat.
+                    data: { "street": $("#Street").val(), "city": $("#City").val(), "postalCode": $("#PostalCode").val() },
+                    dataType: "json",
+                    // Hier gaan we jQuery/javascript code schrijven indien onze
+                    // request successvol is.
+                    success: function (response) {
+                        console.log(response);
+                        // Hier gaan we de span met id "statusSpan" ophalen
+                        // en de text vervangen met de status.
+                        // Status krijgen we van de action Message mee.
+                        document.getElementById("adressResponse").innerHTML= response.status;
+
+                    },
+                    error: function (response) {
+
+                        // Indien onze request faalt, kunnen we hier een mooie
+                        // foutmelding tonen.
+                        // In ons geval gaan we een alert tonen op het scherm
+                        // (in praktijk moet je dit beter afhandelen!).
+
+                    }
+                });
+        
+    }
+</script>
 
 
 
