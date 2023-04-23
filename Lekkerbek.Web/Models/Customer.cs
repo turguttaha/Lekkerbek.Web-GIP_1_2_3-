@@ -58,9 +58,6 @@ namespace Lekkerbek.Web.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [Display(Name = "Password")]
-        [DataType(DataType.Password)]
-        public string Password { get; set; } = string.Empty;
          
 
 

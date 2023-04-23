@@ -24,7 +24,6 @@ namespace Lekkerbek.Web.Repositories
                 Email = customer.Email,
                 PhoneNumber = customer.PhoneNumber,
                 //Address = customer.Address,
-                Password= customer.Password,
                 Btw = customer.Btw,
                 BtwNumber = customer.BtwNumber,
                 PostalCode = customer.PostalCode,
