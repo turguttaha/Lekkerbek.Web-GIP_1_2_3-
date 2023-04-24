@@ -23,6 +23,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+    <PackageReference Include="Quartz" Version="3.6.2" />
     <PackageReference Include="Telerik.UI.for.AspNet.Core.Trial" Version="2023.1.314" />
   </ItemGroup>
 

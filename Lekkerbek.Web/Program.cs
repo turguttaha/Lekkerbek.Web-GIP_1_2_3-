@@ -1,9 +1,12 @@
-using Lekkerbek.Web.Data;
+﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.NewFolder;
 using Lekkerbek.Web.Repositories;
 using Lekkerbek.Web.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Quartz.Impl;
+using Quartz.Spi;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +28,13 @@ builder.Services.AddTransient<OrdersRepository>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<OrdersCashierRepository>();
 builder.Services.AddTransient<IOrderCashierService, OrderCashierService>();
+
+//builder.Services.AddSingleton<IJobFactory, JobFactory>();
+//builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+//builder.Services.AddSingleton<EmailJob>();
+//builder.Services.AddSingleton(new JobSchedule(
+//    jobType: typeof(EmailJob),
+//    cronExpression: "0 0/5 * * * ?")); // Her 5 dakikada bir calısacak
 
 //Congig connection DataBase
 builder.Services.AddDbContext<LekkerbekContext>(options =>
