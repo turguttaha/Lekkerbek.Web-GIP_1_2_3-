@@ -3,7 +3,7 @@
 @model Lekkerbek.Web.Models.Chef;
 @{
     ViewData["Title"] = "Index";
-    Layout = "_LayoutCashier";
+    //Layout = "_LayoutCashier";
 }
 
 <h1>Orders To Pay Off</h1>
@@ -14,7 +14,7 @@
     .Columns(columns =>
     {
         columns.Bound(p => p.OrderID);
-        columns.Bound(p => p.Customer.Name);
+        columns.Bound(p => p.Customer.FName);
         columns.Bound(p => p.Finished);
         columns.Bound(p => p.TimeSlot.StartTimeSlot);
         columns.Bound(p => p.TimeSlot.ChefId);

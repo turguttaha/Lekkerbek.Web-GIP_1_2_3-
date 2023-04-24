@@ -33,8 +33,8 @@ namespace Lekkerbek.Web.Repositories
                 Customer = new Customer()
                 {
                     CustomerId = order.Customer.CustomerId,
-                    FName = order.Customer.Name,
-                    LName = order.Customer.Name,
+                    FName = order.Customer.FName,
+                    LName = order.Customer.LName,
                     BtwNumber = order.Customer.BtwNumber,
                     Btw = order.Customer.Btw,
                     City = order.Customer.City,
@@ -101,8 +101,8 @@ namespace Lekkerbek.Web.Repositories
                 Customer = new Customer()
                 {
                     CustomerId = order.Customer.CustomerId,
-                    FName = order.Customer.Name,
-                    LName = order.Customer.Name,
+                    FName = order.Customer.FName,
+                    LName = order.Customer.LName,
                     BtwNumber = order.Customer.BtwNumber,
                     Btw = order.Customer.Btw,
                     City = order.Customer.City,
