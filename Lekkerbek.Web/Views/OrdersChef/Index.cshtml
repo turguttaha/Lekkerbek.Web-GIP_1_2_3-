@@ -1,0 +1,57 @@
+﻿@using Kendo.Mvc.UI;
+@using Lekkerbek.Web.Models;
+@model Lekkerbek.Web.Models.Chef;
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_LayoutCashier";
+}
+
+<h1>Orders To Pay Off</h1>
+
+
+@(Html.Kendo().Grid<Order>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.OrderID);
+        columns.Bound(p => p.Customer.Name);
+        columns.Bound(p => p.Finished);
+        columns.Bound(p => p.TimeSlot.StartTimeSlot);
+        columns.Bound(p => p.TimeSlot.ChefId);
+        columns.Bound(p => p.OrderID)
+                                .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrdersChef/OrderDetails/#=OrderID#'>Check Details</a></div>");
+        
+
+    })
+    .Pageable()
+    .Scrollable()
+    .HtmlAttributes(new { style = "height:550px;" })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Sort(sort=>sort.Add("TimeSlot.StartTimeSlot").Ascending())
+        .PageSize(20)
+        .Events(events => events.Error("error_handler"))
+        .Model(model => model.Id(p => p.OrderID))
+        .Create(update => update.Action("EditingPopup_Create", "OrdersChef"))
+        .Read(read => read.Action("EditingPopup_Read", "OrdersChef"))
+        .Destroy(update => update.Action("EditingPopup_Destroy", "OrdersChef"))
+    )
+)
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+
+</script>

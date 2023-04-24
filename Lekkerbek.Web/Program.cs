@@ -28,6 +28,8 @@ builder.Services.AddTransient<OrdersRepository>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<OrdersCashierRepository>();
 builder.Services.AddTransient<IOrderCashierService, OrderCashierService>();
+builder.Services.AddTransient<OrdersChefRepository>();
+builder.Services.AddTransient<IOrderChefService, OrderChefService>();
 
 //builder.Services.AddSingleton<IJobFactory, JobFactory>();
 //builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
