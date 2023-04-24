@@ -11,7 +11,7 @@ namespace Lekkerbek.Web.Services
         //{
         //}
 
-        public void SendMail(string EmailTo, string subject, string bodyMail) 
+        public void SendMail(string EmailTo, string subject, string bodyMail, MailMessage a) 
         { 
             string fromMail = "gipteam2.lekkerbek@gmail.com";
             string fromPassword = "pagwjgwdlutmgpfj";

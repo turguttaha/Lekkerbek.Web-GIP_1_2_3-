@@ -25,8 +25,6 @@ namespace Lekkerbek.Web.Repositories
                 BtwNumber = item.BtwNumber,
                 Description = item.Description,
                 Name = item.Name,
-                BtwNumber = item.BtwNumber,
-                Sort = item.Sort,
             }).ToList();
         }
 

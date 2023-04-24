@@ -482,7 +482,7 @@ th, td{
                 AlternateView avHtml = AlternateView.CreateAlternateViewFromString
                     (testMail, null, MediaTypeNames.Text.Html);
                 // Create a LinkedResource object for each embedded image
-                LinkedResource pic1 = new LinkedResource("C:\\Users\\frede\\source\\repos\\GiPProject\\Lekkerbek.Web\\wwwroot\\img\\Logo_Lekkerbek.jpg", MediaTypeNames.Image.Jpeg);
+                LinkedResource pic1 = new LinkedResource(Directory.GetCurrentDirectory()+"/wwwroot/img/Logo Lekkerbek.jpeg", MediaTypeNames.Image.Jpeg);
                 pic1.ContentId = "Logo";
                 avHtml.LinkedResources.Add(pic1);
                 ///send email
@@ -490,7 +490,7 @@ th, td{
                 MailMessage m = new MailMessage();
                 m.AlternateViews.Add(avHtml);
                 EmailService emailService = new EmailService();
-                emailService.SendMail("gipteam2.lekkerbek@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
+                emailService.SendMail("frederik.vandekerkhove@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
                 
             }
             catch (DbUpdateConcurrencyException)
