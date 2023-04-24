@@ -52,7 +52,7 @@ namespace Lekkerbek.Web.Repositories
 
         public Order GetOrder(int? id)
         {
-           return _context.Orders.Include("OrderLines.MenuItem").Where(c => c.OrderID == id).ToList()[0];
+           return _context.Orders.Include("OrderLines.MenuItem").Include("Customer").Where(c => c.OrderID == id).ToList()[0];
         }
         public List<Customer> GetAllCustomers()
         {

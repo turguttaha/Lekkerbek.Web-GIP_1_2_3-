@@ -6,17 +6,17 @@ namespace Lekkerbek.Web.Services
     public class EmailService
     {
         
-        public void SendMail(string EmailTo, string subject, string bodyMail) 
+        public void SendMail(string EmailTo, string subject, string bodyMail, MailMessage a) 
         { 
             string fromMail = "gipteam2.lekkerbek@gmail.com";
             string fromPassword = "pagwjgwdlutmgpfj";
 
             MailMessage message = new MailMessage();
-            message.From = new MailAddress(fromMail);
-            message.Subject = subject;
-            message.To.Add(new MailAddress(EmailTo));
-            message.Body = bodyMail;
-            message.IsBodyHtml = true;
+            a.From = new MailAddress(fromMail);
+            a.Subject = subject;
+            a.To.Add(new MailAddress(EmailTo));
+            
+            
 
             var smtpClient = new SmtpClient("smtp.gmail.com")
             {
@@ -25,7 +25,7 @@ namespace Lekkerbek.Web.Services
                 EnableSsl = true,
             };
 
-            smtpClient.Send(message);
+            smtpClient.Send(a);
         }
         
         
