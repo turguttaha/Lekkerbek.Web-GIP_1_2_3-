@@ -18,6 +18,7 @@ using Lekkerbek.Web.Services;
 using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using System.Net.Mime;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -85,11 +86,14 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
             double totalPrice = 0;
+            double totalPriceBTW = 0;
             foreach (var oorder in filteredOrderLines)
             {
                 totalPrice += oorder.MenuItem.Price * oorder.DishAmount;
+                totalPriceBTW += oorder.MenuItem.Price * oorder.DishAmount * (1 + (oorder.MenuItem.BtwNumber / 100));
             }
             ViewBag.totalPrice = totalPrice;
+            ViewBag.totalPriceBTW = totalPriceBTW;
 
             //var orderCount = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
             var orderCount = _orderCashierService.GetOrders(order.CustomerId);
@@ -135,7 +139,7 @@ namespace Lekkerbek.Web.Controllers
                 double totalPrice = 0;
                 foreach (var oorder in filteredOrderLines2)
                 {
-                    totalPrice += oorder.MenuItem.Price * oorder.DishAmount;
+                    totalPrice += oorder.MenuItem.Price * oorder.DishAmount * (1 + (oorder.MenuItem.BtwNumber / 100));
                 }
 
 
@@ -208,9 +212,9 @@ namespace Lekkerbek.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-      
         
+
+
         // Pay off page payment func sending mail
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -224,9 +228,124 @@ namespace Lekkerbek.Web.Controllers
             {
 
                 orderFinish.Finished = true;
-                _orderCashierService.Update(orderFinish);
+                //_orderCashierService.Update(orderFinish);
               
-                String testMail = @"<table class=""table"">
+                String testMail = @"
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>* {
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#Container{
+    width: 50em;
+    margin: 0 auto;
+    background-color: white;
+}
+
+h1{
+    margin-left: 4px;
+}
+
+header{
+    padding: 10px;
+    position: relative;
+}
+
+main{
+    border-style: solid;
+    margin: 20px;
+}
+
+.Left{
+    margin: 0;
+    width: 250px;
+    margin-left: 10px;
+}
+
+.Left-bottom{
+    margin-top: 50px;
+    margin-left: 10px;
+    border-style: solid;
+    width: 250px;
+    padding-left: 10px;
+}
+
+.Grid{
+    display: flex;
+}
+
+.Right{
+    margin-right: 10px;
+    margin-left: 150px;
+}
+
+img{
+    width: 300px;
+    height: 150px;
+}
+
+div{
+    display: block;
+}
+
+body{
+    background-color: gray;
+}
+
+.Above-footer{
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+footer{
+    display: flex;
+    align-items: center;
+    border-top: 2px solid black;
+    font-size: 12px;
+    padding: 5px;
+}
+
+table{
+    border-collapse: collapse;
+}
+
+th{
+    background-color: lightgray;
+    border-bottom: 1px solid black;
+}
+
+th, td{
+    width:250px;
+    text-align:center;
+    padding:5px;
+    border-right: 1px solid black;
+}</style>
+    </head>
+    <body>
+        <div id=""Container"">
+            <header>
+                <div class=""Left"">
+                    <img src=""cid:Logo"" alt=""Logo"">
+                    <H1>Bill</H1>
+                </div>
+                <div class=""Grid"">
+                    <div class=""Left-bottom"">
+                        <p>Number : 2023-01</p>
+                        <p>Date : "+DateTime.Now.ToString()+ @"</p>
+                    </div>
+                    <div class=""Right"">
+                        <h2>"+ orderFinish.Customer.FirmName+ @"</h2>
+                        <p>"+ orderFinish.Customer.StreetName+ " "+ orderFinish.Customer.PostalCode + " " + orderFinish.Customer.City + @"</p>
+                        <p>B.T.W.-nr. :" + orderFinish.Customer.Btw+orderFinish.Customer.BtwNumber +@"</p>
+                    </div>
+                </div>
+            </header>
+            <main>
+
+<table>
                 <thead>
                     <tr>
                         <th>
@@ -241,9 +360,7 @@ namespace Lekkerbek.Web.Controllers
                         <th>
                             Sub Total
                         </th>
-            <th>
-                
-            </th>
+          
                     </tr>
                 </thead>
                 <tbody>";
@@ -260,9 +377,29 @@ namespace Lekkerbek.Web.Controllers
 
                 }
                 double totalPrice = 0;
+                double totalPriceBTW = 0;
                 foreach (var item in filteredOrderLines)
                 {
+                    /*
                             testMail += @" <tr>
+                        <td>
+                            " + item.MenuItem.Name + @"
+                        </td>
+                        <td>
+                            " + item.MenuItem.Price + @"
+                        </td>
+                            " + item.MenuItem.BtwNumber + @"
+                        <td>
+                            " + item.DishAmount + @"
+                        </td>
+                        <td>
+                            " + item.MenuItem.Price * item.DishAmount + @"
+                        </td>
+                        <td>
+                            
+                        </td>
+                    </tr>";*/
+                    testMail += @" <tr>
                         <td>
                             " + item.MenuItem.Name + @"
                         </td>
@@ -275,10 +412,10 @@ namespace Lekkerbek.Web.Controllers
                         <td>
                             " + item.MenuItem.Price * item.DishAmount + @"
                         </td>
-                        <td>
-                            
-                        </td>
                     </tr>";
+
+
+                    totalPriceBTW += item.MenuItem.Price* item.DishAmount * (1 + (item.MenuItem.BtwNumber / 100));
                     totalPrice += item.MenuItem.Price * item.DishAmount;
                 }
                 
@@ -290,10 +427,6 @@ namespace Lekkerbek.Web.Controllers
                 {
                     discountBool = true;
                 }
-                
-                
-                
-                
                 
                 if (discountBool)
                 {
@@ -308,15 +441,12 @@ namespace Lekkerbek.Web.Controllers
                         <td>
                         </td>
                     
-
-
                             <td>
                                 "+ orderFinishMail.Discount+ @"
                             </td>
-                            <td>
-                            </td>
                     </tr>";
                     totalPrice = totalPrice * (double)(100 - orderFinish.Discount) / 100;
+                    totalPriceBTW = totalPriceBTW * (double)(100 - orderFinish.Discount) / 100;
                 }
                
                 testMail += @"
@@ -331,20 +461,36 @@ namespace Lekkerbek.Web.Controllers
 
                     </td>
 
-
                     <td>
                         " + totalPrice + @"
                     </td>
-                    <td>
-                    </td>
+                    
                 </tr>
-                </form></tbody></table>";
-
-
+               </tbody></table></main>
+                <div class=""Above-footer"">
+                    <p>The invoice is payable within 30 days of the invoice date.</p>
+                </div>
+            <footer>
+                <p>De Lekkerbek- Culinaire Kringstraat108/2- 3530 HOUTHALEN - TEL. : 0475/22.22.41</p>
+                <p>B.T.W. : BE 04763.352.133        COMPANYNR : 0763.352.133</p>
+                <p>PNB PARIBAS FORTIS : IBAN BE19 0013 5497 5612   -   BIC GEPA BE BB</p>
+            </footer>
+            
+        </div>    
+    </body>
+</html>";
+                AlternateView avHtml = AlternateView.CreateAlternateViewFromString
+                    (testMail, null, MediaTypeNames.Text.Html);
+                // Create a LinkedResource object for each embedded image
+                LinkedResource pic1 = new LinkedResource("C:\\Users\\frede\\source\\repos\\GiPProject\\Lekkerbek.Web\\wwwroot\\img\\Logo_Lekkerbek.jpg", MediaTypeNames.Image.Jpeg);
+                pic1.ContentId = "Logo";
+                avHtml.LinkedResources.Add(pic1);
                 ///send email
                 ///
+                MailMessage m = new MailMessage();
+                m.AlternateViews.Add(avHtml);
                 EmailService emailService = new EmailService();
-                emailService.SendMail("gipteam2.lekkerbek@gmail.com", "Your invoice of the Lekkerbek", testMail);
+                emailService.SendMail("gipteam2.lekkerbek@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
                 
             }
             catch (DbUpdateConcurrencyException)
