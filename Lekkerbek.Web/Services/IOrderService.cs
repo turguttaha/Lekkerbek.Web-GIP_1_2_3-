@@ -24,5 +24,6 @@ namespace Lekkerbek.Web.Services
         public bool OrderLineExists(int id);
         public bool DeleteOrder(Order order);
         public Customer GetSpecificCustomer(int? id);
+        public IEnumerable<Order> FilterOrdersForCustomer(int? customerId);
     }
 }

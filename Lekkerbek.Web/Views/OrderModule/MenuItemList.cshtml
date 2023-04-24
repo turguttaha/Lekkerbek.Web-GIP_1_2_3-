@@ -1,0 +1,234 @@
+﻿@using Kendo.Mvc.UI;
+@model Lekkerbek.Web.Models.OrderLine
+
+@{
+    ViewData["Title"] = "Menu";
+    Layout = "_Layout";
+}
+<h1>Menu</h1>
+<p id="error_text" class="text-danger fw-bold"></p>
+<img id="CartImg" onclick="OpenCart()" width="60px" style="margin:10px;  cursor: pointer;" src="~/img/add-to-cart.png" alt="My Icon">
+<p class="text-danger">@TempData["temporaryCartError"]</p>
+
+
+@* Pop Up HTML*@
+<div class="popup">
+    <div class="popuptext" id="myPopup">
+        <input class="btn btn-danger mt-1 mb-1" type="Button" onclick="ClosePopUp()" value="X"><br>
+        <label for="id">Menu Item Id:</label><br>
+        <input id="id" type="number" name="id" value=" " readonly><br>
+        <label for="extraDetails">Extra Details:</label><br>
+        <input type="text" id="extraDetails" name="extraDetails" value=" "><br>
+        <label for="amount">Amount: </label><br>
+        <input type="number" id="amount" name="amount" value="1" min="1"><br>
+
+        <input class="btn btn-primary mt-3" type="Button" onclick="SendInfoToController()" value="Add">
+    </div>
+
+</div>
+
+
+@* Cart*@
+<div class="popup" id="CartContainer">
+    <div class="popuptext-cart" id="myCart">
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class ="popup-th">
+                       Name
+                    </th>
+                    <th class="popup-th">
+                       Amount
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="popup-tbody" id="CartBody">
+
+
+
+            </tbody>
+        </table>
+        <form asp-action="CompleteOrder" >
+            <input type="submit" value="Complete Order" class="btn btn-danger mt-3">
+        </form>
+
+    </div>
+</div>
+
+
+@(Html.Kendo().Grid<Lekkerbek.Web.Models.MenuItem>()
+.Name("grid")
+
+.Columns(columns =>
+{
+  
+    columns.Bound(f => f.Name);
+    columns.Bound(f => f.Description);
+    columns.Bound(f => f.Price);
+    columns.Bound(f => f.Sort);
+    columns.Bound(f => f.BtwNumber);
+    columns.Bound(c => c.MenuItemId)
+              .Title(" ").Filterable(false)
+              .ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary'> <a onclick=\"OpenPopUp('#= MenuItemId #')\" href='\\#'> Add </a> </div>");
+
+})
+.Editable(editable => editable.Mode(GridEditMode.PopUp))
+.Sortable()
+.Filterable(filterable => filterable
+    .Extra(false)
+    .Operators(operators => operators
+        .ForString(str => str.Clear()
+            .StartsWith("Starts with")
+            .IsEqualTo("Is equal to")
+            .IsNotEqualTo("Is not equal to")
+                   )
+               )
+    )
+.DataSource(d =>
+{
+    d.Ajax()
+    .Model(model =>
+    {
+        model.Id(product => product.MenuItemId); // Specify the property which is the unique identifier of the model.
+        model.Field(product => product.MenuItemId).Editable(false); // Make the OrderID property not editable.
+    })
+    .Events(events => events.Error("error_handler"))
+    .Read(read => read.Action("ReadMenuItems", "OrderModule")); // Action invoked when the Grid needs data.
+})
+    )
+        @section Scripts {
+            @{
+                await Html.RenderPartialAsync("_ValidationScriptsPartial");
+            }
+        }
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var grid = $("#grid").data("kendoGrid");
+            grid.cancelChanges();
+            var message = " ";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += "- " + this + "\n";
+                    });
+                }
+            });
+            document.getElementById("error_text").innerText = message;
+            //alert(message);
+        }
+    }
+
+</script>
+
+<script type="text/javascript">
+// When the user clicks on div, open the popup
+    function OpenPopUp(MenuItemId) {
+  var popup = document.getElementById("myPopup");
+  popup.classList.add("show");
+        document.getElementById("id").value = MenuItemId;
+        document.getElementById("amount").value = 1;
+        document.getElementById("extraDetails").value = ` `;
+
+}
+    function SendInfoToController() {
+        let id = document.getElementById("id").value;
+        let amount = document.getElementById("amount").value;
+        let extraDetails = document.getElementById("extraDetails").value;
+       
+        $.ajax({
+            // Hier kan je kiezen tussen GET, POST, PUT, DELETE....
+            // Elk van deze keywords heeft een andere nut,
+            // zie de les frontend.
+            type: "POST",
+            // Hier geven we de action naam en controler naam mee.
+            url: '@Url.Action("AddOrderLine", "OrderModule")',
+            // Hier gaan we data meegeven in een JSON formaat.
+            data: { "menuItemId": id, "menuItemAmount": amount, "extraDetails": extraDetails },
+            dataType: "json",
+            // Hier gaan we jQuery/javascript code schrijven indien onze
+            // request successvol is.
+            success: function (response) {
+                console.log(response);
+                // Hier gaan we de span met id "statusSpan" ophalen
+                // en de text vervangen met de status.
+                // Status krijgen we van de action Message mee.
+                //$("#statusSpan").text(response.status);
+            },
+            error: function (response) {
+                // Indien onze request faalt, kunnen we hier een mooie
+                // foutmelding tonen.
+                // In ons geval gaan we een alert tonen op het scherm
+                // (in praktijk moet je dit beter afhandelen!).
+                alert(response);
+            }
+        });
+        var popup = document.getElementById("myPopup");
+        popup.classList.remove("show");
+    }
+  
+
+
+    function ClosePopUp() {
+        var popup = document.getElementById("myPopup");
+        popup.classList.remove("show");
+    }
+
+    $(window).click(function () {
+        var popup = document.getElementById("myCart");
+        popup.classList.remove("show");
+    });
+    var tbody = document.getElementById("CartBody");
+    function OpenCart(){
+        tbody.innerHTML = ` `;
+        $.ajax({
+            // Hier kan je kiezen tussen GET, POST, PUT, DELETE....
+            // Elk van deze keywords heeft een andere nut,
+            // zie de les frontend.
+            type: "GET",
+            // Hier geven we de action naam en controler naam mee.
+            url: '@Url.Action("TemporaryCart", "OrderModule")',
+            // Hier gaan we data meegeven in een JSON formaat.
+            dataType: "json",
+            // Hier gaan we jQuery/javascript code schrijven indien onze
+            // request successvol is.
+            success: function (response) {
+                console.log(response.temporaryCart);        
+
+               
+                response.temporaryCart.forEach((item) => {
+                    tbody.innerHTML += ` <tr>
+                    <td>${item.MenuItem.Name} </td>
+                    <td>${item.DishAmount} </td>
+
+                    </tr>`;
+                })
+                
+
+            },
+            error: function (response) {
+                // Indien onze request faalt, kunnen we hier een mooie
+                // foutmelding tonen.
+                // In ons geval gaan we een alert tonen op het scherm
+                // (in praktijk moet je dit beter afhandelen!).
+                alert(response);
+            }
+        });
+
+       
+
+
+        var popup = document.getElementById("myCart");
+        popup.classList.add("show");
+    }
+    
+    $('#CartImg').click(function (event) {
+        event.stopPropagation();
+    });
+    $('#CartContainer').click(function (event) {
+        event.stopPropagation();
+    });
+
+</script>
+

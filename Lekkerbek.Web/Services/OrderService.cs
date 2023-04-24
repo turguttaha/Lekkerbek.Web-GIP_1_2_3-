@@ -131,6 +131,11 @@ namespace Lekkerbek.Web.Services
             else
                 return order;
         }
+        public IEnumerable<Order> FilterOrdersForCustomer(int? customerId)
+        {
+            var orders = _repository.GetOrders().FindAll(x=>x.CustomerId == customerId);
+            return orders;
+        }
         public List<OrderLine> GetOrderLines()
         {
             return _repository.GetOrderLines();
@@ -165,7 +170,7 @@ namespace Lekkerbek.Web.Services
         }
         public SelectList CustomerSelectList(object? selectedValue)
         {
-                return new SelectList(_repository.GetCustomers(), "CustomerId", "Name", selectedValue);
+                return new SelectList(_repository.GetCustomers(), "CustomerId", "FName", selectedValue);
         }
         public SelectList MenuItemSelectList()
         {

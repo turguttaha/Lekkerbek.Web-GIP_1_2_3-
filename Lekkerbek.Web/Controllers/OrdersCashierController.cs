@@ -17,9 +17,12 @@ using System.Threading;
 using Lekkerbek.Web.Services;
 using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek.Web.Controllers
 {
+    [Authorize(Roles = "Cashier")]
+
     public class OrdersCashierController : Controller
     {
         private readonly IOrderCashierService _orderCashierService;

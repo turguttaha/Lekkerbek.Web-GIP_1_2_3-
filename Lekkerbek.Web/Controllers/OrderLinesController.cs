@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek.Web.Controllers
 {
+    [Authorize(Roles = "Administrator, Customer")]
+
     public class OrderLinesController : Controller
     {
         private readonly LekkerbekContext _context;
@@ -23,7 +26,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines/Create
         public IActionResult Create(int id)
         {
-            ViewData["DishID"] = new SelectList(_context.MenuItems, "DishId", "Name");
+            ViewData["DishID"] = new SelectList(_context.MenuItems, "MenuItemId", "Name");
             TempData["Orderid"] = id;
             ViewBag.Id = id; 
             return View();
@@ -41,7 +44,10 @@ namespace Lekkerbek.Web.Controllers
             orderLine.OrderID = (int)TempData["Orderid"];
                 _context.Add(orderLine);
                 await _context.SaveChangesAsync();
+            if(User.IsInRole("Administrator"))
             return RedirectToAction("EditOrder", "Orders", new { id = orderLine.OrderID });
+            if (User.IsInRole("Customer"))
+            return RedirectToAction("EditOrder", "OrderModule", new { id = orderLine.OrderID });
             //}
             ViewData["DishID"] = new SelectList(_context.MenuItems, "DishId", "DishId", orderLine.MenuItemId);
             ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
@@ -84,7 +90,12 @@ namespace Lekkerbek.Web.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction("EditOrder", "Orders",new { id = orderLine.OrderID });
+            
+            if (User.IsInRole("Administrator"))
+                return RedirectToAction("EditOrder", "Orders",new { id = orderLine.OrderID });
+            if (User.IsInRole("Customer"))
+                return RedirectToAction("EditOrder", "OrderModule", new { id = orderLine.OrderID });
+            return View(orderLine);
         }
 
         private bool OrderLineExists(int id)

@@ -1,0 +1,49 @@
+﻿@model Lekkerbek.Web.Models.OrderLine
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>OrderLine</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditOrderLine" >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="OrderLineID" />
+            <div class="form-group">
+                <label asp-for="OrderID" class="control-label"></label>
+                <input asp-for="OrderID" class="form-control" readonly />
+                <span asp-validation-for="OrderID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MenuItemId" class="control-label"></label>
+                <select asp-for="MenuItemId" class="form-control" asp-items="ViewBag.DishID"></select>
+                <span asp-validation-for="MenuItemId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DishAmount" class="control-label"></label>
+                <input asp-for="DishAmount" class="form-control" />
+                <span asp-validation-for="DishAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExtraDetails" class="control-label"></label>
+                <input asp-for="ExtraDetails" class="form-control" />
+                <span asp-validation-for="ExtraDetails" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="EditOrder" asp-route-id="@Model?.OrderID">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

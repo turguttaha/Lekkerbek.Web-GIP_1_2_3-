@@ -1,0 +1,123 @@
+﻿@using Kendo.Mvc.UI;
+@using Lekkerbek.Web.Models;
+
+@*This page shows the customer's order list*@
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "_Layout";
+}
+
+<h1>Orders</h1>
+<p class="text-danger">@TempData["TimesPast"]</p>
+@(Html.Kendo().Grid<Order>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.OrderID);
+        columns.Bound(p => p.Customer.FName);
+        columns.Bound(p => p.Finished);
+        columns.Bound(p => p.TimeSlot.StartTimeSlot);
+        columns.Bound(p => p.OrderID)
+               .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/EditOrder/#=OrderID#'>Edit</a></div>");
+        columns.Bound(p => p.OrderID)
+               .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/Delete/#=OrderID#'>Delete</a></div>");
+
+    })
+    @*.ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Orders/SelectCustomer'>Add New Order</a></div>"))*@
+    .Pageable()
+    .Sortable()
+    .Scrollable()
+    .ClientDetailTemplateId("template")
+    .HtmlAttributes(new { style = "height:550px;" })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(20)
+        .Events(events => events.Error("error_handler"))
+        @*.Model(model => model(p => p.OrderID))*@
+        @*.Create(update => update.Action("EditingPopup_Create", "Orders"))*@
+        .Read(read => read.Action("DetailTemplate_HierarchyBinding_Order", "OrderModule"))
+        @*.Destroy(update => update.Action("EditingPopup_Destroy", "Orders"))*@
+    )
+    .Events(events => events.DataBound("dataBound"))
+)
+
+
+<script id="template" type="text/kendo-tmpl">
+    @(Html.Kendo().TabStrip()
+                .Name("tabStrip_#=OrderID#")
+                .SelectedIndex(0)
+                .Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+                .Items(items =>
+                {
+                    items.Add().Text("OrderLine").Content(@<text>
+                        @(Html.Kendo().Grid<OrderLine>()
+                        .Name("grid_#=OrderID#") // template expression, to be evaluated in the master context
+                        .Columns(columns =>
+                        {
+                                    columns.Bound(o => o.MenuItemId).Title("ID").Width(100);
+                                    columns.Bound(o => o.DishAmount).Width(150);
+                                    columns.Bound(o => o.ExtraDetails).Width(150); 
+                                })
+                        .DataSource(dataSource => dataSource
+                            .Ajax()
+                            .PageSize(5)
+                            .Read(read => read.Action("DetailTemplate_HierarchyBinding_Orderline", "OrderModule", new { orderID = "#=OrderID#" }))
+                        )
+                        .Pageable()
+                        .Sortable()
+                        .ToClientTemplate())
+                        </text>
+                    );
+                    
+                })
+                .ToClientTemplate())
+</script>
+<script>
+	function dataBound() {
+		this.expandRow(this.tbody.find("tr.k-master-row").first());
+	}
+</script>
+<script id="template" type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>
+<style>
+    .k-detail-cell .k-tabstrip .demo-section {
+        padding: 0.2em;
+    }
+
+    .employee-details ul {
+        list-style: none;
+        font-style: italic;
+        margin: 15px;
+        padding: 0;
+    }
+
+        .employee-details ul li {
+            margin: 0;
+            line-height: 1.7em;
+        }
+
+    .employee-details label {
+        display: inline-block;
+        width: 90px;
+        padding-right: 10px;
+        text-align: right;
+        font-style: normal;
+        font-weight: bold;
+    }
+</style>
+
+

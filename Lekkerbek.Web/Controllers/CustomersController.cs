@@ -12,23 +12,31 @@ using Lekkerbek.Web.Models;
 using System.ComponentModel.DataAnnotations;
 using Lekkerbek.Web.NewFolder;
 using Lekkerbek.Web.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Lekkerbek.Web.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class CustomersController : Controller
     {
-        private readonly ICustomerService _customerService;
+        private UserManager<IdentityUser> _userManager;
 
-        public CustomersController( ICustomerService customerService)
+        private readonly ICustomerService _customerService;
+        private readonly IOrderService _orderService;
+
+        public CustomersController( ICustomerService customerService, IOrderService orderService, UserManager<IdentityUser> userManager)
         {
             _customerService = customerService;
+            _orderService = orderService;
+            _userManager = userManager;
         }
-
+    
         public ActionResult Index()
-        {
-          
+        { 
             return View();
         }
+ 
 
         public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
         {
@@ -61,17 +69,18 @@ namespace Lekkerbek.Web.Controllers
         public ActionResult EditingPopup_Destroy([DataSourceRequest] DataSourceRequest request, Customer customer)
 
         {
-            //if (_context.Orders.Any(ol => ol.CustomerId == customer.CustomerId))
-            //{
-            //    return View("NoDelete", customer);
-            //}
-            if (customer != null)
+            if (_orderService.Read().Any(ol => ol.CustomerId == customer.CustomerId))
+            {
+                ModelState.AddModelError("Model", "Unable to delete (present in (an) order(s))!");
+            }
+            else if (customer != null)
             {
                 _customerService.Destroy(customer);
             }
 
             return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
         }
+
 
         // GET: Customers/Create
         public IActionResult Create()
@@ -110,6 +119,7 @@ namespace Lekkerbek.Web.Controllers
             }
             
             var customer = _customerService.GetSpecificCustomer(id);
+            
             if (customer == null)
             {
                 return NotFound();

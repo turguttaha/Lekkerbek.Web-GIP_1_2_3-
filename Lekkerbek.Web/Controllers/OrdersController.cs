@@ -13,9 +13,11 @@ using System.Net;
 using Lekkerbek.Web.Services;
 using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek.Web.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class OrdersController : Controller
     {
         private readonly IOrderService _orderService;
@@ -85,6 +87,7 @@ namespace Lekkerbek.Web.Controllers
             DateTime timeSlotDateAndTime = DateTime.Now;
             ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotDateAndTime);
             return View();
+            
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

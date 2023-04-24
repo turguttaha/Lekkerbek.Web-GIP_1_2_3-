@@ -1,8 +1,12 @@
-using Lekkerbek.Web.Data;
+﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.NewFolder;
 using Lekkerbek.Web.Repositories;
 using Lekkerbek.Web.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Quartz.Impl;
+using Quartz.Spi;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,9 +29,20 @@ builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<OrdersCashierRepository>();
 builder.Services.AddTransient<IOrderCashierService, OrderCashierService>();
 
+//builder.Services.AddSingleton<IJobFactory, JobFactory>();
+//builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+//builder.Services.AddSingleton<EmailJob>();
+//builder.Services.AddSingleton(new JobSchedule(
+//    jobType: typeof(EmailJob),
+//    cronExpression: "0 0/5 * * * ?")); // Her 5 dakikada bir calısacak
+
 //Congig connection DataBase
 builder.Services.AddDbContext<LekkerbekContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<LekkerbekContext>();
 
 
 
@@ -36,9 +51,51 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Password settings.
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+
+    // Lockout settings.
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    // User settings.
+    options.User.AllowedUserNameCharacters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = false;
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Cookie settings
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
+
 var app = builder.Build();
 
+//var serviceProvider = app.Services.CreateScope().ServiceProvider;
+//var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//await roleManager.CreateAsync(new IdentityRole("Administrator"));
+//await roleManager.CreateAsync(new IdentityRole("Cashier"));
+//await roleManager.CreateAsync(new IdentityRole("Chef"));
+//await roleManager.CreateAsync(new IdentityRole("Customer"));
 
+
+//var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+//var adminUser = await userManager.FindByEmailAsync("gip_admin@gmail.com");
+//await userManager.AddToRoleAsync(adminUser, "Administrator");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -52,11 +109,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();;
 
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+app.MapRazorPages();
 app.Run();

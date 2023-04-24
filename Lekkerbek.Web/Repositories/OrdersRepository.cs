@@ -35,8 +35,8 @@ namespace Lekkerbek.Web.Repositories
                 Customer = new Customer()
                 {
                     CustomerId = order.Customer.CustomerId,
-                    FName = order.Customer.Name,
-                    LName = order.Customer.Name,
+                    FName = order.Customer.FName,
+                    LName = order.Customer.LName,
                     BtwNumber = order.Customer.BtwNumber,
                     Btw = order.Customer.Btw,
                     City = order.Customer.City,
@@ -59,10 +59,13 @@ namespace Lekkerbek.Web.Repositories
         }
         public List<OrderLine> GetOrderLines()
         {
-            return _context.OrderLines.Include(o=>o.MenuItem).ToList();
+           // return _context.OrderLines.Include(o=>o.MenuItem).ToList()
 
-        }
-        public List<Customer> GetCustomers()
+			return _context.OrderLines.ToList();
+
+
+		}
+		public List<Customer> GetCustomers()
         {
             return _context.Customers.Include(o=>o.PreferredDish).ToList();
         }
@@ -125,9 +128,9 @@ namespace Lekkerbek.Web.Repositories
         }
         public void DeleteOrder(Order order, TimeSlot timeSlot, List<OrderLine> filteredOrderLines)
         {
-            _context.Orders.Attach(order);
-            _context.Orders.Remove(order);
+            //_context.Orders.Attach(order);
             _context.TimeSlots.Remove(timeSlot);
+            _context.Orders.Remove(order);          
             foreach (var orderLine in filteredOrderLines) { _context.OrderLines.Remove(orderLine); }
             _context.SaveChanges();
         }
