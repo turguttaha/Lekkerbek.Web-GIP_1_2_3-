@@ -266,23 +266,24 @@ namespace Lekkerbek.Web.Controllers
         //For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCustomer(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> EditCustomerFinal([Bind("CustomerId,FName,LName,Email,PhoneNumber,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,Birthday,PreferredDishId")] Customer customer2)
         {
-            if (id != customer.CustomerId)
+            Customer customer1 = await GetCustomerAsync();
+            if (customer1.CustomerId != customer2.CustomerId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            //if (ModelState.IsValid)
+            //{
 
                 try
                 {
-                    _customerService.Update(customer);
+                    _customerService.Update(customer2);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_customerService.CustomerExists(customer.CustomerId))
+                    if (!_customerService.CustomerExists(customer2.CustomerId))
                     {
                         return NotFound();
                     }
@@ -294,9 +295,9 @@ namespace Lekkerbek.Web.Controllers
                 return RedirectToAction(nameof(Index));
 
 
-            }
-            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
-            return View(customer);
+           // }
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer2);
+            return RedirectToAction("EditCustomer",customer2);
         }
 
         public IActionResult MenuItemList()
