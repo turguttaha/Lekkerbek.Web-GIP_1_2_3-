@@ -25,7 +25,7 @@ namespace Lekkerbek.Web.Models
 
         [Display(Name = "Date of Birthday")]
         [DataType(DataType.Date)]
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
+        //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
 
         public DateTime? Birthday { get; set; }
 

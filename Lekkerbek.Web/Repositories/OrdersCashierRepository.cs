@@ -52,7 +52,7 @@ namespace Lekkerbek.Web.Repositories
 
         public Order GetOrder(int? id)
         {
-           return _context.Orders.Include("OrderLines.MenuItem").Include("Customer").Where(c => c.OrderID == id).ToList()[0];
+           return _context.Orders.Include("OrderLines.MenuItem").Include("Customer").Include("TimeSlot").Where(c => c.OrderID == id).ToList()[0];
         }
         public List<Customer> GetAllCustomers()
         {
@@ -62,12 +62,25 @@ namespace Lekkerbek.Web.Repositories
                 CustomerId = customer.CustomerId,
                 FName = customer.FName,
                 LName = customer.LName,
+                Email = customer.Email,
+                PhoneNumber = customer.PhoneNumber,
+                // Address = customer.Address,
+                Btw = customer.Btw,
+                BtwNumber = customer.BtwNumber,
+                PostalCode = customer.PostalCode,
+                City = customer.City,
+                StreetName = customer.StreetName,
+                ContactPerson = customer.ContactPerson,
+                FirmName = customer.FirmName,
+                Birthday = customer.Birthday,
                 PreferredDishId = customer.PreferredDishId,
+                IdentityUser = customer.IdentityUser,
                 PreferredDish = new PreferredDish()
                 {
-                    PreferredDishId = customer.PreferredDish.PreferredDishId,
+                    //PreferredDishId = customer.PreferredDish.PreferredDishId,
                     Name = customer.PreferredDish.Name
                 }
+
 
             }).ToList();
 
