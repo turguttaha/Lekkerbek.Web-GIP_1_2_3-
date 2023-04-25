@@ -46,6 +46,8 @@ namespace Lekkerbek.Web.Controllers
 
         public ActionResult DetailTemplate_HierarchyBinding_Orderline(int orderID, [DataSourceRequest] DataSourceRequest request)
         {
+            var a = _orderService.GetOrderLines();
+
             return Json(_orderService.GetOrderLines()
                 .Where(orderline => orderline.OrderID == orderID)
                 .ToDataSourceResult(request));

@@ -19,6 +19,7 @@ using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Mime;
+using Lekkerbek.Web.NewFolder;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -27,10 +28,10 @@ namespace Lekkerbek.Web.Controllers
     public class OrdersCashierController : Controller
     {
         private readonly IOrderCashierService _orderCashierService;
-
-        public OrdersCashierController(IOrderCashierService orderCashierService)
+        private readonly ICustomerService _customerService;
+        public OrdersCashierController(IOrderCashierService orderCashierService, ICustomerService customerService)
         {
-            
+            _customerService = customerService;
             _orderCashierService = orderCashierService;
         }
 
@@ -207,8 +208,33 @@ namespace Lekkerbek.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        
+        // GET: Customers/Create
+        public IActionResult Create()
+        {
 
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes();
+            return View();
+        }
+
+        // POST: Customers/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("CustomerId,FName,LName,Email,PhoneNumber,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,Birthday,PreferredDishId")] Customer customer)
+        {
+            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
+            //if (ModelState.IsValid)
+            //{
+            if (customer != null)
+            {
+                _customerService.Create(customer);
+                return RedirectToAction(nameof(Index));
+            }
+            //}
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
+            return View(customer);
+        }
 
         // Pay off page payment func sending mail
         [HttpPost]

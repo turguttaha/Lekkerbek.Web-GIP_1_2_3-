@@ -73,7 +73,7 @@ namespace Lekkerbek.Web.Controllers
             //{
             
             dish.Price = double.Parse(formDetails["Price"].ToString().Replace('.',','));//i LOVE when one side of the app works with , as a seperator, and the other with a . :D
-            Console.WriteLine(dish.Price);
+            
             _menuItemService.Create(dish);
             
                 return RedirectToAction(nameof(Index));
