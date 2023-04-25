@@ -64,7 +64,7 @@ namespace Lekkerbek.Web.Controllers
         public IActionResult SelectCustomer()
         {
             
-            ViewData["CustomerID"] = _orderService.CustomerSelectList();
+            ViewBag.CustomerId = _orderService.CustomerSelectList();
             return View();
         }
 

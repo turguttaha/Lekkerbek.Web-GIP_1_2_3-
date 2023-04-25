@@ -229,7 +229,7 @@ namespace Lekkerbek.Web.Controllers
 
                 orderFinish.Finished = true;
                 //_orderCashierService.Update(orderFinish);
-              
+                
                 String testMail = @"
 <!DOCTYPE html>
 <html>
@@ -479,18 +479,23 @@ th, td{
         </div>    
     </body>
 </html>";
-                AlternateView avHtml = AlternateView.CreateAlternateViewFromString
-                    (testMail, null, MediaTypeNames.Text.Html);
-                // Create a LinkedResource object for each embedded image
-                LinkedResource pic1 = new LinkedResource(Directory.GetCurrentDirectory()+"/wwwroot/img/Logo Lekkerbek.jpeg", MediaTypeNames.Image.Jpeg);
-                pic1.ContentId = "Logo";
-                avHtml.LinkedResources.Add(pic1);
-                ///send email
-                ///
-                MailMessage m = new MailMessage();
-                m.AlternateViews.Add(avHtml);
-                EmailService emailService = new EmailService();
-                emailService.SendMail("frederik.vandekerkhove@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
+                if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "") 
+                {
+                    
+                    AlternateView avHtml = AlternateView.CreateAlternateViewFromString
+                        (testMail, null, MediaTypeNames.Text.Html);
+                    // Create a LinkedResource object for each embedded image
+                    LinkedResource pic1 = new LinkedResource(Directory.GetCurrentDirectory() + "/wwwroot/img/Logo Lekkerbek.jpeg", MediaTypeNames.Image.Jpeg);
+                    pic1.ContentId = "Logo";
+                    avHtml.LinkedResources.Add(pic1);
+                    ///send email
+                    ///
+                    MailMessage m = new MailMessage();
+                    m.AlternateViews.Add(avHtml);
+                    EmailService emailService = new EmailService();
+                    emailService.SendMail("frederik.vandekerkhove@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
+                }
+                
                 
             }
             catch (DbUpdateConcurrencyException)
