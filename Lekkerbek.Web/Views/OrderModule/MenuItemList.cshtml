@@ -15,10 +15,15 @@
 <div class="popup">
     <div class="popuptext" id="myPopup">
         <input class="btn btn-danger mt-1 mb-1" type="Button" onclick="ClosePopUp()" value="X"><br>
-        <label for="id">Menu Item Id:</label><br>
-        <input id="id" type="number" name="id" value=" " readonly><br>
+        
+        <input id="id" type="number" name="id" value=" " readonly hidden>
+        
+        <label for="menuItemName" >Menu Item Name:</label><br>
+        <input id="menuItemName" type="text" name="menuItemName" value=" " readonly ><br>
+        
         <label for="extraDetails">Extra Details:</label><br>
         <input type="text" id="extraDetails" name="extraDetails" value=" "><br>
+        
         <label for="amount">Amount: </label><br>
         <input type="number" id="amount" name="amount" value="1" min="1"><br>
 
@@ -70,7 +75,7 @@
     columns.Bound(f => f.BtwNumber).Title("BTW %").Filterable(false);
     columns.Bound(c => c.MenuItemId)
               .Title(" ").Filterable(false)
-              .ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary'> <a onclick=\"OpenPopUp('#= MenuItemId #')\" href='\\#'> Add </a> </div>");
+              .ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary'> <a onclick=\"OpenPopUp('#= MenuItemId #' , '#= Name #')\" href='\\#'> Add </a> </div>");
 
 })
 .Editable(editable => editable.Mode(GridEditMode.PopUp))
@@ -124,12 +129,16 @@
 
 <script type="text/javascript">
 // When the user clicks on div, open the popup
-    function OpenPopUp(MenuItemId) {
+    function OpenPopUp(MenuItemId,Name) {
   var popup = document.getElementById("myPopup");
   popup.classList.add("show");
         document.getElementById("id").value = MenuItemId;
+        document.getElementById("menuItemName").value = Name;
         document.getElementById("amount").value = 1;
         document.getElementById("extraDetails").value = ` `;
+        console.log(MenuItemId);
+        console.log(Name);
+
 
 }
     function SendInfoToController() {
