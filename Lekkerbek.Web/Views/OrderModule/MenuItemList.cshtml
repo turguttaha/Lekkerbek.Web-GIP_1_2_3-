@@ -67,7 +67,7 @@
     columns.Bound(f => f.Description);
     columns.Bound(f => f.Price);
     columns.Bound(f => f.Sort);
-    columns.Bound(f => f.BtwNumber);
+    columns.Bound(f => f.BtwNumber).Title("BTW").Filterable(false);
     columns.Bound(c => c.MenuItemId)
               .Title(" ").Filterable(false)
               .ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary'> <a onclick=\"OpenPopUp('#= MenuItemId #')\" href='\\#'> Add </a> </div>");
