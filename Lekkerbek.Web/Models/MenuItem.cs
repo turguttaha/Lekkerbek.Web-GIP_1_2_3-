@@ -7,7 +7,7 @@ namespace Lekkerbek.Web.Models
         public int MenuItemId { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        [Range(0, 1000)]
+        [Range(0.00, 1000.00)]
         public double Price { get; set; }
         public double BtwNumber { get; set; }
         public string Sort { get; set; } = string.Empty;

@@ -11,6 +11,7 @@ using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -66,12 +67,15 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem dish)
+        public async Task<IActionResult> Create([Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem dish, IFormCollection formDetails)
         {
             //if (ModelState.IsValid)
             //{
-                _menuItemService.Create(dish);
-
+            
+            dish.Price = double.Parse(formDetails["Price"].ToString().Replace('.',','));//i LOVE when one side of the app works with , as a seperator, and the other with a . :D
+            Console.WriteLine(dish.Price);
+            _menuItemService.Create(dish);
+            
                 return RedirectToAction(nameof(Index));
             //}
             return View(dish);

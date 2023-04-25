@@ -17,9 +17,11 @@ using System.Threading;
 using Lekkerbek.Web.Services;
 using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Lekkerbek.Web.Controllers
 {
+    [Authorize(Roles = "Chef")]
     public class OrdersChefController : Controller
     {
         private readonly IOrderChefService _orderChefService;
