@@ -25,13 +25,23 @@
                                 //columns.Bound(p => p.Btw);
                                 //columns.Bound(p => p.BtwNumber);
                                 columns.Bound(p => p.PreferredDish.Name).Title("Preferred Dish");
-                                columns.Bound(p => p.CustomerId).Title("  ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Customers/Edit/#=CustomerId#'>Edit</a></div>");
+                                columns.Bound(p => p.CustomerId).Title("  ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Customers/Edit/#=CustomerId#'>Edit</a></div>");
                                 columns.Command(command => { command.Destroy(); }).Width(200);
 
                             })
                             .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Customers/Create'>Add New Customer</a></div>"))
                             .Pageable()
                             .Sortable()
+                            .Filterable(filterable => filterable
+    .Extra(false)
+    .Operators(operators => operators
+        .ForString(str => str.Clear()
+            .StartsWith("Starts with")
+            .IsEqualTo("Is equal to")
+            .IsNotEqualTo("Is not equal to")
+                   )
+               )
+    )
                             .Scrollable()
                             .ClientDetailTemplateId("template")
                             .HtmlAttributes(new { style = "height:550px;" })
