@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Quartz.Impl;
 using Quartz.Spi;
 using Quartz;
+using Lekkerbek.Web.Jobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,12 +32,8 @@ builder.Services.AddTransient<IOrderCashierService, OrderCashierService>();
 builder.Services.AddTransient<OrdersChefRepository>();
 builder.Services.AddTransient<IOrderChefService, OrderChefService>();
 
-//builder.Services.AddSingleton<IJobFactory, JobFactory>();
-//builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
-//builder.Services.AddSingleton<EmailJob>();
-//builder.Services.AddSingleton(new JobSchedule(
-//    jobType: typeof(EmailJob),
-//    cronExpression: "0 0/5 * * * ?")); // Her 5 dakikada bir calısacak
+
+
 
 //Congig connection DataBase
 builder.Services.AddDbContext<LekkerbekContext>(options =>
@@ -85,7 +82,28 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+
+/// Quartz job triger
+
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionScopedJobFactory();
+    // Just use the name of your job that you created in the Jobs folder.
+    var jobKey = new JobKey("SendEmailJob");
+    q.AddJob<SendEmailJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("SendEmailJob-trigger")
+        //This Cron interval can be described as "run every minute" (when second is zero)
+        .WithCronSchedule("0 * * ? * *")
+    );
+});
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+
 var app = builder.Build();
+
 
 //var serviceProvider = app.Services.CreateScope().ServiceProvider;
 //var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -98,6 +116,10 @@ var app = builder.Build();
 //var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 //var adminUser = await userManager.FindByEmailAsync("gip_admin@gmail.com");
 //await userManager.AddToRoleAsync(adminUser, "Administrator");
+
+
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
