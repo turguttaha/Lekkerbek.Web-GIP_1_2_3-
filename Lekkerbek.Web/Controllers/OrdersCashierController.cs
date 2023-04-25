@@ -37,12 +37,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders according to finished property
         public IActionResult Index()
         {
-            //var orderCashier = _orderCashierService.Read();
             return View();
-            //var lekkerBekContext = _orderCashierService.Read();
-            //return View();
-            //var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).Where(c=>c.Finished==false);
-            //return View(await lekkerbekContext.ToListAsync());
         }
         public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
         {
@@ -537,7 +532,7 @@ th, td{
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCustomer(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> EditCustomer(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,Birthday,PreferredDishId")] Customer customer)
         {
             if (id != customer.CustomerId)
             {
