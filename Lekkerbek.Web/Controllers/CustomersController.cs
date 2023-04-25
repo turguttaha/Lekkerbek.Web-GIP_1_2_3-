@@ -14,6 +14,7 @@ using Lekkerbek.Web.NewFolder;
 using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Telerik.SvgIcons;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -25,18 +26,35 @@ namespace Lekkerbek.Web.Controllers
         private readonly ICustomerService _customerService;
         private readonly IOrderService _orderService;
 
-        public CustomersController( ICustomerService customerService, IOrderService orderService, UserManager<IdentityUser> userManager)
+        public CustomersController(ICustomerService customerService, IOrderService orderService, UserManager<IdentityUser> userManager)
         {
             _customerService = customerService;
             _orderService = orderService;
             _userManager = userManager;
         }
-    
-        public ActionResult Index()
-        { 
+
+        public ActionResult DetailTemplate()
+        {
             return View();
         }
- 
+
+        public ActionResult DetailTemplate_HierarchyBinding_Customers([DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_customerService.Read().ToDataSourceResult(request));
+        }
+
+        public ActionResult DetailTemplate_HierarchyBinding_Details(int customerId, [DataSourceRequest] DataSourceRequest request)
+        {
+            return Json(_customerService.Read()
+                .Where(customer => customer.CustomerId == customerId)
+                .ToDataSourceResult(request));
+        }
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
 
         public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
         {
@@ -95,12 +113,12 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FName,LName,Email,PhoneNumber,Birthday,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> Create([Bind("FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
         {
             //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
             //if (ModelState.IsValid)
             //{
-            if(customer != null)
+            if (customer != null)
             {
                 _customerService.Create(customer);
                 return RedirectToAction(nameof(Index));
@@ -109,7 +127,7 @@ namespace Lekkerbek.Web.Controllers
             ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
             return View(customer);
         }
-        
+
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -117,9 +135,9 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-            
+
             var customer = _customerService.GetSpecificCustomer(id);
-            
+
             if (customer == null)
             {
                 return NotFound();
@@ -133,7 +151,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FName,LName,Email,PhoneNumber,Birthday,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,FName,LName,Email,PhoneNumber,Address,Birthday,PreferredDishId")] Customer customer)
         {
             if (id != customer.CustomerId)
             {
@@ -143,7 +161,7 @@ namespace Lekkerbek.Web.Controllers
             //if (ModelState.IsValid)
             // {
             //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
-            if(customer != null)
+            if (customer != null)
             {
                 try
                 {
@@ -162,12 +180,12 @@ namespace Lekkerbek.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            
+
             //}
             ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
             return View(customer);
         }
 
-        
+
     }
 }
