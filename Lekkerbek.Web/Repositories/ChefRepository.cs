@@ -26,9 +26,17 @@ namespace Lekkerbek.Web.Repositories
         {
 
             _context.Chefs.Remove(entity);
+            _context.SaveChanges();
+        }
+        public List<TimeSlot> GetTimeSlots()
+        {
+            return _context.TimeSlots.Include(c=>c.Chef).ToList();
+        }
 
-            
-
+        public void Update(Chef entity)
+        {
+            _context.Chefs.Attach(entity);
+            _context.Update(entity);
             _context.SaveChanges();
         }
     }

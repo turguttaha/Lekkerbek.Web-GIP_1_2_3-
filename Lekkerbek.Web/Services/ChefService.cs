@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Services
 {
@@ -40,10 +41,28 @@ namespace Lekkerbek.Web.Services
                 var entity = new Chef();
 
                 entity.ChefId = chef.ChefId;
+                entity.ChefName = chef.ChefName;
 
                 _repository.DeleteFromDataBase(entity);
             }
         }
+
+        public List<TimeSlot> GetTimeSlots()
+        {
+            return _repository.GetTimeSlots();
+        }
+
+        public void Update(Chef product)
+        {
+           
+                var entity = new Chef();
+
+                entity.ChefId = product.ChefId;
+                entity.ChefName = product.ChefName;
+            _repository.Update(entity);
+
+        }
+
         public IEnumerable<Chef> Read()
         {
             return GetAll();
