@@ -148,9 +148,9 @@ namespace Lekkerbek.Web.Repositories
             _context.Update(timeSlot);
             _context.SaveChanges();
 
-            var lastTimeSlot = _context.TimeSlots.OrderByDescending(t => t.Id).FirstOrDefault();
+            //var lastTimeSlot = _context.TimeSlots.OrderByDescending(t => t.Id).FirstOrDefault();
 
-            order.TimeSlotID = lastTimeSlot.Id;
+            //order.TimeSlotID = lastTimeSlot.Id;
             _context.Update(order);
             _context.SaveChanges();
         }
