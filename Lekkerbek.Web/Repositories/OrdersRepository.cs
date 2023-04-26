@@ -72,7 +72,7 @@ namespace Lekkerbek.Web.Repositories
 
         public List<TimeSlot> GetTimeSlots()
         {
-            return _context.TimeSlots.Include(o=>o.Chef).ToList();
+            return _context.TimeSlots.AsNoTracking().Include(o=>o.Chef).ToList();
         }
         public List<TimeSlot> GetUsedTimeSlots(DateTime askDateTime)
         {
@@ -129,8 +129,10 @@ namespace Lekkerbek.Web.Repositories
         public void DeleteOrder(Order order, TimeSlot timeSlot, List<OrderLine> filteredOrderLines)
         {
             //_context.Orders.Attach(order);
-            _context.TimeSlots.Remove(timeSlot);
-            _context.Orders.Remove(order);          
+            //TimeSlot ts = GetTimeSlots().Find(t => t.Id == timeSlot.Id);
+            _context.Orders.Remove(order);
+            _context.SaveChanges();
+            _context.TimeSlots.Remove(order.TimeSlot);
             foreach (var orderLine in filteredOrderLines) { _context.OrderLines.Remove(orderLine); }
             _context.SaveChanges();
         }
