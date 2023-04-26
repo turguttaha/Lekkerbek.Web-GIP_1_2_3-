@@ -57,6 +57,15 @@ namespace Lekkerbek.Web.Repositories
             // return _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).ToList();
 
         }
+        
+        public List<OrderLine> GetOrderLinesMenuItem() 
+        {
+            // return _context.OrderLines.Include(o=>o.MenuItem).ToList()
+
+            return _context.OrderLines.Include(m => m.MenuItem).ToList();
+
+
+        }
         public List<OrderLine> GetOrderLines()
         {
            // return _context.OrderLines.Include(o=>o.MenuItem).ToList()

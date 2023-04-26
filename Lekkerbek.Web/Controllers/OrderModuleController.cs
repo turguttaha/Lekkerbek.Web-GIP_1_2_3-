@@ -48,7 +48,7 @@ namespace Lekkerbek.Web.Controllers
         {
             var a = _orderService.GetOrderLines();
 
-            return Json(_orderService.GetOrderLines()
+            return Json(_orderService.GetOrderLinesMenuItem()
                 .Where(orderline => orderline.OrderID == orderID)
                 .ToDataSourceResult(request));
         }

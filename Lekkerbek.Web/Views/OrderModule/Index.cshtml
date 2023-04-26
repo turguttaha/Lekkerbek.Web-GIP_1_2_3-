@@ -55,7 +55,7 @@
                         .Name("grid_#=OrderID#") // template expression, to be evaluated in the master context
                         .Columns(columns =>
                         {
-                                    columns.Bound(o => o.MenuItemId).Title("ID").Width(100);
+                                    columns.Bound(o => o.MenuItem.Name).Title("Name").Width(100);
                                     columns.Bound(o => o.DishAmount).Width(150);
                                     columns.Bound(o => o.ExtraDetails).Width(150); 
                                 })
