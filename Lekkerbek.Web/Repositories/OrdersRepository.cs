@@ -41,7 +41,6 @@ namespace Lekkerbek.Web.Repositories
                     Btw = order.Customer.Btw,
                     City = order.Customer.City,
                     ContactPerson = order.Customer.ContactPerson,
-                    //Address = order.Customer.Address,
                     Birthday = order.Customer.Birthday,
                     LoyaltyScore = order.Customer.LoyaltyScore,
                     Email = order.Customer.Email,
