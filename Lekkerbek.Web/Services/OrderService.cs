@@ -262,7 +262,8 @@ namespace Lekkerbek.Web.Services
 
                 int x = (int)order.CustomerId;
                 order.Customer = GetSpecificCustomer(x);
-                var timeSlot = GetSpecificTimeSlot(order.TimeSlotID);
+                //var timeSlot = GetSpecificTimeSlot(order.TimeSlotID);
+                var timeSlot = order.TimeSlot;
                 DateTime startTimeSlot = timeSlot.StartTimeSlot;
                 DateTime endTimeSlot = startTimeSlot.AddMinutes(15);
                 DateTime now = DateTime.Now;
