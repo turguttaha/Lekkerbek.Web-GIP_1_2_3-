@@ -208,7 +208,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOrder(int id, [Bind("OrderID,Finished,CustomerID")] Order order,IFormCollection collection)
+        public async Task<IActionResult> EditOrder(int id, [Bind("OrderID,Finished,CustomerId")] Order order,IFormCollection collection)
         {
             if (id != order.OrderID)
             {
