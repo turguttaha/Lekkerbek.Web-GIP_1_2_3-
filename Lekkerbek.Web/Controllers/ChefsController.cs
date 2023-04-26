@@ -77,30 +77,6 @@ namespace Lekkerbek.Web.Controllers
 
             return Json(new[] { product }.ToDataSourceResult(request, ModelState));
         }
-        //// GET: Chefs/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //// POST: Customers/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("ChefId,ChefName")] Chef chef)
-        //{
-        //    //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
-        //    //if (ModelState.IsValid)
-        //    //{
-        //    if (chef != null)
-        //    {
-        //        _chefService.Create(chef);
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    //}
-        //    return View(chef);
-        //}
 
     }
 }
