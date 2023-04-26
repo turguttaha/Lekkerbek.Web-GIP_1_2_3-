@@ -31,6 +31,8 @@ builder.Services.AddTransient<OrdersCashierRepository>();
 builder.Services.AddTransient<IOrderCashierService, OrderCashierService>();
 builder.Services.AddTransient<OrdersChefRepository>();
 builder.Services.AddTransient<IOrderChefService, OrderChefService>();
+builder.Services.AddTransient<ChefRepository>();
+builder.Services.AddTransient<ChefService>();
 
 
 
