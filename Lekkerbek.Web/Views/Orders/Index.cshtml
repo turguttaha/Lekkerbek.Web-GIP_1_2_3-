@@ -14,20 +14,33 @@
     {
         columns.Bound(p => p.OrderID);
         columns.Bound(p => p.Customer.FName);
+        columns.Bound(p => p.Customer.LName);
+
         columns.Bound(p => p.Finished);
         columns.Bound(p => p.TimeSlot.StartTimeSlot).ClientTemplate("#=kendo.toString(TimeSlot.StartTimeSlot,'yyyy-MM-dd')#");
         columns.Bound(p => p.OrderID)
-                                .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/EditOrder/#=OrderID#'>Edit</a></div>");
+                                .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/EditOrder/#=OrderID#'>Edit</a></div>");
+        //columns.Bound(p => p.OrderID)
+        //                        .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Details/#=OrderID#'>Details</a></div>");
         columns.Bound(p => p.OrderID)
-                                .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Details/#=OrderID#'>Details</a></div>");
-        columns.Bound(p => p.OrderID)
-        .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Delete/#=OrderID#'>Delete</a></div>");
+        .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Delete/#=OrderID#'>Delete</a></div>");
 
     })
     .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Orders/SelectCustomer'>Add New Order</a></div>"))
     .Pageable()
     .Sortable()
+        .Filterable(filterable => filterable
+    .Extra(false)
+    .Operators(operators => operators
+        .ForString(str => str.Clear()
+            .StartsWith("Starts with")
+            .IsEqualTo("Is equal to")
+            .IsNotEqualTo("Is not equal to")
+                   )
+               )
+    )
     .Scrollable()
+    .ClientDetailTemplateId("template")
     .HtmlAttributes(new { style = "height:550px;" })
     .DataSource(dataSource => dataSource
         .Ajax()
@@ -37,8 +50,43 @@
         .Create(update => update.Action("EditingPopup_Create", "Orders"))
         .Read(read => read.Action("EditingPopup_Read", "Orders"))
         .Destroy(update => update.Action("EditingPopup_Destroy", "Orders"))
-    )
-)
+    ))
+
+<script id="template" type="text/kendo-tmpl">
+    @(Html.Kendo().TabStrip()
+                    .Name("tabStrip_#=OrderID#")
+                    .SelectedIndex(0)
+                    .Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
+                    .Items(items =>
+                    {
+                        items.Add().Text("OrderLine").Content(@<text>
+                            @(Html.Kendo().Grid<OrderLine>()
+                        .Name("grid_#=OrderID#") // template expression, to be evaluated in the master context
+                        .Columns(columns =>
+                        {
+                                    columns.Bound(o => o.MenuItem.Name).Title("Item Name").Width(100);
+                                    columns.Bound(o => o.DishAmount).Title("Amount").Width(150);
+                                    columns.Bound(o => o.ExtraDetails).Width(150);
+                                })
+                        .DataSource(dataSource => dataSource
+                            .Ajax()
+                            .PageSize(5)
+                            .Read(read => read.Action("DetailTemplate_HierarchyBinding_Orderline", "Orders", new { orderID = "#=OrderID#" }))
+                        )
+                        .Pageable()
+                        .Sortable()
+                        .ToClientTemplate())
+                            </text>
+                        );
+
+                    })
+                    .ToClientTemplate())
+</script>
+<script>
+    function dataBound() {
+        this.expandRow(this.tbody.find("tr.k-master-row").first());
+    }
+</script>
 
 <script type="text/javascript">
     function error_handler(e) {
@@ -55,3 +103,29 @@
         }
     }
 </script>
+<style>
+    .k-detail-cell .k-tabstrip .demo-section {
+        padding: 0.2em;
+    }
+
+    .employee-details ul {
+        list-style: none;
+        font-style: italic;
+        margin: 15px;
+        padding: 0;
+    }
+
+        .employee-details ul li {
+            margin: 0;
+            line-height: 1.7em;
+        }
+
+    .employee-details label {
+        display: inline-block;
+        width: 90px;
+        padding-right: 10px;
+        text-align: right;
+        font-style: normal;
+        font-weight: bold;
+    }
+</style>
