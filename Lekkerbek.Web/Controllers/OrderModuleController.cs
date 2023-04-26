@@ -48,7 +48,7 @@ namespace Lekkerbek.Web.Controllers
         {
             var a = _orderService.GetOrderLines();
 
-            return Json(_orderService.GetOrderLinesMenuItem()
+            return Json(_orderService.GetOrderLines()
                 .Where(orderline => orderline.OrderID == orderID)
                 .ToDataSourceResult(request));
         }
@@ -160,7 +160,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOrderLine(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,DishID")] OrderLine orderLine)
+        public async Task<IActionResult> EditOrderLine(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,MenuItemId")] OrderLine orderLine)
         {
             if (id != orderLine.OrderLineID)
             {

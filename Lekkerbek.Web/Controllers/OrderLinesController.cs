@@ -37,7 +37,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderLineID,ExtraDetails,DishAmount,DishID")] OrderLine orderLine)
+        public async Task<IActionResult> Create([Bind("OrderLineID,ExtraDetails,DishAmount,MenuItemId")] OrderLine orderLine)
         {
             // if (ModelState.IsValid)
             //{
