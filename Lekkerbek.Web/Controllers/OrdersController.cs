@@ -137,7 +137,7 @@ namespace Lekkerbek.Web.Controllers
             ViewData["Message"] = "Your Dish is added";
 
             ViewBag.TemproraryCart = Order.TemproraryCart;
-            ViewData["DishID"] = _orderService.MenuItemSelectList();
+            ViewData["MenuItemId"] = _orderService.MenuItemSelectList();
             ModelState.Clear();
             return View();
 
