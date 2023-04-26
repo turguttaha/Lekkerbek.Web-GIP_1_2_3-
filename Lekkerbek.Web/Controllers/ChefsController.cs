@@ -42,7 +42,7 @@ namespace Lekkerbek.Web.Controllers
 
         {
             //can't delete
-            if (_chefService.Read().Any(ol => ol.ChefId == chef.ChefId))
+            if (_chefService.GetTimeSlots().Any(ol => ol.ChefId == chef.ChefId))
             {
                 ModelState.AddModelError("Model", "Unable to delete (present in (an) order(s))!");
             }
@@ -53,29 +53,29 @@ namespace Lekkerbek.Web.Controllers
 
             return Json(new[] { chef }.ToDataSourceResult(request, ModelState));
         }
-        // GET: Chefs/Create
-        public IActionResult Create()
+
+        
+        public ActionResult EditingPopup_Create([DataSourceRequest] DataSourceRequest request, Chef product)
         {
-            return View();
+            ModelState.Remove("TimeSlot");
+
+            if (product != null && ModelState.IsValid)
+            {
+                _chefService.Create(product);
+            }
+
+            return Json(new[] { product }.ToDataSourceResult(request, ModelState));
         }
 
-        // POST: Customers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ChefId,ChefName")] Chef chef)
+        
+        public ActionResult EditingPopup_Update([DataSourceRequest] DataSourceRequest request, Chef product)
         {
-            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
-            //if (ModelState.IsValid)
-            //{
-            if (chef != null)
+            if (product != null && ModelState.IsValid)
             {
-                _chefService.Create(chef);
-                return RedirectToAction(nameof(Index));
+                _chefService.Update(product);
             }
-            //}
-            return View(chef);
+
+            return Json(new[] { product }.ToDataSourceResult(request, ModelState));
         }
 
     }
