@@ -10,8 +10,21 @@ namespace Lekkerbek.Web.Jobs
     public class SendEmailJob : IJob
     {
         private readonly LekkerbekContext _context = new LekkerbekContext();
+        private readonly IOrderService _orderService;
+
+        public SendEmailJob(IOrderService orderService)
+        {
+            _orderService = orderService;
+        }
         private List<Order> GetOrders()
         {
+            if (_orderService == null)
+            {
+                Console.WriteLine("NOT WORKING");
+            } else
+            {
+                Console.WriteLine("WORKING");
+            }
             //_context.Orders.Find(id);
             return _context.Orders.Select(order => new Order
             //This is another way to make a new object
@@ -36,7 +49,6 @@ namespace Lekkerbek.Web.Jobs
                     Btw = order.Customer.Btw,
                     City = order.Customer.City,
                     ContactPerson = order.Customer.ContactPerson,
-                    //Address = order.Customer.Address,
                     Birthday = order.Customer.Birthday,
                     LoyaltyScore = order.Customer.LoyaltyScore,
                     Email = order.Customer.Email,

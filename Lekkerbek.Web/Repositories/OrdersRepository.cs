@@ -59,12 +59,32 @@ namespace Lekkerbek.Web.Repositories
         }
         public List<OrderLine> GetOrderLines()
         {
-           // return _context.OrderLines.Include(o=>o.MenuItem).ToList()
+            //return _context.OrderLines.Include(o => o.MenuItem).ToList();
 
-			return _context.OrderLines.ToList();
+			//return _context.OrderLines.ToList();
 
+            var result = _context.OrderLines.Select(orderLine => new OrderLine
+            //This is another way to make a new object
+            {
+                OrderID = orderLine.OrderID,
+                OrderLineID = orderLine.OrderLineID,
+                ExtraDetails = orderLine.ExtraDetails,
+                DishAmount = orderLine.DishAmount,
+                MenuItemId = orderLine.MenuItemId,
+                MenuItem = new MenuItem()
+                {
+                    MenuItemId = orderLine.MenuItem.MenuItemId,
+                    Name = orderLine.MenuItem.Name,
+                    Description = orderLine.MenuItem.Description,
+                    Price = orderLine.MenuItem.Price,
+                    BtwNumber = orderLine.MenuItem.BtwNumber,
+                    Sort = orderLine.MenuItem.Sort,
+                },
 
-		}
+            }).ToList();
+            return result;
+
+        }
 		public List<Customer> GetCustomers()
         {
             return _context.Customers.Include(o=>o.PreferredDish).ToList();

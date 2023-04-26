@@ -93,7 +93,7 @@ builder.Services.AddQuartz(q =>
     // Just use the name of your job that you created in the Jobs folder.
     var jobKey = new JobKey("SendEmailJob");
     q.AddJob<SendEmailJob>(opts => opts.WithIdentity(jobKey));
-
+    
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("SendEmailJob-trigger")
@@ -103,6 +103,7 @@ builder.Services.AddQuartz(q =>
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
+builder.Services.AddScoped<SendEmailJob>();
 
 var app = builder.Build();
 
