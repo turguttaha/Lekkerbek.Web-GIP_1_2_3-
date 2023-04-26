@@ -249,7 +249,7 @@ namespace Lekkerbek.Web.Controllers
             {
 
                 orderFinish.Finished = true;
-                //_orderCashierService.Update(orderFinish);
+                _orderCashierService.Update(orderFinish);
                 
                 String testMail = @"
 <!DOCTYPE html>
@@ -531,8 +531,9 @@ th, td{
                 }
             }
 
-           // }
-
+            // }
+           
+            Thread.Sleep(5000);
             return RedirectToAction(nameof(Index));
         }
 
