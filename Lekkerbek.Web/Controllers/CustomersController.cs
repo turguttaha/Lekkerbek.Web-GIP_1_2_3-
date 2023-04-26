@@ -87,6 +87,7 @@ namespace Lekkerbek.Web.Controllers
         public ActionResult EditingPopup_Destroy([DataSourceRequest] DataSourceRequest request, Customer customer)
 
         {
+            ModelState.Remove("Birthday");
             if (_orderService.Read().Any(ol => ol.CustomerId == customer.CustomerId))
             {
                 ModelState.AddModelError("Model", "Unable to delete (present in (an) order(s))!");

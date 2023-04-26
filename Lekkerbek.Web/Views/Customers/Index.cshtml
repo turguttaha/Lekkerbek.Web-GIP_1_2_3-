@@ -49,11 +49,11 @@
                                 .Ajax()
                                 .PageSize(20)
                                 .Events(events => events.Error("error_handler"))
-                                //.Model(model => model.Id(p => p.CustomerId))
+                                .Model(model => model.Id(p => p.CustomerId))
                                 //.Create(update => update.Action("EditingPopup_Create", "Customers"))
                                 .Read(read => read.Action("DetailTemplate_HierarchyBinding_Customers", "Customers"))
                             //.Read(read => read.Action("EditingPopup_Read", "Customers"))
-                            //.Destroy(update => update.Action("EditingPopup_Destroy", "Customers"))
+                            .Destroy(update => update.Action("EditingPopup_Destroy", "Customers"))
                             ))
 <script id="template" type="text/kendo-tmpl">
     @(Html.Kendo().TabStrip()
@@ -74,7 +74,7 @@
                                         columns.Bound(p => p.Btw).Width(100); 
                                         columns.Bound(p => p.BtwNumber);
 
-                                        columns.Bound(p => p.Birthday);
+                                        columns.Bound(p => p.Birthday).Format("{0:dd/MM/yyyy}");
                                     })
                         .DataSource(dataSource => dataSource
                             .Ajax()
