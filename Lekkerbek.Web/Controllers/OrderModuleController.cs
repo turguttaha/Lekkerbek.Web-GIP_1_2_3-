@@ -107,14 +107,19 @@ namespace Lekkerbek.Web.Controllers
             //{
             try
             {
+                var orderForT = _orderService.GetSpecificOrder(id);
 
-                TimeSlot timeSlot = new TimeSlot();
+                var timeSlotItem = orderForT.TimeSlot;
+
+                orderForT.Finished=order.Finished;
+                orderForT.CustomerId = order.CustomerId;
+
                 string x = collection["TimeSlotsSelectList"];
                 String selectedDate = collection["TimeSlotID"] + " " + x;
                 DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
-                timeSlot.StartTimeSlot = timeSlotDateAndTime;
+                timeSlotItem.StartTimeSlot = timeSlotDateAndTime;
 
-                _orderService.UpdateOrder(timeSlot, order);
+                _orderService.UpdateOrder(timeSlotItem, orderForT);
 
             }
             catch (DbUpdateConcurrencyException)
