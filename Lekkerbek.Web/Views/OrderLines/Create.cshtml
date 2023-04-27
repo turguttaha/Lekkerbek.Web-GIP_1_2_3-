@@ -42,7 +42,15 @@
 else
 {
     <div>
-        <a asp-controller="OrderModule" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
+        @if (User.IsInRole("Administrator"))
+        {
+            <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
+        }
+        @if (User.IsInRole("Customer"))
+        {
+            <a asp-controller="OrderModule" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
+
+        }
     </div>
 }
 

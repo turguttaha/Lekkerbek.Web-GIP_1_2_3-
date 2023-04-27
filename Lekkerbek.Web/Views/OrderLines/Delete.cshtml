@@ -44,13 +44,13 @@
         <input type="submit" value="Delete" class="btn btn-danger" /> |
     </form>
 
-    @if (User.IsInRole("Adinistrator"))
+    @if (User.IsInRole("Administrator"))
     {
         <div>
             <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@Model.OrderID">Back to Order</a>
         </div>
     }
-    else
+    @if (User.IsInRole("Customer"))
     {
         <div>
             <a asp-controller="OrderModule" asp-action="EditOrder" asp-route-id="@Model.OrderID">Back to Order</a>

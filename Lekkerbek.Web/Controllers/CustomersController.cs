@@ -84,7 +84,7 @@ namespace Lekkerbek.Web.Controllers
         //}
 
         // [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult EditingPopup_Destroy([DataSourceRequest] DataSourceRequest request, Customer customer)
+        public async Task<ActionResult> EditingPopup_DestroyAsync([DataSourceRequest] DataSourceRequest request, Customer customer)
 
         {
             ModelState.Remove("Birthday");
@@ -94,7 +94,13 @@ namespace Lekkerbek.Web.Controllers
             }
             else if (customer != null)
             {
+                var user = await _userManager.FindByEmailAsync(customer.Email);
                 _customerService.Destroy(customer);
+                if (user!=null)
+                {
+                    var result = await _userManager.DeleteAsync(user);
+                }
+                
             }
 
             return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
