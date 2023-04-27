@@ -378,7 +378,7 @@ namespace Lekkerbek.Web.Controllers
                 Customer customer = await GetCustomerAsync();
                 customer.StreetName = street;
                 customer.City = city;
-                customer.PostalCode = int.Parse(postalCode);
+                customer.PostalCode = postalCode;
 
                 _customerService.Update(customer);
                 return Json(new { status = "Your adress is succesfully updated" });
