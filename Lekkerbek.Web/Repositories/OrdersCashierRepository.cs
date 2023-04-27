@@ -104,7 +104,7 @@ namespace Lekkerbek.Web.Repositories
             {
                 OrderID = order.OrderID,
                 CustomerId = order.CustomerId
-            }).Where(c => c.OrderID == id).ToList();
+            }).Where(c => c.CustomerId == id).ToList();
         }
 
         public List<OrderLine> getAllOrderLines(int? id)
