@@ -28,7 +28,7 @@ namespace Lekkerbek.Web.Repositories
                 TimeSlotID = order.TimeSlotID,
                 TimeSlot = new TimeSlot()
                 {
-                    StartTimeSlot = order.TimeSlot.StartTimeSlot,
+                    StartTimeSlot = (DateTime)order.TimeSlot.StartTimeSlot,
                     ChefId = order.TimeSlot.ChefId,
                     Id = order.TimeSlot.Id
                 },
