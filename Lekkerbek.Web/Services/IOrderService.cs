@@ -19,6 +19,7 @@ namespace Lekkerbek.Web.Services
         public void UpdateOrder(TimeSlot timeSlot, Order order);
         public bool OrderExists(int id);
         public List<OrderLine> GetOrderLines();
+        public List<OrderLine> GetOrderLinesMenuItem();
         public OrderLine GetSpecificOrderLine(int? id);
         public void UpdateOrderLine(OrderLine orderLine);
         public bool OrderLineExists(int id);

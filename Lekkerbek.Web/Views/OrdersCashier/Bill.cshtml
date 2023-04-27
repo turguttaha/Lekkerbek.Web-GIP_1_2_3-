@@ -131,7 +131,7 @@
                                             </td>
                                             <td>
 
-                                                <input class="form-control" value="@ViewBag.totalPrice" id="discountField" asp-for="Customer" />
+                                                <input class="form-control" value="@ViewBag.totalPrice" id="discountField" asp-for="Customer" readonly />
                                             </td>
                                             <td></td>
                                         </tr>
@@ -153,7 +153,7 @@
                                             </td>
                                             <td>
 
-                                                <input class="form-control" value="@ViewBag.totalPriceBTW" id="discountField" asp-for="Customer" />
+                            <input class="form-control" value="@ViewBag.totalPriceBTW" id="discountField" asp-for="Customer" readonly />
                                             </td>
                                             <td></td>
                                         </tr>
@@ -239,7 +239,7 @@
                                             </td>
                                             <td>
 
-                                                <input class="form-control" value="@ViewBag.totalPrice" id="discountField" asp-for="Customer" />
+                            <input class="form-control" asp-for="Customer" value="@ViewBag.totalPrice" id="discountField" readonly />
                                             </td>
                                             <td></td>
                                         </tr>
@@ -259,7 +259,7 @@
                                             </td>
                                             <td>
 
-                                                <input class="form-control" value="@ViewBag.totalPrice" id="discountField" asp-for="Customer" />
+                            <input class="form-control" asp-for="Customer" value="@ViewBag.totalPrice" id="discountField" readonly />
                                             </td>
                                             <td></td>
                                         </tr>
@@ -272,8 +272,11 @@
 
     </tbody>
 </table>
+
+    <p id="messagePaid" class="fw-bolder text-danger"></p>
+
 <form asp-action="Pay" asp-route-id="@Model?.OrderID">
-    <input type="submit" value="Pay" class="btn btn-primary mt-3" />
+    <input id="buttonpay" type="submit" value="Pay" class="btn btn-primary mt-3" />
 </form>
 <div>
     <a asp-action="Index">Back to List</a>
@@ -285,21 +288,19 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
-    //$(function () {
-    //    $("#btwCheck").click(function () {
-    //        if (document.getElementById("noBTW").style.visibility == "visible")
-    //        {
-    //            document.getElementById("BTW").style.visibility = "visible";
-    //            document.getElementById("noBTW").style.visibility = "hidden";
-    //        }
-    //        else
-    //        {
-    //            document.getElementById("noBTW").style.visibility = "visible";
-    //            document.getElementById("BTW").style.visibility = "hidden";
-    //        }
-            
-    //    });
-    //})
+    document.getElementById("buttonpay").addEventListener('click', function () {
+        console.log("clicked");
+        
+        var countDown = 5;
+        var interval = setInterval(function () {
+            countDown--;
+            if (countDown === 0) {
+                clearInterval(interval);
+            } else {
+                document.getElementById("messagePaid").textContent = "Payment process completed. You are directed to the order list... " + countDown;
+            }
+        }, 1000);
+    });
 
     document.getElementById("btwCheck").addEventListener('change', function () {
             if (this.checked) {

@@ -140,6 +140,10 @@ namespace Lekkerbek.Web.Services
         {
             return _repository.GetOrderLines();
         }
+        public List<OrderLine> GetOrderLinesMenuItem()
+        {
+            return _repository.GetOrderLinesMenuItem();
+        }
         public OrderLine GetSpecificOrderLine(int? id)
         {
             return _repository.GetOrderLines().Find(o=>o.OrderLineID == id);
@@ -151,7 +155,7 @@ namespace Lekkerbek.Web.Services
                 return new List<OrderLine>();
             }
             //filtering orderlines occording to orderId
-            List<OrderLine> allOrderLines = _repository.GetOrderLines();
+            List<OrderLine> allOrderLines = _repository.GetOrderLinesMenuItem();
             List<OrderLine> filteredOrderLines = new List<OrderLine>();
             foreach (var orderLine in allOrderLines.Where(c => c.OrderID == orderId))
             {

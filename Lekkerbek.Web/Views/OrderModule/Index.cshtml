@@ -16,17 +16,28 @@
     {
         columns.Bound(p => p.OrderID);
         columns.Bound(p => p.Customer.FName);
+        columns.Bound(p => p.Customer.LName);
+
         columns.Bound(p => p.Finished);
-        columns.Bound(p => p.TimeSlot.StartTimeSlot);
+        columns.Bound(p => p.TimeSlot.StartTimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}");
         columns.Bound(p => p.OrderID)
-               .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/EditOrder/#=OrderID#'>Edit</a></div>");
+               .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/EditOrder/#=OrderID#'>Edit</a></div>");
         columns.Bound(p => p.OrderID)
-               .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/Delete/#=OrderID#'>Delete</a></div>");
+               .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/Delete/#=OrderID#'>Delete</a></div>");
 
     })
-    @*.ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Orders/SelectCustomer'>Add New Order</a></div>"))*@
     .Pageable()
     .Sortable()
+    .Filterable(filterable => filterable
+    .Extra(false)
+    .Operators(operators => operators
+        .ForString(str => str.Clear()
+            .StartsWith("Starts with")
+            .IsEqualTo("Is equal to")
+            .IsNotEqualTo("Is not equal to")
+                   )
+               )
+    )
     .Scrollable()
     .ClientDetailTemplateId("template")
     .HtmlAttributes(new { style = "height:550px;" })
@@ -38,9 +49,7 @@
         @*.Create(update => update.Action("EditingPopup_Create", "Orders"))*@
         .Read(read => read.Action("DetailTemplate_HierarchyBinding_Order", "OrderModule"))
         @*.Destroy(update => update.Action("EditingPopup_Destroy", "Orders"))*@
-    )
-    .Events(events => events.DataBound("dataBound"))
-)
+    ))
 
 
 <script id="template" type="text/kendo-tmpl">
@@ -55,9 +64,8 @@
                         .Name("grid_#=OrderID#") // template expression, to be evaluated in the master context
                         .Columns(columns =>
                         {
-                            columns.Bound(o => o.MenuItem.Name).Title("Dish Name").Width(100);
-                            //columns.Bound(m => m.).Title("ID").Width(100);
-                            columns.Bound(o => o.DishAmount).Width(150);
+                            columns.Bound(o => o.MenuItem.Name).Title("Item Name").Width(100);
+                                    columns.Bound(o => o.DishAmount).Title("Amount").Width(150);
                             columns.Bound(o => o.ExtraDetails).Width(150); 
                                 })
                         .DataSource(dataSource => dataSource

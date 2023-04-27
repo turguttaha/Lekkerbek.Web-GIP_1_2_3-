@@ -67,18 +67,18 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem dish, IFormCollection formDetails)
+        public async Task<IActionResult> Create([Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem, IFormCollection formDetails)
         {
             //if (ModelState.IsValid)
             //{
             
-            dish.Price = double.Parse(formDetails["Price"].ToString().Replace('.',','));//i LOVE when one side of the app works with , as a seperator, and the other with a . :D
+            menuItem.Price = double.Parse(formDetails["Price"].ToString().Replace('.',','));//i LOVE when one side of the app works with , as a seperator, and the other with a . :D
             
-            _menuItemService.Create(dish);
+            _menuItemService.Create(menuItem);
             
                 return RedirectToAction(nameof(Index));
             //}
-            return View(dish);
+            return View(menuItem);
         }
 
         // GET: Dishes/Edit/5
@@ -102,7 +102,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem)
+        public async Task<IActionResult> Edit(int id, [Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem, IFormCollection formDetails)
         {
             if (id != menuItem.MenuItemId)
             {
@@ -113,6 +113,7 @@ namespace Lekkerbek.Web.Controllers
           //  {
                 try
                 {
+                    menuItem.Price = double.Parse(formDetails["Price"].ToString().Replace('.', ','));
                     _menuItemService.Update(menuItem);
                    
                 }

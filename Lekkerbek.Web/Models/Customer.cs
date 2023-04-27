@@ -46,7 +46,7 @@ namespace Lekkerbek.Web.Models
         public string? City { get; set; } = string.Empty;
 
         [Display(Name = "Postal code")]
-        public int? PostalCode { get; set; }
+        public string? PostalCode { get; set; }
 
         [StringLength(20, ErrorMessage = "Your BTW can contain only 20 characters")]
         [Display(Name = "BTW")]

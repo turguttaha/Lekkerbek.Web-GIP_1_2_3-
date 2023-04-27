@@ -28,6 +28,8 @@ namespace Lekkerbek.Web.Controllers
         }
 
         // GET: Orders
+
+        //Read func for Kendo
         public IActionResult Index()
         {
             return View();
@@ -37,26 +39,14 @@ namespace Lekkerbek.Web.Controllers
             return Json(_orderService.Read().ToDataSourceResult(request));
         }
 
-        //Read func for Kendo
-
-        // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: OrderLines
+        public ActionResult DetailTemplate_HierarchyBinding_Orderline(int orderID, [DataSourceRequest] DataSourceRequest request)
         {
-            if (id == null || _orderService.Read() == null)
-            {
-                return NotFound();
-            }
+            var a = _orderService.GetOrderLines();
 
-            var order = _orderService.GetSpecificOrder(id);
-
-            if (order == null)
-            {
-                return NotFound();
-            }
-            ViewBag.listOfTheOrder  = _orderService.FilterOrderLines(id);
-
-
-            return View(order);
+            return Json(_orderService.GetOrderLines()
+                .Where(orderline => orderline.OrderID == orderID)
+                .ToDataSourceResult(request));
         }
 
         // !!!!Creating Order Starts here!!!!
@@ -137,7 +127,7 @@ namespace Lekkerbek.Web.Controllers
             ViewData["Message"] = "Your Dish is added";
 
             ViewBag.TemproraryCart = Order.TemproraryCart;
-            ViewData["DishID"] = _orderService.MenuItemSelectList();
+            ViewData["MenuItemId"] = _orderService.MenuItemSelectList();
             ModelState.Clear();
             return View();
 
@@ -208,7 +198,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOrder(int id, [Bind("OrderID,Finished,CustomerID")] Order order,IFormCollection collection)
+        public async Task<IActionResult> EditOrder(int id, [Bind("OrderID,Finished,CustomerId")] Order order,IFormCollection collection)
         {
             if (id != order.OrderID)
             {
@@ -219,16 +209,21 @@ namespace Lekkerbek.Web.Controllers
             //{
                 try
                 {
+                var orderForT = _orderService.GetSpecificOrder(id);
 
-                TimeSlot timeSlot = new TimeSlot();               
+                var timeSlotItem = orderForT.TimeSlot;
+
+                orderForT.Finished = order.Finished;
+                orderForT.CustomerId = order.CustomerId;
+
                 string x = collection["TimeSlotsSelectList"];
                 String selectedDate = collection["TimeSlotID"] + " " + x;
                 DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
-                timeSlot.StartTimeSlot = timeSlotDateAndTime;
+                timeSlotItem.StartTimeSlot = timeSlotDateAndTime;
 
-                _orderService.UpdateOrder(timeSlot, order);
+                _orderService.UpdateOrder(timeSlotItem, orderForT);
 
-                }
+            }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!_orderService.OrderExists(order.OrderID))
@@ -272,7 +267,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOrderLine(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,DishID")] OrderLine orderLine)
+        public async Task<IActionResult> EditOrderLine(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,MenuItemId")] OrderLine orderLine)
         {
             if (id != orderLine.OrderLineID)
             {

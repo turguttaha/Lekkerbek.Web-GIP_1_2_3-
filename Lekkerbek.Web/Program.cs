@@ -63,7 +63,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
 
     // Lockout settings.
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(60);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
 
@@ -77,7 +77,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     // Cookie settings
     options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
 
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
@@ -93,7 +93,7 @@ builder.Services.AddQuartz(q =>
     // Just use the name of your job that you created in the Jobs folder.
     var jobKey = new JobKey("SendEmailJob");
     q.AddJob<SendEmailJob>(opts => opts.WithIdentity(jobKey));
-
+    
     q.AddTrigger(opts => opts
         .ForJob(jobKey)
         .WithIdentity("SendEmailJob-trigger")
@@ -103,6 +103,7 @@ builder.Services.AddQuartz(q =>
 });
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
+builder.Services.AddScoped<SendEmailJob>();
 
 var app = builder.Build();
 

@@ -107,14 +107,19 @@ namespace Lekkerbek.Web.Controllers
             //{
             try
             {
+                var orderForT = _orderService.GetSpecificOrder(id);
 
-                TimeSlot timeSlot = new TimeSlot();
+                var timeSlotItem = orderForT.TimeSlot;
+
+                orderForT.Finished=order.Finished;
+                orderForT.CustomerId = order.CustomerId;
+
                 string x = collection["TimeSlotsSelectList"];
                 String selectedDate = collection["TimeSlotID"] + " " + x;
                 DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
-                timeSlot.StartTimeSlot = timeSlotDateAndTime;
+                timeSlotItem.StartTimeSlot = timeSlotDateAndTime;
 
-                _orderService.UpdateOrder(timeSlot, order);
+                _orderService.UpdateOrder(timeSlotItem, orderForT);
 
             }
             catch (DbUpdateConcurrencyException)
@@ -160,7 +165,7 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOrderLine(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,DishID")] OrderLine orderLine)
+        public async Task<IActionResult> EditOrderLine(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,MenuItemId")] OrderLine orderLine)
         {
             if (id != orderLine.OrderLineID)
             {
@@ -373,7 +378,7 @@ namespace Lekkerbek.Web.Controllers
                 Customer customer = await GetCustomerAsync();
                 customer.StreetName = street;
                 customer.City = city;
-                customer.PostalCode = int.Parse(postalCode);
+                customer.PostalCode = postalCode;
 
                 _customerService.Update(customer);
                 return Json(new { status = "Your adress is succesfully updated" });

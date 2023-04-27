@@ -41,7 +41,6 @@ namespace Lekkerbek.Web.Repositories
                     Btw = order.Customer.Btw,
                     City = order.Customer.City,
                     ContactPerson = order.Customer.ContactPerson,
-                    //Address = order.Customer.Address,
                     Birthday = order.Customer.Birthday,
                     LoyaltyScore = order.Customer.LoyaltyScore,
                     Email = order.Customer.Email,
@@ -57,14 +56,43 @@ namespace Lekkerbek.Web.Repositories
             // return _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).ToList();
 
         }
+        
+        public List<OrderLine> GetOrderLinesMenuItem() 
+        {
+            // return _context.OrderLines.Include(o=>o.MenuItem).ToList()
+
+            return _context.OrderLines.Include(m => m.MenuItem).ToList();
+
+
+        }
         public List<OrderLine> GetOrderLines()
         {
-           // return _context.OrderLines.Include(o=>o.MenuItem).ToList()
+            //return _context.OrderLines.Include(o => o.MenuItem).ToList();
 
-			return _context.OrderLines.ToList();
+			//return _context.OrderLines.ToList();
 
+            var result = _context.OrderLines.Select(orderLine => new OrderLine
+            //This is another way to make a new object
+            {
+                OrderID = orderLine.OrderID,
+                OrderLineID = orderLine.OrderLineID,
+                ExtraDetails = orderLine.ExtraDetails,
+                DishAmount = orderLine.DishAmount,
+                MenuItemId = orderLine.MenuItemId,
+                MenuItem = new MenuItem()
+                {
+                    MenuItemId = orderLine.MenuItem.MenuItemId,
+                    Name = orderLine.MenuItem.Name,
+                    Description = orderLine.MenuItem.Description,
+                    Price = orderLine.MenuItem.Price,
+                    BtwNumber = orderLine.MenuItem.BtwNumber,
+                    Sort = orderLine.MenuItem.Sort,
+                },
 
-		}
+            }).ToList();
+            return result;
+
+        }
 		public List<Customer> GetCustomers()
         {
             return _context.Customers.Include(o=>o.PreferredDish).ToList();
@@ -120,9 +148,9 @@ namespace Lekkerbek.Web.Repositories
             _context.Update(timeSlot);
             _context.SaveChanges();
 
-            var lastTimeSlot = _context.TimeSlots.OrderByDescending(t => t.Id).FirstOrDefault();
+            //var lastTimeSlot = _context.TimeSlots.OrderByDescending(t => t.Id).FirstOrDefault();
 
-            order.TimeSlotID = lastTimeSlot.Id;
+            //order.TimeSlotID = lastTimeSlot.Id;
             _context.Update(order);
             _context.SaveChanges();
         }

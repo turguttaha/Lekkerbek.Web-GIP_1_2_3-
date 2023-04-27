@@ -88,8 +88,8 @@ namespace Lekkerbek.Web.Controllers
                 totalPrice += oorder.MenuItem.Price * oorder.DishAmount;
                 totalPriceBTW += oorder.MenuItem.Price * oorder.DishAmount * (1 + (oorder.MenuItem.BtwNumber / 100));
             }
-            ViewBag.totalPrice = totalPrice;
-            ViewBag.totalPriceBTW = totalPriceBTW;
+            ViewBag.totalPrice = Math.Round(totalPrice, 2);
+            ViewBag.totalPriceBTW = Math.Round(totalPriceBTW,2);
 
             //var orderCount = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
             var orderCount = _orderCashierService.GetOrders(order.CustomerId);
@@ -144,7 +144,7 @@ namespace Lekkerbek.Web.Controllers
                 {
                     
                     orderFinish.Discount = int.Parse(collection["Discount"]);
-                    ViewBag.totalPrice = totalPrice * (100 - orderFinish.Discount) / 100;
+                    ViewBag.totalPrice = Math.Round((double)(totalPrice * (100 - orderFinish.Discount) / 100), 2);
                     ViewBag.discount = discount;
 
                     //_context.Update(orderFinish);
@@ -249,9 +249,9 @@ namespace Lekkerbek.Web.Controllers
             {
 
                 orderFinish.Finished = true;
-                //_orderCashierService.Update(orderFinish);
-                
-                String testMail = @"
+                _orderCashierService.Update(orderFinish);
+
+                string testMail = @"
 <!DOCTYPE html>
 <html>
     <head>
@@ -354,13 +354,10 @@ th, td{
                 </div>
                 <div class=""Grid"">
                     <div class=""Left-bottom"">
-                        <p>Number : 2023-01</p>
-                        <p>Date : "+DateTime.Now.ToString()+ @"</p>
+                        <p>Number : " + orderFinish.OrderID + @"</p>
+                        <p>Date : " + DateTime.Now.ToString() + @"</p>
                     </div>
                     <div class=""Right"">
-                        <h2>"+ orderFinish.Customer.FirmName+ @"</h2>
-                        <p>"+ orderFinish.Customer.StreetName+ " "+ orderFinish.Customer.PostalCode + " " + orderFinish.Customer.City + @"</p>
-                        <p>B.T.W.-nr. :" + orderFinish.Customer.Btw+orderFinish.Customer.BtwNumber +@"</p>
                     </div>
                 </div>
             </header>
@@ -374,6 +371,9 @@ th, td{
                         </th>
                         <th>
                             Dish Price
+                        </th>
+<th>
+                            BTW
                         </th>
                         <th>
                             Dish Amount
@@ -401,7 +401,7 @@ th, td{
                 double totalPriceBTW = 0;
                 foreach (var item in filteredOrderLines)
                 {
-                    /*
+                    
                             testMail += @" <tr>
                         <td>
                             " + item.MenuItem.Name + @"
@@ -414,24 +414,7 @@ th, td{
                             " + item.DishAmount + @"
                         </td>
                         <td>
-                            " + item.MenuItem.Price * item.DishAmount + @"
-                        </td>
-                        <td>
-                            
-                        </td>
-                    </tr>";*/
-                    testMail += @" <tr>
-                        <td>
-                            " + item.MenuItem.Name + @"
-                        </td>
-                        <td>
-                            " + item.MenuItem.Price + @"
-                        </td>
-                        <td>
-                            " + item.DishAmount + @"
-                        </td>
-                        <td>
-                            " + item.MenuItem.Price * item.DishAmount + @"
+                            " + item.MenuItem.Price * item.DishAmount *(1+ item.MenuItem.BtwNumber/100) + @"
                         </td>
                     </tr>";
 
@@ -461,9 +444,11 @@ th, td{
                         </td>
                         <td>
                         </td>
+<td>
+                        </td>
                     
                             <td>
-                                "+ orderFinishMail.Discount+ @"
+                                " + orderFinishMail.Discount+ @"
                             </td>
                     </tr>";
                     totalPrice = totalPrice * (double)(100 - orderFinish.Discount) / 100;
@@ -481,9 +466,269 @@ th, td{
                     <td>
 
                     </td>
+<td>
+
+                    </td>
 
                     <td>
-                        " + totalPrice + @"
+                        " + Math.Round(totalPriceBTW,2) + @"
+                    </td>
+                    
+                </tr>
+               </tbody></table></main>
+                <div class=""Above-footer"">
+                    
+                </div>
+            <footer>
+                <p>De Lekkerbek- Culinaire Kringstraat108/2- 3530 HOUTHALEN - TEL. : 0475/22.22.41</p>
+                <p>B.T.W. : BE 04763.352.133        COMPANYNR : 0763.352.133</p>
+                <p>PNB PARIBAS FORTIS : IBAN BE19 0013 5497 5612   -   BIC GEPA BE BB</p>
+            </footer>
+            
+        </div>    
+    </body>
+</html>";
+                if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "") 
+                {
+                    testMail = @"
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>* {
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#Container{
+    width: 50em;
+    margin: 0 auto;
+    background-color: white;
+}
+
+h1{
+    margin-left: 4px;
+}
+
+header{
+    padding: 10px;
+    position: relative;
+}
+
+main{
+    border-style: solid;
+    margin: 20px;
+}
+
+.Left{
+    margin: 0;
+    width: 250px;
+    margin-left: 10px;
+}
+
+.Left-bottom{
+    margin-top: 50px;
+    margin-left: 10px;
+    border-style: solid;
+    width: 250px;
+    padding-left: 10px;
+}
+
+.Grid{
+    display: flex;
+}
+
+.Right{
+    margin-right: 10px;
+    margin-left: 150px;
+}
+
+img{
+    width: 300px;
+    height: 150px;
+}
+
+div{
+    display: block;
+}
+
+body{
+    background-color: gray;
+}
+
+.Above-footer{
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+footer{
+    display: flex;
+    align-items: center;
+    border-top: 2px solid black;
+    font-size: 12px;
+    padding: 5px;
+}
+
+table{
+    border-collapse: collapse;
+}
+
+th{
+    background-color: lightgray;
+    border-bottom: 1px solid black;
+}
+
+th, td{
+    width:250px;
+    text-align:center;
+    padding:5px;
+    border-right: 1px solid black;
+}</style>
+    </head>
+    <body>
+        <div id=""Container"">
+            <header>
+                <div class=""Left"">
+                    <img src=""cid:Logo"" alt=""Logo"">
+                    <H1>Bill</H1>
+                </div>
+                <div class=""Grid"">
+                    <div class=""Left-bottom"">
+                        <p>Number : " + orderFinish.OrderID + @"</p>
+                        <p>Date : " + DateTime.Now.ToString() + @"</p>
+                    </div>
+                    <div class=""Right"">";
+
+
+                    if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "")
+                    {
+                        testMail += "<h2>" + orderFinish.Customer.FirmName + @"</h2>
+                        <p>" + orderFinish.Customer.StreetName + " " + orderFinish.Customer.PostalCode + " " + orderFinish.Customer.City + @"</p>
+                        <p>B.T.W.-nr. :" + orderFinish.Customer.Btw + orderFinish.Customer.BtwNumber + @"</p>";
+                    }
+                    testMail += @"
+                    </div>
+                </div>
+            </header>
+            <main>
+
+<table>
+                <thead>
+                    <tr>
+                        <th>
+                            Dish Name
+                        </th>
+                        <th>
+                            Dish Price
+                        </th>
+                        <th>
+                            Dish Amount
+                        </th>
+                        <th>
+                            Sub Total
+                        </th>
+          
+                    </tr>
+                </thead>
+                <tbody>";
+
+
+                    //filtering orderlines occording to orderId
+                    allOrderLines = _orderCashierService.OrderLineRead(id);
+                    filteredOrderLines = new List<OrderLine>();
+
+                    foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
+                    {
+                        if (!filteredOrderLines.Contains(orderLine))
+                            filteredOrderLines.Add(orderLine);
+
+                    }
+                    totalPrice = 0;
+                    totalPriceBTW = 0;
+                    foreach (var item in filteredOrderLines)
+                    {
+                        /*
+                                testMail += @" <tr>
+                            <td>
+                                " + item.MenuItem.Name + @"
+                            </td>
+                            <td>
+                                " + item.MenuItem.Price + @"
+                            </td>
+                                " + item.MenuItem.BtwNumber + @"
+                            <td>
+                                " + item.DishAmount + @"
+                            </td>
+                            <td>
+                                " + item.MenuItem.Price * item.DishAmount + @"
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>";*/
+                        testMail += @" <tr>
+                        <td>
+                            " + item.MenuItem.Name + @"
+                        </td>
+                        <td>
+                            " + item.MenuItem.Price + @"
+                        </td>
+                        <td>
+                            " + item.DishAmount + @"
+                        </td>
+                        <td>
+                            " + item.MenuItem.Price * item.DishAmount + @"
+                        </td>
+                    </tr>";
+
+
+                        totalPriceBTW += item.MenuItem.Price * item.DishAmount * (1 + (item.MenuItem.BtwNumber / 100));
+                        totalPrice += item.MenuItem.Price * item.DishAmount;
+                    }
+
+                    discountBool = false;
+                    orderFinishMail = _orderCashierService.GetSpecificOrder(id);
+
+
+                    if (orderFinishMail != null && orderFinishMail.Discount != 0 && orderFinishMail.Discount != null)
+                    {
+                        discountBool = true;
+                    }
+
+                    if (discountBool)
+                    {
+                        testMail += @"
+                    <tr>
+
+                        <td>
+                            Discount:
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    
+                            <td>
+                                " + orderFinishMail.Discount + @"
+                            </td>
+                    </tr>";
+                        totalPrice = totalPrice * (double)(100 - orderFinish.Discount) / 100;
+                        totalPriceBTW = totalPriceBTW * (double)(100 - orderFinish.Discount) / 100;
+                    }
+
+                    testMail += @"
+                <tr>
+                    <td>
+                        Total Price:
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+
+                    </td>
+
+                    <td>
+                        " + Math.Round(totalPrice,2) + @"
                     </td>
                     
                 </tr>
@@ -500,8 +745,9 @@ th, td{
         </div>    
     </body>
 </html>";
-                if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "") 
-                {
+                }
+
+               
                     
                     AlternateView avHtml = AlternateView.CreateAlternateViewFromString
                         (testMail, null, MediaTypeNames.Text.Html);
@@ -515,7 +761,7 @@ th, td{
                     m.AlternateViews.Add(avHtml);
                     EmailService emailService = new EmailService();
                     emailService.SendMail("frederik.vandekerkhove@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
-                }
+                
                 
                 
             }
@@ -531,8 +777,9 @@ th, td{
                 }
             }
 
-           // }
-
+            // }
+           
+            Thread.Sleep(5000);
             return RedirectToAction(nameof(Index));
         }
 
