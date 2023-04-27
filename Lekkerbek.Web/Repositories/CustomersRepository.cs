@@ -23,7 +23,6 @@ namespace Lekkerbek.Web.Repositories
                 LName = customer.LName,
                 Email = customer.Email,
                 PhoneNumber = customer.PhoneNumber,
-               // Address = customer.Address,
                 Btw = customer.Btw,
                 BtwNumber = customer.BtwNumber,
                 PostalCode = customer.PostalCode,
@@ -36,7 +35,7 @@ namespace Lekkerbek.Web.Repositories
                 IdentityUser = customer.IdentityUser,
                 PreferredDish = new PreferredDish()
                 {
-                    //PreferredDishId = customer.PreferredDish.PreferredDishId,
+                    PreferredDishId = customer.PreferredDish.PreferredDishId,
                     Name = customer.PreferredDish.Name
                 }
                 
@@ -52,6 +51,7 @@ namespace Lekkerbek.Web.Repositories
 
         public void UpdateIntoDataBase(Customer customer)
         {
+
             _context.Update(customer);
             _context.SaveChanges();
         }
