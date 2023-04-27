@@ -39,6 +39,7 @@ namespace Lekkerbek.Web.Controllers
 
         public IActionResult DeleteMenuItem([DataSourceRequest] DataSourceRequest request, Models.MenuItem menuItem)
         {
+            ModelState.Remove("Sort");
             if (_orderService.GetOrderLines().Any(ol => ol.MenuItemId == menuItem.MenuItemId))
             {
                 ModelState.AddModelError("Model", "Unable to delete (present in (an) order(s))!");

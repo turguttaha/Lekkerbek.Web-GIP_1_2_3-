@@ -23,7 +23,7 @@ namespace Lekkerbek.Web.Models
         public string? PhoneNumber { get; set; }
         //public string Address { get; set; } = string.Empty;
 
-        [Display(Name = "Date of Birthday")]
+        [Display(Name = "Birthday")]
         [DataType(DataType.Date)]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
 

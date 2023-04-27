@@ -135,7 +135,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
                 {
                     var userAddRole = await _userManager.FindByEmailAsync(Input.Email);
                     await _userManager.AddToRoleAsync(userAddRole, "Customer");
-                    Customer customer = new Customer { FName = Input.FName, LName = Input.LName,IdentityUser=userAddRole };
+                    Customer customer = new Customer { FName = Input.FName, LName = Input.LName, Email = Input.Email, IdentityUser=userAddRole };
                     _customerService.Create(customer);
                     _logger.LogInformation("User created a new account with password.");
 

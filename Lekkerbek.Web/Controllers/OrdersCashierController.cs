@@ -760,7 +760,7 @@ th, td{
                     MailMessage m = new MailMessage();
                     m.AlternateViews.Add(avHtml);
                     EmailService emailService = new EmailService();
-                    emailService.SendMail("frederik.vandekerkhove@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
+                    emailService.SendMail("taha.turgut.1634@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
                 
                 
                 
