@@ -80,7 +80,7 @@ namespace Lekkerbek.Web.Jobs
                     MailMessage message = new MailMessage();
                     message.From = new MailAddress(fromMail);
                     message.Subject = "Your order is almost ready!";
-                    message.To.Add(new MailAddress("taha.turgut.1634@gmail.com"));
+                    message.To.Add(new MailAddress("gipteam2.lekkerbek@gmail.com"));
                     //message.To.Add(new MailAddress(item.Customer.Email));
                     message.Body = " Mr./Mrs." + item.Customer.FName + " " + item.Customer.LName + ",\n\n Your order will be ready in approximately 3 hours at " + endTimeSlot.TimeOfDay + ". \n\n We hope you have a nice day \n Lekkerbek";
 
