@@ -414,7 +414,7 @@ th, td{
                             " + item.DishAmount + @"
                         </td>
                         <td>
-                            " + item.MenuItem.Price * item.DishAmount *(1+ item.MenuItem.BtwNumber/100) + @"
+                            " + Math.Round(item.MenuItem.Price * item.DishAmount *(1+ item.MenuItem.BtwNumber/100), 2)+ @"
                         </td>
                     </tr>";
 
@@ -491,112 +491,112 @@ th, td{
                 if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "") 
                 {
                     testMail = @"
-<!DOCTYPE html>
-<html>
-    <head>
-        <style>* {
-    padding: 0;
-    box-sizing: border-box;
-}
+                    <!DOCTYPE html>
+                    <html>
+                        <head>
+                            <style>* {
+                        padding: 0;
+                        box-sizing: border-box;
+                    }
 
-#Container{
-    width: 50em;
-    margin: 0 auto;
-    background-color: white;
-}
+                    #Container{
+                        width: 50em;
+                        margin: 0 auto;
+                        background-color: white;
+                    }
 
-h1{
-    margin-left: 4px;
-}
+                    h1{
+                        margin-left: 4px;
+                    }
 
-header{
-    padding: 10px;
-    position: relative;
-}
+                    header{
+                        padding: 10px;
+                        position: relative;
+                    }
 
-main{
-    border-style: solid;
-    margin: 20px;
-}
+                    main{
+                        border-style: solid;
+                        margin: 20px;
+                    }
 
-.Left{
-    margin: 0;
-    width: 250px;
-    margin-left: 10px;
-}
+                    .Left{
+                        margin: 0;
+                        width: 250px;
+                        margin-left: 10px;
+                    }
 
-.Left-bottom{
-    margin-top: 50px;
-    margin-left: 10px;
-    border-style: solid;
-    width: 250px;
-    padding-left: 10px;
-}
+                    .Left-bottom{
+                        margin-top: 50px;
+                        margin-left: 10px;
+                        border-style: solid;
+                        width: 250px;
+                        padding-left: 10px;
+                    }
 
-.Grid{
-    display: flex;
-}
+                    .Grid{
+                        display: flex;
+                    }
 
-.Right{
-    margin-right: 10px;
-    margin-left: 150px;
-}
+                    .Right{
+                        margin-right: 10px;
+                        margin-left: 150px;
+                    }
 
-img{
-    width: 300px;
-    height: 150px;
-}
+                    img{
+                        width: 300px;
+                        height: 150px;
+                    }
 
-div{
-    display: block;
-}
+                    div{
+                        display: block;
+                    }
 
-body{
-    background-color: gray;
-}
+                    body{
+                        background-color: gray;
+                    }
 
-.Above-footer{
-    margin-top: 30px;
-    margin-left: 20px;
-}
+                    .Above-footer{
+                        margin-top: 30px;
+                        margin-left: 20px;
+                    }
 
-footer{
-    display: flex;
-    align-items: center;
-    border-top: 2px solid black;
-    font-size: 12px;
-    padding: 5px;
-}
+                    footer{
+                        display: flex;
+                        align-items: center;
+                        border-top: 2px solid black;
+                        font-size: 12px;
+                        padding: 5px;
+                    }
 
-table{
-    border-collapse: collapse;
-}
+                    table{
+                        border-collapse: collapse;
+                    }
 
-th{
-    background-color: lightgray;
-    border-bottom: 1px solid black;
-}
+                    th{
+                        background-color: lightgray;
+                        border-bottom: 1px solid black;
+                    }
 
-th, td{
-    width:250px;
-    text-align:center;
-    padding:5px;
-    border-right: 1px solid black;
-}</style>
-    </head>
-    <body>
-        <div id=""Container"">
-            <header>
-                <div class=""Left"">
-                    <img src=""cid:Logo"" alt=""Logo"">
-                    <H1>Bill</H1>
-                </div>
-                <div class=""Grid"">
-                    <div class=""Left-bottom"">
-                        <p>Number : " + orderFinish.OrderID + @"</p>
-                        <p>Date : " + DateTime.Now.ToString() + @"</p>
-                    </div>
-                    <div class=""Right"">";
+                    th, td{
+                        width:250px;
+                        text-align:center;
+                        padding:5px;
+                        border-right: 1px solid black;
+                    }</style>
+                        </head>
+                        <body>
+                            <div id=""Container"">
+                                <header>
+                                    <div class=""Left"">
+                                        <img src=""cid:Logo"" alt=""Logo"">
+                                        <H1>Bill</H1>
+                                    </div>
+                                    <div class=""Grid"">
+                                        <div class=""Left-bottom"">
+                                            <p>Number : " + orderFinish.OrderID + @"</p>
+                                            <p>Date : " + DateTime.Now.ToString() + @"</p>
+                                        </div>
+                                        <div class=""Right"">";
 
 
                     if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "")
@@ -626,7 +626,6 @@ th, td{
                         <th>
                             Sub Total
                         </th>
-          
                     </tr>
                 </thead>
                 <tbody>";
@@ -694,57 +693,55 @@ th, td{
                         discountBool = true;
                     }
 
-                    if (discountBool)
-                    {
+                        if (discountBool)
+                        {
+                            testMail += @"
+                            <tr>
+                                <td>
+                                    Discount:
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                    <td>
+                                        " + orderFinishMail.Discount + @"
+                                    </td>
+                            </tr>";
+                            totalPrice = totalPrice * (double)(100 - orderFinish.Discount) / 100;
+                            totalPriceBTW = totalPriceBTW * (double)(100 - orderFinish.Discount) / 100;
+                        }
+
                         testMail += @"
-                    <tr>
+                                    <tr>
+                                        <td>
+                                            Total Price:
+                                        </td>
+                                        <td>
 
-                        <td>
-                            Discount:
-                        </td>
-                        <td>
-                        </td>
-                        <td>
-                        </td>
+                                        </td>
+                                        <td>
+
+                                        </td>
+
+                                        <td>
+                                            " + Math.Round(totalPrice,2) + @"
+                                        </td>
                     
-                            <td>
-                                " + orderFinishMail.Discount + @"
-                            </td>
-                    </tr>";
-                        totalPrice = totalPrice * (double)(100 - orderFinish.Discount) / 100;
-                        totalPriceBTW = totalPriceBTW * (double)(100 - orderFinish.Discount) / 100;
-                    }
-
-                    testMail += @"
-                <tr>
-                    <td>
-                        Total Price:
-                    </td>
-                    <td>
-
-                    </td>
-                    <td>
-
-                    </td>
-
-                    <td>
-                        " + Math.Round(totalPrice,2) + @"
-                    </td>
-                    
-                </tr>
-               </tbody></table></main>
-                <div class=""Above-footer"">
-                    <p>The invoice is payable within 30 days of the invoice date.</p>
-                </div>
-            <footer>
-                <p>De Lekkerbek- Culinaire Kringstraat108/2- 3530 HOUTHALEN - TEL. : 0475/22.22.41</p>
-                <p>B.T.W. : BE 04763.352.133        COMPANYNR : 0763.352.133</p>
-                <p>PNB PARIBAS FORTIS : IBAN BE19 0013 5497 5612   -   BIC GEPA BE BB</p>
-            </footer>
+                                    </tr>
+                                   </tbody></table></main>
+                                    <div class=""Above-footer"">
+                                        <p>The invoice is payable within 30 days of the invoice date.</p>
+                                    </div>
+                                <footer>
+                                    <p>De Lekkerbek- Culinaire Kringstraat108/2- 3530 HOUTHALEN - TEL. : 0475/22.22.41</p>
+                                    <p>B.T.W. : BE 04763.352.133        COMPANYNR : 0763.352.133</p>
+                                    <p>PNB PARIBAS FORTIS : IBAN BE19 0013 5497 5612   -   BIC GEPA BE BB</p>
+                                </footer>
             
-        </div>    
-    </body>
-</html>";
+                            </div>    
+                        </body>
+                    </html>";
                 }
 
                
@@ -760,7 +757,7 @@ th, td{
                     MailMessage m = new MailMessage();
                     m.AlternateViews.Add(avHtml);
                     EmailService emailService = new EmailService();
-                    emailService.SendMail("taha.turgut.1634@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
+                    emailService.SendMail("frederik.vandekerkhove@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
                 
                 
                 
