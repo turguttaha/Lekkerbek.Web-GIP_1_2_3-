@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Repositories
@@ -48,6 +49,24 @@ namespace Lekkerbek.Web.Repositories
 
             }).Where(c => c.Finished == false).ToList();
 
+        }
+
+        public List<OrderViewModel> GetOrderViewModels()
+        {
+
+            var result = _context.Orders.Select(order => new OrderViewModel
+            //This is another way to make a new object
+            {
+                OrderID = order.OrderID,
+                Finished = order.Finished,
+                CustomerId = order.CustomerId,
+                CustomerName = order.Customer.FName + " " + order.Customer.LName,
+                Discount = order.Discount,
+                TimeSlot = order.TimeSlot.StartTimeSlot,
+
+
+            }).Where(c => c.Finished == false).ToList();
+            return result;
         }
 
         public Order GetOrder(int? id)

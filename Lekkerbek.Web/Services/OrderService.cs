@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -131,9 +132,9 @@ namespace Lekkerbek.Web.Services
             else
                 return order;
         }
-        public IEnumerable<Order> FilterOrdersForCustomer(int? customerId)
+        public IEnumerable<OrderViewModel> FilterOrdersForCustomer(int? customerId)
         {
-            var orders = _repository.GetOrders().FindAll(x=>x.CustomerId == customerId);
+            var orders = _repository.GetOrderViewModels().FindAll(x=>x.CustomerId == customerId);
             return orders;
         }
         public List<OrderLine> GetOrderLines()
@@ -289,6 +290,12 @@ namespace Lekkerbek.Web.Services
                 return false;
                 
         }
+
+        public List<OrderViewModel> GetOrderViewModels()
+        {
+           return _repository.GetOrderViewModels();
+        }
+
         public Customer GetSpecificCustomer(int? id)
         {
            return _repository.GetCustomers().Find(c=> c.CustomerId == id);

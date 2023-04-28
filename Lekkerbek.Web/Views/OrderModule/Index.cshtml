@@ -1,5 +1,6 @@
 ﻿@using Kendo.Mvc.UI;
 @using Lekkerbek.Web.Models;
+@using Lekkerbek.Web.ViewModel;
 
 @*This page shows the customer's order list*@
 
@@ -10,16 +11,15 @@
 
 <h1>Orders</h1>
 <p class="text-danger">@TempData["TimesPast"]</p>
-@(Html.Kendo().Grid<Order>()
+@(Html.Kendo().Grid<OrderViewModel>()
     .Name("grid")
     .Columns(columns =>
     {
         columns.Bound(p => p.OrderID);
-        columns.Bound(p => p.Customer.FName);
-        columns.Bound(p => p.Customer.LName);
+        columns.Bound(p => p.CustomerName);
 
         columns.Bound(p => p.Finished);
-        columns.Bound(p => p.TimeSlot.StartTimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}");
+        columns.Bound(p => p.TimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}");
         columns.Bound(p => p.OrderID)
                .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/EditOrder/#=OrderID#'>Edit</a></div>");
         columns.Bound(p => p.OrderID)

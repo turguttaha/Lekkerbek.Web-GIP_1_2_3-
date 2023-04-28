@@ -1,4 +1,5 @@
 ﻿using Lekkerbek.Web.Models;
+using Lekkerbek.Web.ViewModel;
 
 namespace Lekkerbek.Web.Services
 {
@@ -15,5 +16,6 @@ namespace Lekkerbek.Web.Services
         public List<PreferredDish> GetAllPrefferedDishes();
         public IEnumerable<PreferredDish> ReadPrefferedDish();
         public bool OrderExists(int id);
+        public List<OrderViewModel> GetOrderViewModels();
     }
 }

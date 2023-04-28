@@ -1,6 +1,7 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Migrations;
 using Lekkerbek.Web.Models;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging.Signing;
 
@@ -39,7 +40,6 @@ namespace Lekkerbek.Web.Repositories
                     Btw = order.Customer.Btw,
                     City = order.Customer.City,
                     ContactPerson = order.Customer.ContactPerson,
-                    //Address = order.Customer.Address,
                     Birthday = order.Customer.Birthday,
                     LoyaltyScore = order.Customer.LoyaltyScore,
                     Email = order.Customer.Email,
@@ -50,6 +50,24 @@ namespace Lekkerbek.Web.Repositories
 
             }).Where(c => c.Finished == false && c.TimeSlot.ChefId == null).ToList();
             return a;
+        }
+
+        public List<OrderViewModel> GetOrderViewModels()
+        {
+
+            var result = _context.Orders.Select(order => new OrderViewModel
+            //This is another way to make a new object
+            {
+                OrderID = order.OrderID,
+                Finished = order.Finished,
+                CustomerId = order.CustomerId,
+                CustomerName = order.Customer.FName + " " + order.Customer.LName,
+                Discount = order.Discount,
+                TimeSlot = order.TimeSlot.StartTimeSlot,
+                ChefId = order.TimeSlot.ChefId,
+
+            }).Where(c => c.Finished == false && c.ChefId == null).ToList();
+            return result;
         }
 
         public Order GetOrder(int? id)

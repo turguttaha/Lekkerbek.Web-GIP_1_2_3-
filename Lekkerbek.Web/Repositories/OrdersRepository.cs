@@ -1,6 +1,7 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Migrations;
 using Lekkerbek.Web.Models;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging.Signing;
 using NuGet.Protocol.Core.Types;
@@ -53,8 +54,27 @@ namespace Lekkerbek.Web.Repositories
             }).ToList();
 
             return result;
+
             // return _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).ToList();
 
+        }
+
+        public List<OrderViewModel> GetOrderViewModels()
+        {
+
+            var result = _context.Orders.Select(order => new OrderViewModel
+            //This is another way to make a new object
+            {
+                OrderID = order.OrderID,
+                Finished = order.Finished,
+                CustomerId = order.CustomerId,
+                CustomerName = order.Customer.FName + " " + order.Customer.LName,
+                Discount = order.Discount,
+                TimeSlot = order.TimeSlot.StartTimeSlot,
+
+
+            }).ToList();
+            return result;
         }
         
         public List<OrderLine> GetOrderLinesMenuItem() 

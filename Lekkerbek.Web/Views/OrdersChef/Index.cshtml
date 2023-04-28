@@ -1,5 +1,6 @@
 ﻿@using Kendo.Mvc.UI;
 @using Lekkerbek.Web.Models;
+@using Lekkerbek.Web.ViewModel;
 @model Lekkerbek.Web.Models.Chef;
 @{
     ViewData["Title"] = "Index";
@@ -9,15 +10,14 @@
 <h1>Orders To Prepare</h1>
 
 
-@(Html.Kendo().Grid<Order>()
+@(Html.Kendo().Grid<OrderViewModel>()
     .Name("grid")
     .Columns(columns =>
     {
         columns.Bound(p => p.OrderID);
-        columns.Bound(p => p.Customer.FName);
+        columns.Bound(p => p.CustomerName);
         columns.Bound(p => p.Finished);
-        columns.Bound(p => p.TimeSlot.StartTimeSlot);
-        columns.Bound(p => p.TimeSlot.ChefId);
+        columns.Bound(p => p.TimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}"); 
         columns.Bound(p => p.OrderID)
                                 .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrdersChef/OrderDetails/#=OrderID#'>Check Details</a></div>");
         
@@ -28,7 +28,7 @@
     .HtmlAttributes(new { style = "height:550px;" })
     .DataSource(dataSource => dataSource
         .Ajax()
-        .Sort(sort=>sort.Add("TimeSlot.StartTimeSlot").Ascending())
+        .Sort(sort=>sort.Add("TimeSlot").Ascending())
         .PageSize(20)
         .Events(events => events.Error("error_handler"))
         .Model(model => model.Id(p => p.OrderID))

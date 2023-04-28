@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Lekkerbek.Web.Services
@@ -178,6 +179,11 @@ namespace Lekkerbek.Web.Services
         {
             throw new NotImplementedException();
             
+        }
+
+        public List<OrderViewModel> GetOrderViewModels()
+        {
+            return _repository.GetOrderViewModels();
         }
 
         public Order GetFirstTimeSlot()

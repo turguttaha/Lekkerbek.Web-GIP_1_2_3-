@@ -42,7 +42,7 @@ namespace Lekkerbek.Web.Controllers
         }
         public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
         {
-            return Json(_orderCashierService.Read().ToDataSourceResult(request));
+            return Json(_orderCashierService.GetOrderViewModels().ToDataSourceResult(request));
         }
         
         // Pay Off page Get: order to pay

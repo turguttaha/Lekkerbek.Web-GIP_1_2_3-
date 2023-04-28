@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
+using Lekkerbek.Web.ViewModel;
 
 namespace Lekkerbek.Web.Services
 {
@@ -97,7 +98,10 @@ namespace Lekkerbek.Web.Services
             return _repository.GetOrders().Any(e=>e.CustomerId == id);
         }
 
-        
+        public List<OrderViewModel> GetOrderViewModels()
+        {
+            return _repository.GetOrderViewModels();
+        }
         
 
         List<Customer> IOrderCashierService.GetAllCustomers()

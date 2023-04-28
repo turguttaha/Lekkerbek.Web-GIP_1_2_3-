@@ -1,4 +1,5 @@
 ﻿using Lekkerbek.Web.Models;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Lekkerbek.Web.Services
@@ -22,5 +23,6 @@ namespace Lekkerbek.Web.Services
         public IEnumerable<PreferredDish> ReadPrefferedDish();
         public bool OrderExists(int id);
         public List<SelectListItem> ChefSelectList(DateTime startTimeSlot);
+        public List<OrderViewModel> GetOrderViewModels();
     }
 }

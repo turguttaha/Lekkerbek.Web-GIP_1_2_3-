@@ -1,4 +1,5 @@
 ﻿using Lekkerbek.Web.Models;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NuGet.Protocol.Core.Types;
 
@@ -25,6 +26,7 @@ namespace Lekkerbek.Web.Services
         public bool OrderLineExists(int id);
         public bool DeleteOrder(Order order);
         public Customer GetSpecificCustomer(int? id);
-        public IEnumerable<Order> FilterOrdersForCustomer(int? customerId);
+        public IEnumerable<OrderViewModel> FilterOrdersForCustomer(int? customerId);
+        public List<OrderViewModel> GetOrderViewModels();
     }
 }
