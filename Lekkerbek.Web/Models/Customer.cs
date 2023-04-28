@@ -13,6 +13,8 @@ namespace Lekkerbek.Web.Models
         public int CustomerId { get; set; }
         [StringLength(20, ErrorMessage = "Your First Name can contain only 20 characters")]
         [Display(Name = "First Name")]
+
+        public string? CustomerNumber { get; set; }
         public string FName { get; set; } = string.Empty;
         [StringLength(20, MinimumLength = 2)]
         [Display(Name = "Last Name")]
@@ -37,7 +39,7 @@ namespace Lekkerbek.Web.Models
         [Display(Name = "Contact Person")]
         public string? ContactPerson { get; set; } = string.Empty;
 
-        [StringLength(20, ErrorMessage = "Your street name can contain only 20 characters")]
+        [StringLength(450, ErrorMessage = "Your street name can contain only 450 characters")]
         [Display(Name = "Street name")]
         public string? StreetName { get; set; } = string.Empty;
 
@@ -53,7 +55,7 @@ namespace Lekkerbek.Web.Models
         public string? Btw { get; set; } = string.Empty;
 
         [Display(Name = "BTW number")]
-        public double? BtwNumber { get; set; }
+        public string? BtwNumber { get; set; }
 
         [Display(Name = "E-mail")]
         [DataType(DataType.EmailAddress)]
