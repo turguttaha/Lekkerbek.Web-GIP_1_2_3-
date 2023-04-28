@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using Lekkerbek.Web.ViewModel;
 
 namespace Lekkerbek.Web.Repositories
 {
@@ -12,11 +13,12 @@ namespace Lekkerbek.Web.Repositories
             _context = context;
         }
 
-        public List<MenuItem> GetMenuItems()
+        public List<MenuItemViewModel> GetMenuItems()
         {
             //var MenuItems = _context.MenuItems.ToList();
 
-            return _context.MenuItems.Select(item => new Models.MenuItem
+            //return _context.MenuItems.Select(item => new Models.MenuItem
+            return _context.MenuItems.Select(item => new MenuItemViewModel
             //This is another way to make a new object
             {
                 MenuItemId = item.MenuItemId,
@@ -28,18 +30,21 @@ namespace Lekkerbek.Web.Repositories
             }).ToList();
         }
 
+        //public void DeleteFromDataBase(MenuItem entity)
         public void DeleteFromDataBase(MenuItem entity)
         {
             _context.MenuItems.Remove(entity);
             _context.SaveChanges();
         }
 
-        public void AddToDataBase(MenuItem menuItem) 
+        //public void AddToDataBase(MenuItem menuItem) 
+        public void AddToDataBase(MenuItem menuItem)
         {
             _context.MenuItems.Add(menuItem);
              _context.SaveChangesAsync();
         }
 
+        //public void UpdateIntoDataBase(MenuItem menuItem)
         public void UpdateIntoDataBase(MenuItem menuItem)
         {
             _context.Update(menuItem);

@@ -9,7 +9,8 @@
 <h1>Menu</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 
-@(Html.Kendo().Grid<Lekkerbek.Web.Models.MenuItem>()
+@*@(Html.Kendo().Grid<Lekkerbek.Web.Models.MenuItem>()*@
+@(Html.Kendo().Grid<Lekkerbek.Web.ViewModel.MenuItemViewModel>()
 .Name("grid")
 .ToolBar(tools =>
 {

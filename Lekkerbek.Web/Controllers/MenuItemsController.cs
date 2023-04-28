@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using Lekkerbek.Web.ViewModel;
 using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using Lekkerbek.Web.Services;
@@ -44,15 +45,18 @@ namespace Lekkerbek.Web.Controllers
             {
                 ModelState.AddModelError("Model", "Unable to delete (present in (an) order(s))!");
             }
-            else if(menuItem != null)
-            {
+            //else if(menuItem != null)
+                else if (menuItem != null)
+                    {
                 // Delete the item in the data base or follow with the dummy data.
 
+                //_menuItemService.Destroy(menuItem);
                 _menuItemService.Destroy(menuItem);
             }
 
 
             // Return a collection which contains only the destroyed item.
+            //return Json(new[] { menuItem }.ToDataSourceResult(request, ModelState));
             return Json(new[] { menuItem }.ToDataSourceResult(request, ModelState));
         }
 
@@ -69,15 +73,27 @@ namespace Lekkerbek.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem, IFormCollection formDetails)
+
         {
+            ////if (ModelState.IsValid)
+            ////{
+
+            //menuItem.Price = double.Parse(formDetails["Price"].ToString().Replace('.',','));//i LOVE when one side of the app works with , as a seperator, and the other with a . :D
+
+            //_menuItemService.Create(menuItem);
+
+            //    return RedirectToAction(nameof(Index));
+            ////}
+            //return View(menuItem);
+
             //if (ModelState.IsValid)
             //{
-            
-            menuItem.Price = double.Parse(formDetails["Price"].ToString().Replace('.',','));//i LOVE when one side of the app works with , as a seperator, and the other with a . :D
-            
+
+            menuItem.Price = double.Parse(formDetails["Price"].ToString().Replace('.', ','));//i LOVE when one side of the app works with , as a seperator, and the other with a . :D
+
             _menuItemService.Create(menuItem);
-            
-                return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(nameof(Index));
             //}
             return View(menuItem);
         }
@@ -103,8 +119,11 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem, IFormCollection formDetails)
         public async Task<IActionResult> Edit(int id, [Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem, IFormCollection formDetails)
+
         {
+            //if (id != menuItem.MenuItemId)
             if (id != menuItem.MenuItemId)
             {
                 return NotFound();
@@ -114,14 +133,15 @@ namespace Lekkerbek.Web.Controllers
           //  {
                 try
                 {
-                    menuItem.Price = double.Parse(formDetails["Price"].ToString().Replace('.', ','));
-                    _menuItemService.Update(menuItem);
-                   
-                }
+                menuItem.Price = double.Parse(formDetails["Price"].ToString().Replace('.', ','));
+                _menuItemService.Update(menuItem);
+
+            }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_menuItemService.MenuItemExists(menuItem.MenuItemId))
-                    {
+                //if (!_menuItemService.MenuItemExists(menuItem.MenuItemId))
+                if (!_menuItemService.MenuItemExists(menuItem.MenuItemId))
+                {
                     
                         return NotFound();
                     }
@@ -131,7 +151,8 @@ namespace Lekkerbek.Web.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-          //  }
+            //  }
+            //return View(menuItem);
             return View(menuItem);
         }
 
