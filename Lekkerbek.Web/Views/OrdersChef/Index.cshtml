@@ -1,7 +1,7 @@
 ﻿@using Kendo.Mvc.UI;
 @using Lekkerbek.Web.Models;
 @using Lekkerbek.Web.ViewModel;
-@model Lekkerbek.Web.Models.Chef;
+@model Lekkerbek.Web.Models.ChefOrdersViewModel;
 @{
     ViewData["Title"] = "Index";
     //Layout = "_LayoutCashier";
@@ -10,16 +10,16 @@
 <h1>Orders To Prepare</h1>
 
 
-@(Html.Kendo().Grid<OrderViewModel>()
+@(Html.Kendo().Grid<ChefOrdersViewModel>()
     .Name("grid")
     .Columns(columns =>
     {
-        columns.Bound(p => p.OrderID);
-        columns.Bound(p => p.CustomerName);
+        columns.Bound(p => p.OrderId);
+        columns.Bound(p => p.Name);
         columns.Bound(p => p.Finished);
-        columns.Bound(p => p.TimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}"); 
-        columns.Bound(p => p.OrderID)
-                                .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrdersChef/OrderDetails/#=OrderID#'>Check Details</a></div>");
+        columns.Bound(p => p.StartTimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}"); 
+        columns.Bound(p => p.OrderId)
+                                .Title(" ").ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrdersChef/OrderDetails/#=OrderId#'>Check Details</a></div>");
         
 
     })
@@ -28,10 +28,10 @@
     .HtmlAttributes(new { style = "height:550px;" })
     .DataSource(dataSource => dataSource
         .Ajax()
-        .Sort(sort=>sort.Add("TimeSlot").Ascending())
+        .Sort(sort => sort.Add("StartTimeSlot").Ascending())
         .PageSize(20)
         .Events(events => events.Error("error_handler"))
-        .Model(model => model.Id(p => p.OrderID))
+        .Model(model => model.Id(p => p.OrderId))
         .Create(update => update.Action("EditingPopup_Create", "OrdersChef"))
         .Read(read => read.Action("EditingPopup_Read", "OrdersChef"))
         .Destroy(update => update.Action("EditingPopup_Destroy", "OrdersChef"))

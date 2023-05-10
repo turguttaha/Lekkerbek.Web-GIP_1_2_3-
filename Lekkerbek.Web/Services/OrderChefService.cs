@@ -13,7 +13,7 @@ namespace Lekkerbek.Web.Services
         { 
             _repository = ordersChefRepository;
         }
-        private IList<Order> GetAll() 
+        private IList<ChefOrdersViewModel> GetAll() 
         { 
             var result = _repository.GetOrders();
             return result;
@@ -27,7 +27,7 @@ namespace Lekkerbek.Web.Services
             var result = _repository.GetAllCustomers();
             return result;
         }
-        public IEnumerable<Order> Read()
+        public IEnumerable<ChefOrdersViewModel> Read()
         {
             return GetAll();
         }
@@ -119,9 +119,9 @@ namespace Lekkerbek.Web.Services
             throw new NotImplementedException();
         }
 
-        public Order GetChefOrders(int? id)
+        public ChefOrdersViewModel GetChefOrders(int? id)
         {
-            return _repository.GetOrders().Find(c => c.OrderID == id);
+            return _repository.GetOrders().Find(c => c.OrderId == id);
              
         }
 

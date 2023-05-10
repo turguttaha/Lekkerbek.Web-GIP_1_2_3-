@@ -1,25 +1,34 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
 
 namespace Lekkerbek.Web.Models
 {
-
-    public class Customer 
+    public class ChefOrdersViewModel
     {
-        //[ScaffoldColumn(false)]
-        public int CustomerId { get; set; }
+        [NotMapped]
+        public int OrderId { get; set; }
+        public bool Finished { get; set; }//idk if this is needed, in perfect case we know an order is finished when the time is later than the orderfinished time
+
+        //Foreign Key van Customer
+        public int? CustomerId { get; set; }
+        public int? Discount { get; set; }
+        public virtual Customer Customer { get; set; }
+
+        //Realatie met OrderLine
+        public virtual ICollection<OrderLine> OrderLines { get; set; }
+
+        //Foreign Key van Time Slot
+        public int? TimeSlotID { get; set; }
+        [Display(Name = "Time Slot")]
+        [DataType(DataType.DateTime)]
+        public DateTime StartTimeSlot { get; set; }
+        public int? ChefId { get; set; }
+        
         [StringLength(20, ErrorMessage = "Your First Name can contain only 20 characters")]
         [Display(Name = "First Name")]
-
+        public string Name { get; set; } = string.Empty;
         
-        public string FName { get; set; } = string.Empty;
-        [StringLength(20, MinimumLength = 2)]
-        [Display(Name = "Last Name")]
-        public string LName { get; set; } = string.Empty;
-
         [Display(Name = "GSM")]
         [DataType(DataType.PhoneNumber)]
         public string? PhoneNumber { get; set; }
@@ -60,7 +69,7 @@ namespace Lekkerbek.Web.Models
         [Display(Name = "E-mail")]
         [DataType(DataType.EmailAddress)]
         public string? Email { get; set; }
-         
+
         // als loyaltyScore true is(meer dan 2 betelling is al gedaan), dan betekent dat klant 10% korting kan hebben 
         [ScaffoldColumn(false)]
         [HiddenInput(DisplayValue = false)]
@@ -71,12 +80,6 @@ namespace Lekkerbek.Web.Models
         public int? PreferredDishId { get; set; }
 
         public virtual PreferredDish PreferredDish { get; set; }
-
-        //Relatie met order
-        //aan de Order class - virtual Customer property - int CustomerId -  moeten toegevoegd worden dus elke klant kan een of meer bestelling hebben maar elke bestelling is van slechts een klant
-        public virtual ICollection<Order> Orders { get; set; }
-
-        public virtual IdentityUser? IdentityUser { get; set; }
 
     }
 }
