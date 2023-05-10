@@ -37,41 +37,83 @@
                 <label asp-for="Input.LName"></label>
                 <span asp-validation-for="Input.LName" class="text-danger"></span>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            <div class="form-floating">
+                <input asp-for="Input.Birthday" class="form-control" autocomplete="First Name" aria-required="true" />
+                <label asp-for="Input.Birthday"></label>
+                <span asp-validation-for="Input.Birthday" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="Last Name" aria-required="true" />
+                <label asp-for="Input.PhoneNumber"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.City" class="form-control" autocomplete="Last Name" aria-required="true" />
+                <label asp-for="Input.City"></label>
+                <span asp-validation-for="Input.City" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.PostalCode" class="form-control" autocomplete="First Name" aria-required="true" />
+                <label asp-for="Input.PostalCode"></label>
+                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.StreetName" class="form-control" autocomplete="Last Name" aria-required="true" />
+                <label asp-for="Input.StreetName"></label>
+                <span asp-validation-for="Input.StreetName" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <select asp-for="Input.PreferredDishId" class="form-control" asp-items="ViewBag.PreferredDishId" aria-required="true"></select>
+                <label asp-for="Input.PreferredDishId">Preferred Dish</label>
+                <span asp-validation-for="Input.PreferredDishId" class="text-danger"></span>
+            </div>
+            <div class="form-floating m-4 ">
+                <input name="profCustomer" id="profCustomer" type="checkbox" style=" width: 15px; height: 15px;" />
+                <label for="profCustomer" class="fw-bolder">Are you professional customer ?</label>
+
+            </div>
+            <div id="ProfCustCont" hidden>
+                <div class="form-floating">
+                    <input asp-for="Input.FirmName" class="form-control" aria-required="true" />
+                    <label asp-for="Input.FirmName" class="control-label"></label>
+                    <span asp-validation-for="Input.FirmName" class="text-danger"></span>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Input.ContactPerson" class="form-control" aria-required="true" />
+                    <label asp-for="Input.ContactPerson" class="control-label"></label>
+                    <span asp-validation-for="Input.ContactPerson" class="text-danger"></span>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Input.Btw" class="form-control" aria-required="true" />
+                    <label asp-for="Input.Btw" class="control-label"></label>
+                    <span asp-validation-for="Input.Btw" class="text-danger"></span>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Input.BtwNumber" class="form-control" aria-required="true" />
+                    <label asp-for="Input.BtwNumber" class="control-label"></label>
+                    <span asp-validation-for="Input.BtwNumber" class="text-danger"></span>
+                </div>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mt-3">Register</button>
         </form>
     </div>
     <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+<script type="text/javascript">
+    document.getElementById("profCustomer").addEventListener('change', function () {
+        if (this.checked) {
+            console.log("Checkbox is checked..");
+            document.querySelector("#ProfCustCont").hidden = false;
+
+        } else {
+            console.log("Checkbox is not checked..");
+            document.querySelector("#ProfCustCont").hidden = true;
+        }
+    });
+
+</script>

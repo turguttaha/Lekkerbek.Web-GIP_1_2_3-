@@ -38,7 +38,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender,        
+            IEmailSender emailSender,
             ICustomerService customerService)
         {
             _userManager = userManager;
@@ -47,7 +47,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-             _customerService = customerService;
+            _customerService = customerService;
         }
 
         /// <summary>
@@ -81,6 +81,45 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "Last Name")]
             public string LName { get; set; }
+            [Required]
+            [Display(Name = "GSM")]
+            [DataType(DataType.PhoneNumber)]
+            public string? PhoneNumber { get; set; }
+            [Required]
+            [Display(Name = "Birthday")]
+            [DataType(DataType.Date)]
+            public DateTime? Birthday { get; set; }
+
+            [StringLength(30, ErrorMessage = "Your Firm Name can contain only 30 characters")]
+            [Display(Name = "Firm Name")]
+            public string? FirmName { get; set; } = string.Empty;
+
+            [StringLength(30, ErrorMessage = "Your contact person can contain only 30 characters")]
+            [Display(Name = "Contact Person")]
+            public string? ContactPerson { get; set; } = string.Empty;
+            [Required]
+            [StringLength(450, ErrorMessage = "Your street name can contain only 450 characters")]
+            [Display(Name = "Street name")]
+            public string? StreetName { get; set; } = string.Empty;
+            [Required]
+            [StringLength(20, ErrorMessage = "Your city can contain only 20 characters")]
+            [Display(Name = "City")]
+            public string? City { get; set; } = string.Empty;
+            [Required]
+            [Display(Name = "Postal code")]
+            public string? PostalCode { get; set; }
+
+            [StringLength(20, ErrorMessage = "Your BTW can contain only 20 characters")]
+            [Display(Name = "BTW")]
+            public string? Btw { get; set; } = string.Empty;
+
+            [Display(Name = "BTW number")]
+            public string? BtwNumber { get; set; }
+
+            //Foreign Key van Preferred Dish
+            public int? PreferredDishId { get; set; }
+
+            public virtual PreferredDish PreferredDish { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -113,13 +152,14 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes();
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-
+            ViewData["PreferredDishId"] = _customerService.GetPreferredDishes();
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
@@ -127,15 +167,31 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
                 var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);             
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                
+
 
                 if (result.Succeeded)
                 {
                     var userAddRole = await _userManager.FindByEmailAsync(Input.Email);
                     await _userManager.AddToRoleAsync(userAddRole, "Customer");
-                    Customer customer = new Customer { FName = Input.FName, LName = Input.LName, Email = Input.Email, PreferredDishId = 1,IdentityUser=userAddRole };
+                    Customer customer = new Customer
+                    {
+                        FName = Input.FName,
+                        LName = Input.LName,
+                        Email = Input.Email,
+                        PreferredDishId = Input.PreferredDishId,
+                        PhoneNumber = Input.PhoneNumber,
+                        Birthday = Input.Birthday,
+                        FirmName = Input.FirmName,
+                        ContactPerson = Input.ContactPerson,
+                        StreetName = Input.StreetName,
+                        City = Input.City,
+                        PostalCode = Input.PostalCode,
+                        Btw = Input.Btw,
+                        BtwNumber = Input.BtwNumber,
+                        IdentityUser = userAddRole
+                    };
                     _customerService.Create(customer);
                     _logger.LogInformation("User created a new account with password.");
 
