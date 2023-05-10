@@ -24,22 +24,12 @@ namespace Lekkerbek.Web.Repositories
                 Finished = order.Finished,
                 CustomerId = order.CustomerId,
                 Discount = order.Discount,
-                TimeSlotID = order.TimeSlotID,
                 
                 StartTimeSlot = order.TimeSlot.StartTimeSlot,
                 ChefId = order.TimeSlot.ChefId,
                                 
                 //change it to Name -> fname + lname
-                Name = order.Customer.FName + " " + order.Customer.LName,
-                BtwNumber = order.Customer.BtwNumber,
-                Btw = order.Customer.Btw,
-                City = order.Customer.City,
-                ContactPerson = order.Customer.ContactPerson,
-                Birthday = order.Customer.Birthday,
-                LoyaltyScore = order.Customer.LoyaltyScore,
-                Email = order.Customer.Email,
-                PhoneNumber = order.Customer.PhoneNumber,
-                PreferredDishId = order.Customer.PreferredDishId,
+                
                     
             }).Where(c => c.Finished == false && c.ChefId == null).ToList();
             return a;

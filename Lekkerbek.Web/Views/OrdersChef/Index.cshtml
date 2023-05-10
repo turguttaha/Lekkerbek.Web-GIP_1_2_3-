@@ -1,7 +1,6 @@
 ﻿@using Kendo.Mvc.UI;
 @using Lekkerbek.Web.Models;
 @using Lekkerbek.Web.ViewModel;
-@model Lekkerbek.Web.Models.ChefOrdersViewModel;
 @{
     ViewData["Title"] = "Index";
     //Layout = "_LayoutCashier";
@@ -15,7 +14,6 @@
     .Columns(columns =>
     {
         columns.Bound(p => p.OrderId);
-        columns.Bound(p => p.Name);
         columns.Bound(p => p.Finished);
         columns.Bound(p => p.StartTimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}"); 
         columns.Bound(p => p.OrderId)
