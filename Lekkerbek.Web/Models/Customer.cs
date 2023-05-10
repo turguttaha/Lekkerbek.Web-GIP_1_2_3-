@@ -23,7 +23,6 @@ namespace Lekkerbek.Web.Models
         [Display(Name = "GSM")]
         [DataType(DataType.PhoneNumber)]
         public string? PhoneNumber { get; set; }
-        //public string Address { get; set; } = string.Empty;
 
         [Display(Name = "Birthday")]
         [DataType(DataType.Date)]
