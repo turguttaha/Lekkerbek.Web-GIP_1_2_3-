@@ -14,41 +14,34 @@ namespace Lekkerbek.Web.Repositories
         {
             _context = context;
         }
-        public List<Order> GetOrders()
+        public List<ChefOrdersViewModel> GetOrders()
         {
             //_context.Orders.Find(id);
-            var a=  _context.Orders.Select(order => new Order
+            var a=  _context.Orders.Select(order => new ChefOrdersViewModel
             //This is another way to make a new object
             {
-                OrderID = order.OrderID,
+                OrderId = order.OrderID,
                 Finished = order.Finished,
                 CustomerId = order.CustomerId,
                 Discount = order.Discount,
                 TimeSlotID = order.TimeSlotID,
-                TimeSlot = new TimeSlot()
-                {
-                    StartTimeSlot = order.TimeSlot.StartTimeSlot,
-                    ChefId = order.TimeSlot.ChefId,
-                    Id = order.TimeSlot.Id
-                },
-                Customer = new Customer()
-                {
-                    CustomerId = order.Customer.CustomerId,
-                    FName = order.Customer.FName,
-                    LName = order.Customer.LName,
-                    BtwNumber = order.Customer.BtwNumber,
-                    Btw = order.Customer.Btw,
-                    City = order.Customer.City,
-                    ContactPerson = order.Customer.ContactPerson,
-                    Birthday = order.Customer.Birthday,
-                    LoyaltyScore = order.Customer.LoyaltyScore,
-                    Email = order.Customer.Email,
-                    PhoneNumber = order.Customer.PhoneNumber,
-                    PreferredDishId = order.Customer.PreferredDishId,
-
-                }
-
-            }).Where(c => c.Finished == false && c.TimeSlot.ChefId == null).ToList();
+                
+                StartTimeSlot = order.TimeSlot.StartTimeSlot,
+                ChefId = order.TimeSlot.ChefId,
+                                
+                //change it to Name -> fname + lname
+                Name = order.Customer.FName + " " + order.Customer.LName,
+                BtwNumber = order.Customer.BtwNumber,
+                Btw = order.Customer.Btw,
+                City = order.Customer.City,
+                ContactPerson = order.Customer.ContactPerson,
+                Birthday = order.Customer.Birthday,
+                LoyaltyScore = order.Customer.LoyaltyScore,
+                Email = order.Customer.Email,
+                PhoneNumber = order.Customer.PhoneNumber,
+                PreferredDishId = order.Customer.PreferredDishId,
+                    
+            }).Where(c => c.Finished == false && c.ChefId == null).ToList();
             return a;
         }
 
