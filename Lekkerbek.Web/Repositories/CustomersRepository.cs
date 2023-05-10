@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using Lekkerbek.Web.ViewModel;
 using NuGet.Protocol.Core.Types;
 
 namespace Lekkerbek.Web.Repositories
@@ -11,6 +12,31 @@ namespace Lekkerbek.Web.Repositories
         public CustomersRepository(LekkerbekContext context)
         {
             _context = context;
+        }
+
+        public List<CustomerViewModel> GetCustomersViews()
+        {
+            return _context.Customers.Select(customer => new CustomerViewModel
+            //This is another way to make a new object
+            {
+                CustomerId = customer.CustomerId,
+                Name = customer.FName + " " + customer.LName,
+                Email = customer.Email,
+                PhoneNumber = customer.PhoneNumber,
+                Btw = customer.Btw,
+                BtwNumber = customer.BtwNumber,
+                Address = customer.City + customer.StreetName + customer.PostalCode,
+                ContactPerson = customer.ContactPerson,
+                FirmName = customer.FirmName,
+                Birthday = customer.Birthday,
+                IdentityUser = customer.IdentityUser,
+                PreferredDishName = customer.PreferredDish.Name
+
+
+
+
+            }).ToList();
+
         }
 
         public List<Customer> GetCustomers()
