@@ -8,6 +8,7 @@ using Quartz.Impl;
 using Quartz.Spi;
 using Quartz;
 using Lekkerbek.Web.Jobs;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,7 @@ builder.Services.AddTransient<OrdersChefRepository>();
 builder.Services.AddTransient<IOrderChefService, OrderChefService>();
 builder.Services.AddTransient<ChefRepository>();
 builder.Services.AddTransient<ChefService>();
+builder.Services.AddTransient<IEmailSender, EmailService>();
 
 
 
