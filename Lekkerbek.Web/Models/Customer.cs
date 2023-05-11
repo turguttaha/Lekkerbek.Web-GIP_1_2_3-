@@ -14,7 +14,7 @@ namespace Lekkerbek.Web.Models
         [StringLength(20, ErrorMessage = "Your First Name can contain only 20 characters")]
         [Display(Name = "First Name")]
 
-        public string? CustomerNumber { get; set; }
+        
         public string FName { get; set; } = string.Empty;
         [StringLength(20, MinimumLength = 2)]
         [Display(Name = "Last Name")]
@@ -23,7 +23,6 @@ namespace Lekkerbek.Web.Models
         [Display(Name = "GSM")]
         [DataType(DataType.PhoneNumber)]
         public string? PhoneNumber { get; set; }
-        //public string Address { get; set; } = string.Empty;
 
         [Display(Name = "Birthday")]
         [DataType(DataType.Date)]
@@ -69,7 +68,7 @@ namespace Lekkerbek.Web.Models
         //Foreign Key van Preferred Dish
 
         public int? PreferredDishId { get; set; }
-        [Display(Name = "Preferred Dish")]
+
         public virtual PreferredDish PreferredDish { get; set; }
 
         //Relatie met order

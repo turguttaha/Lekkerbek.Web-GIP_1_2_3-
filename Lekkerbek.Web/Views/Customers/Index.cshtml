@@ -1,5 +1,6 @@
 ﻿@using Kendo.Mvc.UI;
 @using Lekkerbek.Web.Models;
+@using Lekkerbek.Web.ViewModel;
 
 @{
     ViewData["Title"] = "Index";
@@ -9,14 +10,14 @@
 <h1>Customer List</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 
-@(Html.Kendo().Grid<Customer>()
+@(Html.Kendo().Grid<CustomerViewModel>()
                             .Name("grid")
                             .Columns(columns =>
                             {
-                                columns.Bound(p => p.FName);
+                                columns.Bound(p => p.Name);
                                 columns.Bound(p => p.Email);
                                 columns.Bound(p => p.PhoneNumber);      
-                                columns.Bound(p => p.PreferredDish.Name).Title("Preferred Dish");
+                                columns.Bound(p => p.PreferredDishName).Title("Preferred Dish");
                                 columns.Bound(p => p.CustomerId).Title("  ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Customers/Edit/#=CustomerId#'>Edit</a></div>");
                                 columns.Command(command => { command.Destroy(); }).Width(200);
 
@@ -57,14 +58,12 @@
                         .Items(items =>
                         {
                             items.Add().Text("Details").Content(@<text>
-                                @(Html.Kendo().Grid<Customer>()
+                                @(Html.Kendo().Grid<CustomerViewModel>()
                             .Name("grid_#=CustomerId#") // template expression, to be evaluated in the master context
                             .Columns(columns =>
                             {
                                         columns.Bound(p => p.ContactPerson);
-                                        columns.Bound(p => p.City).Width(100);
-                                        columns.Bound(p => p.PostalCode);
-                                        columns.Bound(p => p.StreetName);
+                                        columns.Bound(p => p.Address).Width(100);
                                         columns.Bound(p => p.Btw).Width(100); 
                                         columns.Bound(p => p.BtwNumber);
 

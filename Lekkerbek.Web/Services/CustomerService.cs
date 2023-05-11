@@ -2,6 +2,7 @@
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
 using Lekkerbek.Web.Services;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,6 +25,13 @@ namespace Lekkerbek.Web.NewFolder
             _repository = customersRepository;
         }
 
+        public IList<CustomerViewModel> GetAllViews()
+        {
+
+            var result = _repository.GetCustomersViews();
+
+            return result;
+        }
         private IList<Customer> GetAll()
         {
 

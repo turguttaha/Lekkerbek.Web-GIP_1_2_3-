@@ -1,6 +1,8 @@
-﻿using Lekkerbek.Web.Data;
+﻿using Kendo.Mvc.UI;
+using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
+using Lekkerbek.Web.ViewModel;
 
 namespace Lekkerbek.Web.Services
 {
@@ -13,7 +15,8 @@ namespace Lekkerbek.Web.Services
             _repository = repository;
         }
 
-        private IList<MenuItem> GetAll()
+        //private IList<MenuItem> GetAll()
+            private IList<MenuItemViewModel> GetAll()
         {
 
             var result = _repository.GetMenuItems();
@@ -21,29 +24,34 @@ namespace Lekkerbek.Web.Services
             return result;
         }
 
-        public IEnumerable<MenuItem> Read()
+        //public IEnumerable<MenuItem> Read()
+            public IEnumerable<MenuItemViewModel> Read()
         {
             return GetAll();
         }
 
-        public void Destroy(MenuItem menuItem)
+            public void Destroy(Models.MenuItem menuItem)
         {
 
 
-                var entity = new MenuItem();
+                var entity = new Models.MenuItem();
 
                 entity.MenuItemId = menuItem.MenuItemId;
+            
 
-                _repository.DeleteFromDataBase(entity);
+            _repository.DeleteFromDataBase(entity);
 
         }
 
-        public void Create(MenuItem menuItem) 
+        //public void Create(MenuItem menuItem) 
+        public void Create(Models.MenuItem menuItem)
         { 
+            //_repository.AddToDataBase(menuItem);
             _repository.AddToDataBase(menuItem);
         }
 
-        public MenuItem GetSpecificMenuItem(int? id)
+        //public MenuItem GetSpecificMenuItem(int? id)
+        public MenuItemViewModel GetSpecificMenuItem(int? id)
         {
             var menuItem = _repository.GetMenuItems().Find(x => x.MenuItemId == id);
             if (menuItem == null)
@@ -52,9 +60,11 @@ namespace Lekkerbek.Web.Services
                 return menuItem;
         }
 
-        public void Update(MenuItem menuItem)
+        //public void Update(MenuItem menuItem)
+        public void Update(Models.MenuItem menuItem)
         {
-        _repository.UpdateIntoDataBase(menuItem);
+            //_repository.UpdateIntoDataBase(menuItem);
+            _repository.UpdateIntoDataBase(menuItem);
         }
 
         public bool MenuItemExists(int id)

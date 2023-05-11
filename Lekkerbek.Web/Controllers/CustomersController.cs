@@ -40,7 +40,7 @@ namespace Lekkerbek.Web.Controllers
 
         public ActionResult DetailTemplate_HierarchyBinding_Customers([DataSourceRequest] DataSourceRequest request)
         {
-            return Json(_customerService.Read().ToDataSourceResult(request));
+            return Json(_customerService.GetAllViews().ToDataSourceResult(request));
         }
 
         public ActionResult DetailTemplate_HierarchyBinding_Details(int customerId, [DataSourceRequest] DataSourceRequest request)
