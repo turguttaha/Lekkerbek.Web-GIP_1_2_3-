@@ -113,6 +113,11 @@ namespace Lekkerbek.Web.Services
 
             return tempTimeSlotSelectList;
         }
+
+        public IList<OrderViewModel> GetAllOrderViews()
+        {
+            return _repository.GetOrdersViews();
+        }
         private IList<Order> GetAll()
         {
 

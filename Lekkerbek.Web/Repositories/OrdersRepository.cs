@@ -17,11 +17,45 @@ namespace Lekkerbek.Web.Repositories
             _context = context;
         }
 
+        public List<OrderViewModel> GetOrdersViews()
+        {
+            var result = _context.Orders.Select(order => new OrderViewModel
+            {
+                OrderID = order.OrderID,
+                Finished = order.Finished,
+                CustomerId = order.CustomerId,
+                Discount = order.Discount,
+                TimeSlotID = order.TimeSlotID,
+                StartTimeSlot = (DateTime)order.TimeSlot.StartTimeSlot,
+
+                CustomerName = order.Customer.FName + " " + order.Customer.LName,
+
+                BtwNumber = order.Customer.BtwNumber,
+                Btw = order.Customer.Btw,
+                City = order.Customer.City,
+                ContactPerson = order.Customer.ContactPerson,
+                Birthday = order.Customer.Birthday,
+                LoyaltyScore = order.Customer.LoyaltyScore,
+                Email = order.Customer.Email,
+                PhoneNumber = order.Customer.PhoneNumber,
+                PreferredDishId = order.Customer.PreferredDishId,
+
+
+            }).ToList();
+
+            return result;
+
+            // return _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).ToList();
+
+        }
+
         public List<Order> GetOrders()
         {
             var result = _context.Orders.Select(order => new Order
             //This is another way to make a new object
             {
+
+
                 OrderID = order.OrderID,
                 Finished = order.Finished,
                 CustomerId = order.CustomerId,
@@ -49,15 +83,9 @@ namespace Lekkerbek.Web.Repositories
                     PreferredDishId = order.Customer.PreferredDishId,
 
                 }
-
-
             }).ToList();
-
-            return result;
-
-            // return _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).ToList();
-
-        }
+                return result;
+            }
 
         public List<OrderViewModel> GetOrderViewModels()
         {
@@ -70,7 +98,7 @@ namespace Lekkerbek.Web.Repositories
                 CustomerId = order.CustomerId,
                 CustomerName = order.Customer.FName + " " + order.Customer.LName,
                 Discount = order.Discount,
-                TimeSlot = order.TimeSlot.StartTimeSlot,
+                StartTimeSlot = order.TimeSlot.StartTimeSlot,
 
 
             }).ToList();
