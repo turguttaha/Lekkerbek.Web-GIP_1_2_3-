@@ -44,7 +44,8 @@ namespace Lekkerbek.Web.Controllers
         }
         public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
         {
-            return Json(_orderChefService.GetOrderViewModels().ToDataSourceResult(request));
+            var a = Json(_orderChefService.Read().ToDataSourceResult(request));
+            return a;//this was the read, to call all orders
         }
         
         // Pay Off page Get: order to pay
@@ -59,7 +60,7 @@ namespace Lekkerbek.Web.Controllers
             
             //gets the chefs that are able to prepare the selected meal (that don't have to prepare another one at that time)
             //In this function we can later on add looking up if a chef has vacation periods and then remove them if they aren't working
-            ViewBag.ChefSelectList = _orderChefService.ChefSelectList(order.TimeSlot.StartTimeSlot);
+            ViewBag.ChefSelectList = _orderChefService.ChefSelectList(order.StartTimeSlot);
             TempData["OrderIdFromBill"] = id;
             int x = (int)id;
             TempData["OrderID"] = x;
@@ -111,7 +112,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 ViewData["TimeSlotError"] = "There is an order that needs to be finnished sooner than this one!";
                 var order = _orderChefService.GetChefOrders(id);
-                ViewBag.ChefSelectList = _orderChefService.ChefSelectList(order.TimeSlot.StartTimeSlot);
+                ViewBag.ChefSelectList = _orderChefService.ChefSelectList(order.StartTimeSlot);
                 TempData["OrderIdFromBill"] = id;
                 int x = (int)id;
                 TempData["OrderID"] = x;
