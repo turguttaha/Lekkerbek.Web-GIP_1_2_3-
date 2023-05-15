@@ -103,74 +103,68 @@ namespace Lekkerbek.Web.Services
            --->return error if TRUE
             */
             
-            
-            DateTime startTime = Convert.ToDateTime("01/01/2020 12:00");
-            DateTime endTime = Convert.ToDateTime("01/01/2020 14:00");
-
-
             List<SelectListItem> timeSlotSelectListNew = new List<SelectListItem>();
                         
             /*
              * This will return the openinghours themselves of the restaurant
-             * 
-            string selectedDayOfWeek = askDateTime.DayOfWeek;
-            var object = _repos.GetOpeningsHours(selectedDayOfWeek);
-            foreach(var item in object)
+             * */
+            int selectedDayOfWeek = (int)((DayOfWeek)Enum.Parse(typeof(DayOfWeekEnum), askDateTime.DayOfWeek.ToString())); 
+            var openingsHours = _repository.GetOpeningsHours(selectedDayOfWeek);
+            foreach(var item in openingsHours)
             {
-                while (item.startTime < item.endTime) 
+                while (item.StartTime < item.EndTime) 
                 {
-                    SelectListItem newSelectListItem = new SelectListItem {Text = item.startTime.TimeOfDay.ToString("HH:mm"), Value=itemstartTime.TimeOfDay.ToString() };
+                    Console.WriteLine(item.StartTime.TimeOfDay.ToString());
+                    SelectListItem newSelectListItem = new SelectListItem {Text = item.StartTime.TimeOfDay.ToString(), Value=item.StartTime.TimeOfDay.ToString() };
                     timeSlotSelectListNew.Add(newSelectListItem);
-                    item.startTime = startTime.AddMinutes(15);
+                    item.StartTime = item.StartTime.AddMinutes(15);
                 }
             }
-             
-             */
-            while (startTime < endTime) 
-            {
-                SelectListItem newSelectListItem = new SelectListItem {Text = startTime.TimeOfDay.ToString("HH:mm"), Value=startTime.TimeOfDay.ToString() };
-                timeSlotSelectListNew.Add(newSelectListItem);
-                startTime = startTime.AddMinutes(15);
-            }
-            Console.WriteLine(startTime.DayOfWeek);
+                        
             //filter out the timeslots that are already fully booked
 
             //gets the timeslot of a specific day
             List<TimeSlot> timeSlotOfADay = _repository.GetUsedTimeSlots(askDateTime);
-            List<SelectListItem> timeSlotSelectList = TimeSlotsSelectList;
-            List<SelectListItem> tempTimeSlotSelectList = TimeSlotsSelectList;
+
+            List<SelectListItem> tempTimeSlotSelectList = timeSlotSelectListNew;
             
             //the chefcount will change depending on if they work on that day or not
-            //var allWorkersSchedule = getWorkersSchedules(dayOfWeek)
-            //var chefHollidays = getChefHollidays(askdate)
+            var allWorkersSchedule = _repository.GetChefsWorkschedueles(selectedDayOfWeek.ToString());
+            var chefHollidays = _repository.GetChefsHollidays();
             //->check if any chefs are on holliday on this day, if so remove from original list(workerschedules)
-            /*
-             foreach(var item in chefHolliday)
+            
+            foreach(var item in chefHollidays)
             {
-                allWorkerSchedules.remove(item);
+                if (item.StartDate <= askDateTime && askDateTime <= item.EndDate) 
+                {
+                    var specificChefsSchedule = _repository.GetSpecificChefsWorkSchedule(item.ChefId);
+                    foreach (WorkerSchedule workSchedule in specificChefsSchedule) 
+                    { 
+                        allWorkersSchedule.Remove(workSchedule);
+                    }
+                    
+                }
+                
             }
-             */
+            
 
             int chefCount = _repository.GetChefs().Count();
             //new list based on db data
-            foreach (var item in timeSlotSelectList.ToList())
+            foreach (var item in timeSlotSelectListNew.ToList())
             {
                 /*
                  * this will replace the chefCount int, this will get for the time that its looping through, the amount of chefs availible, we can then
                  * Check how many orders are being prepared, 
-
-                int workingChefsOnTime = allWorkersSchedule.Where(c=>c.startTime<=item &&c.endTime>=item).Count();
-                if (timeSlotOfADay.Where(c => c.StartTimeSlot.ToString("HH:mm") == item.Value).Count() == workingChefsOnTime)
+*/
+                int workingChefsOnTime = allWorkersSchedule.Where(c=>c.StartTime<=Convert.ToDateTime(item.Value) &&c.EndTime>=Convert.ToDateTime(item.Value)).Count();
+                if (timeSlotOfADay.Where(c => c.StartTimeSlot.ToString("HH:mm:ss") == item.Value).Count() >= workingChefsOnTime)
                 {
                     tempTimeSlotSelectList.Remove(item);
                 }
-                 */
+                 
 
 
-                if (timeSlotOfADay.Where(c => c.StartTimeSlot.ToString("HH:mm") == item.Value).Count() == chefCount)
-                {
-                    tempTimeSlotSelectList.Remove(item);
-                }
+                
             }
 
             return tempTimeSlotSelectList;

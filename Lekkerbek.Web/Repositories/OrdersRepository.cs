@@ -85,6 +85,23 @@ namespace Lekkerbek.Web.Repositories
 
 
         }
+        public List<RestaurantOpeninghours> GetOpeningsHours(int dayOfWeek) 
+        {
+            return _context.RestaurantOpeningHours.Where(c=>((int)c.DayOfWeek)==dayOfWeek).ToList();
+        }
+        public List<WorkerSchedule> GetChefsWorkschedueles(string dayOfWeek)
+        {
+            return _context.WorkerSchedules.Where(c => (c.DayOfTheWeek) == dayOfWeek).ToList();
+        }
+        public List<WorkerHoliday> GetChefsHollidays()
+        {
+            return _context.WorkerHolidays.ToList();
+        }
+        public List<WorkerSchedule> GetSpecificChefsWorkSchedule(int chefId)
+        {
+            return _context.WorkerSchedules.Where(c=>c.ChefId == chefId).ToList();
+        }
+
         public List<OrderLine> GetOrderLines()
         {
             //return _context.OrderLines.Include(o => o.MenuItem).ToList();
