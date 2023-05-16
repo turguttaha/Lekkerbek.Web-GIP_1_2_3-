@@ -30,7 +30,7 @@ namespace Lekkerbek.Web.Services
             return GetAll();
         }
 
-            public void Destroy(Models.MenuItem menuItem)
+            public void Destroy(MenuItemViewModel menuItem)
         {
 
 
