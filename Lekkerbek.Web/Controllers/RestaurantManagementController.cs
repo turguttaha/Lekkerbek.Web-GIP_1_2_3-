@@ -39,7 +39,7 @@ namespace Lekkerbek.Web.Controllers
 
 
         // GET: RestaurantManagment/Create
-        public ActionResult Create()
+        public ActionResult ReadOpeningsHours([DataSourceRequest] DataSourceRequest request)
         {
             var list = _restaurantManagementService.GetAllOpeningsHours();
             return Json(list.ToDataSourceResult(request));
