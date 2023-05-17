@@ -24,6 +24,12 @@ namespace Lekkerbek.Web.Controllers
             return View();
         }
 
+        // GET: RestaurantManagment/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
         // POST: RestaurantManagment/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
