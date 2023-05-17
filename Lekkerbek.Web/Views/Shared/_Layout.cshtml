@@ -42,6 +42,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="RestaurantManagement" asp-action="Index">Restaurant Management</a>
+                        </li>
                         @if(User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
@@ -55,6 +58,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Chefs" asp-action="Index">Chefs</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="RestaurantManagement" asp-action="Index">Restaurant Management</a>
                             </li>
                         }
                         @if (User.IsInRole("Cashier"))
