@@ -17,5 +17,20 @@ namespace Lekkerbek.Web.Repositories
             _context.Add(entity);
             _context.SaveChanges();
         }
+
+        public List<RestaurantOpeninghours> GetRestaurantOpeninghours()
+        {
+            return _context.RestaurantOpeningHours.ToList();
+        }
+
+        public void DeleteFromDatabaseOpeningsHour(RestaurantOpeninghours entity) {
+            _context.RestaurantOpeningHours.Remove(entity);
+            _context.SaveChanges();
+        }
+        public void UpdateDatabaseOpeningsHour(RestaurantOpeninghours entity)
+        {
+            _context.RestaurantOpeningHours.Update(entity);
+            _context.SaveChanges();
+        }
     }
 }
