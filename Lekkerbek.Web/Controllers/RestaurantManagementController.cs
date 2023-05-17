@@ -26,7 +26,20 @@ namespace Lekkerbek.Web.Controllers
             return View(list);
         }
 
-        public IActionResult ReadOpeningsHours([DataSourceRequest] DataSourceRequest request)
+
+
+
+        // GET: HolidayManagement/Details/5
+        public ActionResult CreateRestaurantHolidayDay()
+        {
+            return View();
+        }
+
+
+
+
+        // GET: RestaurantManagment/Create
+        public ActionResult ReadOpeningsHours([DataSourceRequest] DataSourceRequest request)
         {
             var list = _restaurantManagementService.GetAllOpeningsHours();
             return Json(list.ToDataSourceResult(request));
@@ -64,6 +77,29 @@ namespace Lekkerbek.Web.Controllers
             }
             return Json(new[] { restaurantOpeninghours }.ToDataSourceResult(request, ModelState));
         }
+
+
+        // POST: HolidayManagment/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateHolidayDay([Bind("RestaurantHolidayId,StartDate,EndDate,Description")] RestaurantHolidayDays restaurantHolidayDays)
+        {
+            try
+            {
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+
+
+
+
+
 
         // GET: RestaurantManagment/Edit/5
         public ActionResult EditOpeningsHour(int id)
