@@ -15,5 +15,15 @@ namespace Lekkerbek.Web.Services
         {
             _repository.AddToDatabaseOpeningsHour(restaurantOpeninghours);
         }
+
+
+
+        public void CreateHolidayDay(RestaurantHolidayDays restaurantHolidayDays)
+        {
+            _repository.AddToDatabaseRestaurantHolidayDay(restaurantHolidayDays);
+        }
+
+
+
     }
 }

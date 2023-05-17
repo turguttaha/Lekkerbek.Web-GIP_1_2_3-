@@ -5,27 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Lekkerbek.Web.Controllers
 {
-    public class RestaurantManagementController : Controller
+    public class HolidayManagementController : Controller
     {
-        private readonly RestaurantManagementService _restaurantManagementService;
-        public RestaurantManagementController(RestaurantManagementService restaurantManagementService)
+        private readonly HolidayManagementService _holidayManagementService;
+        public HolidayManagementController(HolidayManagementService holidayManagementService)
         {
-            _restaurantManagementService = restaurantManagementService;
+            _holidayManagementService = holidayManagementService;
         }
-        // GET: RestaurantManagment
+        // GET: HolidayManagement
         public ActionResult Index()
         {
             return View();
         }
-
-        // GET: RestaurantManagment/Details/5
-        public ActionResult CreateOpeningsHour()
-        {
-            return View();
-        }
-
-
-
 
         // GET: HolidayManagement/Details/5
         public ActionResult CreateRestaurantHolidayDay()
@@ -33,19 +24,16 @@ namespace Lekkerbek.Web.Controllers
             return View();
         }
 
-
-
-
-        // GET: RestaurantManagment/Create
+        // GET: HolidayManagment/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: RestaurantManagment/Create
+        // POST: HolidayManagment/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateOpeningsHour([Bind("CustomerId,FName,LName,Email,PhoneNumber,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,Birthday,PreferredDishId")] RestaurantOpeninghours restaurantOpeninghours)
+        public ActionResult CreateHolidayDay([Bind("RestaurantHolidayId,StartDate,EndDate,Description")] RestaurantHolidayDays restaurantHolidayDays)
         {
             try
             {
@@ -59,36 +47,13 @@ namespace Lekkerbek.Web.Controllers
         }
 
 
-
-        // POST: HolidayManagment/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateHolidayDay([Bind("RestaurantHolidayId,StartDate,EndDate,Description")] RestaurantHolidayDays restaurantHolidayDays)
-        {
-            try
-            {
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-
-
-
-
-
-
-        // GET: RestaurantManagment/Edit/5
+        // GET: HolidayManagment/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: RestaurantManagment/Edit/5
+        // POST: HolidayManagment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -103,13 +68,13 @@ namespace Lekkerbek.Web.Controllers
             }
         }
 
-        // GET: RestaurantManagment/Delete/5
+        // GET: HolidayManagment/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: RestaurantManagment/Delete/5
+        // POST: HolidayManagment/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
