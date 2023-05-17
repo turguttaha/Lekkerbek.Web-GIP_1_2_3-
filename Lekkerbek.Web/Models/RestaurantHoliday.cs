@@ -1,6 +1,6 @@
 ﻿namespace Lekkerbek.Web.Models
 {
-    public class RestaurantHolidayDays
+    public class RestaurantHoliday
     {
         public int RestaurantHolidayId { get; set; }
         public DateTime StartDate { get; set; }

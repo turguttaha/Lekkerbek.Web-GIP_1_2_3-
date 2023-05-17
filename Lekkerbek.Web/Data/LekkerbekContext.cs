@@ -31,7 +31,7 @@ namespace Lekkerbek.Web.Data
         public DbSet<WorkerSchedule> WorkerSchedules { get; set; }
         public DbSet<WorkerHoliday> WorkerHolidays { get; set; }
         public DbSet<RestaurantOpeninghours> RestaurantOpeningHours { get; set; }
-        public DbSet<RestaurantHolidayDays> RestaurantHolidays { get; set; }
+        public DbSet<RestaurantHoliday> RestaurantHolidays { get; set; }
 
 
 

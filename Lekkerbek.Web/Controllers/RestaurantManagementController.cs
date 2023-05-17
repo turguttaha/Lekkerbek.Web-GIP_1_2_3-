@@ -78,29 +78,6 @@ namespace Lekkerbek.Web.Controllers
             return Json(new[] { restaurantOpeninghours }.ToDataSourceResult(request, ModelState));
         }
 
-
-        // POST: HolidayManagment/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult CreateHolidayDay([Bind("RestaurantHolidayId,StartDate,EndDate,Description")] RestaurantHolidayDays restaurantHolidayDays)
-        {
-            try
-            {
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-
-
-
-
-
-
         // GET: RestaurantManagment/Edit/5
         public ActionResult EditOpeningsHour(int id)
         {
