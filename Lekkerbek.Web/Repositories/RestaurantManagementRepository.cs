@@ -32,5 +32,22 @@ namespace Lekkerbek.Web.Repositories
             _context.RestaurantOpeningHours.Update(entity);
             _context.SaveChanges();
         }
+
+
+
+
+
+
+
+        public void AddToDatabaseRestaurantHolidayDay(RestaurantHolidayDays entity)
+        {
+            _context.Add(entity);
+            _context.SaveChanges();
+        }
+
+
+
+
+
     }
 }
