@@ -1,4 +1,6 @@
-﻿using Lekkerbek.Web.Models;
+﻿using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
+using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,10 +20,10 @@ namespace Lekkerbek.Web.Controllers
             return View();
         }
 
-        // GET: RestaurantManagment/Details/5
-        public ActionResult CreateOpeningsHour()
+        public ActionResult OpeningsHours()
         {
-            return View();
+           var list=  _restaurantManagementService.GetAllOpeningsHours();
+            return View(list);
         }
 
 
@@ -39,18 +41,25 @@ namespace Lekkerbek.Web.Controllers
         // GET: RestaurantManagment/Create
         public ActionResult Create()
         {
+            var list = _restaurantManagementService.GetAllOpeningsHours();
+            return Json(list.ToDataSourceResult(request));
+        }
+
+        // GET: RestaurantManagment/Details/5
+        public ActionResult CreateOpeningsHour()
+        {
             return View();
         }
 
         // POST: RestaurantManagment/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateOpeningsHour([Bind("CustomerId,FName,LName,Email,PhoneNumber,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,Birthday,PreferredDishId")] RestaurantOpeninghours restaurantOpeninghours)
+        public ActionResult CreateOpeningsHour([Bind("DayOfWeek,StartTime,EndTime")] RestaurantOpeninghours restaurantOpeninghours)
         {
             try
             {
-                
-                return RedirectToAction(nameof(Index));
+                _restaurantManagementService.CreateOpeningsHour(restaurantOpeninghours);
+                return RedirectToAction(nameof(OpeningsHours));
             }
             catch
             {
@@ -58,6 +67,16 @@ namespace Lekkerbek.Web.Controllers
             }
         }
 
+        public ActionResult DeleteOpeningsHour([DataSourceRequest] DataSourceRequest request, RestaurantOpeninghours restaurantOpeninghours)
+
+        {
+            ModelState.Remove("StartTime"); ModelState.Remove("EndTime");
+            if (restaurantOpeninghours != null && ModelState.IsValid)
+            {
+                _restaurantManagementService.DestroyOpeningsHour(restaurantOpeninghours);
+            }
+            return Json(new[] { restaurantOpeninghours }.ToDataSourceResult(request, ModelState));
+        }
 
 
         // POST: HolidayManagment/Create
@@ -83,23 +102,26 @@ namespace Lekkerbek.Web.Controllers
 
 
         // GET: RestaurantManagment/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult EditOpeningsHour(int id)
         {
-            return View();
+           var entity = _restaurantManagementService.GetSpecificOpeningsHour(id);
+            return View(entity);
         }
 
         // POST: RestaurantManagment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult EditOpeningsHour(int id, [Bind("DayOfWeek,StartTime,EndTime")] RestaurantOpeninghours restaurantOpeninghours)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _restaurantManagementService.UpdateOpeningsHour(restaurantOpeninghours);
+                return RedirectToAction(nameof(OpeningsHours));
             }
             catch
             {
-                return View();
+                var entity = _restaurantManagementService.GetSpecificOpeningsHour(id);
+                return View(entity);
             }
         }
 
