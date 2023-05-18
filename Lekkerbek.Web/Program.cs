@@ -37,6 +37,8 @@ builder.Services.AddTransient<ChefService>();
 builder.Services.AddTransient<IEmailSender, EmailService>();
 builder.Services.AddTransient<RestaurantManagementRepository>();
 builder.Services.AddTransient<RestaurantManagementService>();
+builder.Services.AddTransient<OrderLineRepository>();
+builder.Services.AddTransient<OrderLineService>();
 
 
 
