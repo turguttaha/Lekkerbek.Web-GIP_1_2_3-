@@ -15,6 +15,7 @@ using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Telerik.SvgIcons;
+using Lekkerbek.Web.ViewModel;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -55,9 +56,9 @@ namespace Lekkerbek.Web.Controllers
         }
 
         
-        public ActionResult EditingPopup_Create([DataSourceRequest] DataSourceRequest request, Chef product)
+        public ActionResult EditingPopup_Create([DataSourceRequest] DataSourceRequest request, ChefViewModel product)
         {
-            ModelState.Remove("TimeSlot");
+            //ModelState.Remove("TimeSlot");
 
             if (product != null && ModelState.IsValid)
             {
