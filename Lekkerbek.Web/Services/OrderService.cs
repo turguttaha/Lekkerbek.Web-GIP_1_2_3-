@@ -96,25 +96,19 @@ namespace Lekkerbek.Web.Services
             };
         public List<SelectListItem> GetTimeDropDownList(DateTime askDateTime)
         {
-           /*
-           Check if restaurant is open
-           var getHolidays = repos.getHolidays
-           ->check here if any record contains values startDate<=askDate<=endDate
-           --->return error if TRUE
-            */
-            
             List<SelectListItem> timeSlotSelectListNew = new List<SelectListItem>();
                         
-            /*
-             * This will return the openinghours themselves of the restaurant
-             * */
+            //gets the day of the week from the day we want to look at
+            //after, it will get the restaurants schedule for this day of the week
             int selectedDayOfWeek = (int)((DayOfWeek)Enum.Parse(typeof(DayOfWeekEnum), askDateTime.DayOfWeek.ToString())); 
             var openingsHours = _repository.GetOpeningsHours(selectedDayOfWeek);
+            
+            //for every entry, meaning from and till a certain time, on this day that the restaurant is open, this loop will create
+            //timeslots that will be shown to the customer when creating their order
             foreach(var item in openingsHours)
             {
                 while (item.StartTime < item.EndTime) 
                 {
-                    Console.WriteLine(item.StartTime.TimeOfDay.ToString());
                     SelectListItem newSelectListItem = new SelectListItem {Text = item.StartTime.TimeOfDay.ToString(), Value=item.StartTime.TimeOfDay.ToString() };
                     timeSlotSelectListNew.Add(newSelectListItem);
                     item.StartTime = item.StartTime.AddMinutes(15);
@@ -122,49 +116,35 @@ namespace Lekkerbek.Web.Services
             }
                         
             //filter out the timeslots that are already fully booked
-
             //gets the timeslot of a specific day
             List<TimeSlot> timeSlotOfADay = _repository.GetUsedTimeSlots(askDateTime);
-
+            //We make a copy of the timeslotslist so we can remove the used timeslots
             List<SelectListItem> tempTimeSlotSelectList = timeSlotSelectListNew;
             
-            //the chefcount will change depending on if they work on that day or not
-            var allWorkersSchedule = _repository.GetChefsWorkschedueles(selectedDayOfWeek.ToString());
+            //getting the chefHollidays
             var chefHollidays = _repository.GetChefsHollidays();
-            //->check if any chefs are on holliday on this day, if so remove from original list(workerschedules)
-            
-            foreach(var item in chefHollidays)
+            //gets the amount of chefs of the restaurant
+            int chefCount = _repository.GetChefs().Count();
+            //this loop will subtract the amount of chefs from the chefcount(meaning only the chefs that are working are accounted for)
+            foreach (var item in chefHollidays)
             {
                 if (item.StartDate <= askDateTime && askDateTime <= item.EndDate) 
                 {
-                    var specificChefsSchedule = _repository.GetSpecificChefsWorkSchedule(item.ChefId);
-                    foreach (WorkerSchedule workSchedule in specificChefsSchedule) 
-                    { 
-                        allWorkersSchedule.Remove(workSchedule);
-                    }
+                    chefCount--;
                     
                 }
                 
             }
             
-
-            int chefCount = _repository.GetChefs().Count();
-            //new list based on db data
+            //we loop through all of the timeslots
             foreach (var item in timeSlotSelectListNew.ToList())
             {
-                /*
-                 * this will replace the chefCount int, this will get for the time that its looping through, the amount of chefs availible, we can then
-                 * Check how many orders are being prepared, 
-*/
-                int workingChefsOnTime = allWorkersSchedule.Where(c=>c.StartTime<=Convert.ToDateTime(item.Value) &&c.EndTime>=Convert.ToDateTime(item.Value)).Count();
-                if (timeSlotOfADay.Where(c => c.StartTimeSlot.ToString("HH:mm:ss") == item.Value).Count() >= workingChefsOnTime)
+                //if the amount of orders on this time is equal to the amount of chefs, then its fully booked, remove from the timeslotlist             
+                if (timeSlotOfADay.Where(c => c.StartTimeSlot.ToString("HH:mm:ss") == item.Value).Count() == chefCount)
                 {
                     tempTimeSlotSelectList.Remove(item);
                 }
-                 
-
-
-                
+                               
             }
 
             return tempTimeSlotSelectList;
