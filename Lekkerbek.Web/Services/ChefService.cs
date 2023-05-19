@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Services
@@ -22,9 +23,12 @@ namespace Lekkerbek.Web.Services
 
             return result;
         }
-        public void Create(Chef chef)
-        {
-            _repository.AddToDataBase(chef);
+        public void Create(ChefViewModel chef)
+        {   Chef chef1 = new Chef()
+        {ChefId=chef.ChefId,
+        ChefName=chef.ChefName,
+        };
+            _repository.AddToDataBase(chef1);
         }
         public void Destroy(Chef chef)
         {
