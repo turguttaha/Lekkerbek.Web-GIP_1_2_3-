@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using Lekkerbek.Web.Services;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -16,10 +17,12 @@ namespace Lekkerbek.Web.Controllers
     public class OrderLinesController : Controller
     {
         private readonly LekkerbekContext _context;
+        private readonly OrderLineService _orderLineService;
 
-        public OrderLinesController(LekkerbekContext context)
+        public OrderLinesController(LekkerbekContext context, OrderLineService orderLineService)
         {
             _context = context;
+            _orderLineService = orderLineService;
         }
 
 
@@ -42,8 +45,8 @@ namespace Lekkerbek.Web.Controllers
             // if (ModelState.IsValid)
             //{
             orderLine.OrderID = (int)TempData["Orderid"];
-                _context.Add(orderLine);
-                await _context.SaveChangesAsync();
+            _orderLineService.AddOrderLine(orderLine);
+                
             if(User.IsInRole("Administrator"))
             return RedirectToAction("EditOrder", "Orders", new { id = orderLine.OrderID });
             if (User.IsInRole("Customer"))
@@ -62,10 +65,8 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
 
-            var orderLine = await _context.OrderLines
-                .Include(o => o.MenuItem)
-                .Include(o => o.Order)
-                .FirstOrDefaultAsync(m => m.OrderLineID == id);
+            var orderLine = _orderLineService.GetSpecificOrderLineDetailed(id);
+                
             if (orderLine == null)
             {
                 return NotFound();
@@ -83,13 +84,13 @@ namespace Lekkerbek.Web.Controllers
             {
                 return Problem("Entity set 'LekkerbekContext.OrderLines'  is null.");
             }
-            var orderLine = await _context.OrderLines.FindAsync(id);
+            var orderLine = _orderLineService.GetSpecificOrderLine(id);
             if (orderLine != null)
             {
-                _context.OrderLines.Remove(orderLine);
+                _orderLineService.RemoveOrderLine(orderLine);
             }
             
-            await _context.SaveChangesAsync();
+           
             
             if (User.IsInRole("Administrator"))
                 return RedirectToAction("EditOrder", "Orders",new { id = orderLine.OrderID });
@@ -98,9 +99,6 @@ namespace Lekkerbek.Web.Controllers
             return View(orderLine);
         }
 
-        private bool OrderLineExists(int id)
-        {
-          return _context.OrderLines.Any(e => e.OrderLineID == id);
-        }
+        
     }
 }

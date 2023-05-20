@@ -4,6 +4,7 @@ using Lekkerbek.Web.ViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Telerik.SvgIcons;
 
 namespace Lekkerbek.Web.Services
 {
@@ -95,20 +96,55 @@ namespace Lekkerbek.Web.Services
             };
         public List<SelectListItem> GetTimeDropDownList(DateTime askDateTime)
         {
-
+            List<SelectListItem> timeSlotSelectListNew = new List<SelectListItem>();
+                        
+            //gets the day of the week from the day we want to look at
+            //after, it will get the restaurants schedule for this day of the week
+            int selectedDayOfWeek = (int)((DayOfWeek)Enum.Parse(typeof(DayOfWeekEnum), askDateTime.DayOfWeek.ToString())); 
+            var openingsHours = _repository.GetOpeningsHours(selectedDayOfWeek);
+            
+            //for every entry, meaning from and till a certain time, on this day that the restaurant is open, this loop will create
+            //timeslots that will be shown to the customer when creating their order
+            foreach(var item in openingsHours)
+            {
+                while (item.StartTime < item.EndTime) 
+                {
+                    SelectListItem newSelectListItem = new SelectListItem {Text = item.StartTime.TimeOfDay.ToString(), Value=item.StartTime.TimeOfDay.ToString() };
+                    timeSlotSelectListNew.Add(newSelectListItem);
+                    item.StartTime = item.StartTime.AddMinutes(15);
+                }
+            }
+                        
             //filter out the timeslots that are already fully booked
-
             //gets the timeslot of a specific day
             List<TimeSlot> timeSlotOfADay = _repository.GetUsedTimeSlots(askDateTime);
-            List<SelectListItem> timeSlotSelectList = TimeSlotsSelectList;
-            List<SelectListItem> tempTimeSlotSelectList = TimeSlotsSelectList;
+            //We make a copy of the timeslotslist so we can remove the used timeslots
+            List<SelectListItem> tempTimeSlotSelectList = timeSlotSelectListNew;
+            
+            //getting the chefHollidays
+            var chefHollidays = _repository.GetChefsHollidays();
+            //gets the amount of chefs of the restaurant
             int chefCount = _repository.GetChefs().Count();
-            foreach (var item in timeSlotSelectList.ToList())
+            //this loop will subtract the amount of chefs from the chefcount(meaning only the chefs that are working are accounted for)
+            foreach (var item in chefHollidays)
             {
-                    if (timeSlotOfADay.Where(c => c.StartTimeSlot.ToString("HH:mm") == item.Value).Count() == chefCount)
-                    {
-                        tempTimeSlotSelectList.Remove(item);
-                    }
+                if (item.StartDate <= askDateTime && askDateTime <= item.EndDate) 
+                {
+                    chefCount--;
+                    
+                }
+                
+            }
+            
+            //we loop through all of the timeslots
+            foreach (var item in timeSlotSelectListNew.ToList())
+            {
+                //if the amount of orders on this time is equal to the amount of chefs, then its fully booked, remove from the timeslotlist             
+                if (timeSlotOfADay.Where(c => c.StartTimeSlot.ToString("HH:mm:ss") == item.Value).Count() == chefCount)
+                {
+                    tempTimeSlotSelectList.Remove(item);
+                }
+                               
             }
 
             return tempTimeSlotSelectList;

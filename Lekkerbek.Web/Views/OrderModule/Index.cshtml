@@ -17,7 +17,6 @@
     {
         columns.Bound(p => p.OrderID);
         columns.Bound(p => p.CustomerName);
-
         columns.Bound(p => p.Finished);
         columns.Bound(p => p.TimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}");
         columns.Bound(p => p.OrderID)
@@ -46,10 +45,7 @@
         .Ajax()
         .PageSize(20)
         .Events(events => events.Error("error_handler"))
-        @*.Model(model => model(p => p.OrderID))*@
-        @*.Create(update => update.Action("EditingPopup_Create", "Orders"))*@
         .Read(read => read.Action("DetailTemplate_HierarchyBinding_Order", "OrderModule"))
-        @*.Destroy(update => update.Action("EditingPopup_Destroy", "Orders"))*@
     ))
 
 
@@ -66,9 +62,9 @@
                         .Columns(columns =>
                         {
                             columns.Bound(o => o.MenuItem.Name).Title("Item Name").Width(100);
-                                    columns.Bound(o => o.DishAmount).Title("Amount").Width(150);
+                            columns.Bound(o => o.DishAmount).Title("Amount").Width(150);
                             columns.Bound(o => o.ExtraDetails).Width(150); 
-                                })
+                        })
                         .DataSource(dataSource => dataSource
                             .Ajax()
                             .PageSize(5)
