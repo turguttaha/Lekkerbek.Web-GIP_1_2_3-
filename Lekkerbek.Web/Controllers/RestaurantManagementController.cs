@@ -243,7 +243,7 @@ namespace Lekkerbek.Web.Controllers
         // POST: RestaurantManagment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditHolidayDay(int id, [Bind("Description,StartDate,EndDate")] RestaurantHoliday restaurantHoliday)
+        public ActionResult EditHolidayDay(int id, [Bind("RestaurantHolidayId,Description,StartDate,EndDate")] RestaurantHoliday restaurantHoliday)
         {
             try
             {
