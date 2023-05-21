@@ -1,5 +1,7 @@
 ﻿@using Kendo.Mvc.UI;
 @using Lekkerbek.Web.Models;
+@using Lekkerbek.Web.ViewModel;
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -7,15 +9,17 @@
 <h1>Index</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 
-@(Html.Kendo().Grid<Lekkerbek.Web.Models.Chef>()
+@(
+Html.Kendo().Grid<ChefViewModel>()
 .Name("grid")
 .Columns(columns =>
 {    
     columns.Bound(f => f.ChefName);
-    columns.Command(command => { command.Edit(); command.Destroy(); }).Width(200);
+    columns.Bound(f => f.Email);
+    columns.Command(command => { command.Edit(); command.Destroy(); }).Width(250);
 })
-.ToolBar(toolbar => toolbar.Create())
-.Editable(editable => editable.Mode(GridEditMode.PopUp))
+ .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Chefs/AssignChefList/'>Add Chef</a></div>"))
+.Editable(editable => editable.Mode(GridEditMode.InLine))
 .Pageable()
 .Sortable()
 .Scrollable()
@@ -27,6 +31,9 @@
     {
         model.Id(chef => chef.ChefId); // Specify the property which is the unique identifier of the model.
         model.Field(chef => chef.ChefId).Editable(false); // Make the OrderID property not editable.
+        model.Field(chef => chef.Email).Editable(false);
+        model.Field(chef => chef.IdentityId).Editable(false);
+
     })
     .Events(events => events.Error("error_handler"))
     .Create(create => create.Action("EditingPopup_Create", "Chefs")) // Action invoked when the user saves a new data item.

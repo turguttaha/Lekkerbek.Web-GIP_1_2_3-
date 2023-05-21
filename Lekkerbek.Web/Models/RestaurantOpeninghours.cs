@@ -1,4 +1,6 @@
-﻿namespace Lekkerbek.Web.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Lekkerbek.Web.Models
 {
     public enum DayOfWeekEnum {
         Monday, 
@@ -13,7 +15,10 @@
     {
         public int RestaurantOpeninghoursId { get; set; }
         public DayOfWeekEnum DayOfWeek { get; set; }
+        [DataType(DataType.Time)]
         public DateTime StartTime { get; set; }
+        [DataType(DataType.Time)]
+
         public DateTime EndTime { get; set; }
 
     }

@@ -1,0 +1,118 @@
+﻿@using Kendo.Mvc.UI;
+@using Lekkerbek.Web.ViewModel;
+@using Microsoft.AspNetCore.Identity;
+@model ChefViewModel;
+@{
+    ViewData["Title"] = "AssignChef";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h3 class="text-secondary">You can select the user you want to promote to the Chef class from the list below!</h3>
+<p id="error_text" class="text-danger fw-bold"></p>
+@* Pop Up HTML*@
+<div class="popup">
+    <div class="popuptext" id="myPopup">
+        <input class="btn btn-danger mt-1 mb-1" type="Button" onclick="ClosePopUp()" value="X"><br>
+        <form asp-action="AssignChef">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+            <label asp-for="IdentityId" class="control-label"></label>
+            <input asp-for="IdentityId" class="form-control" readonly hidden/>
+            <span asp-validation-for="IdentityId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+            <label asp-for="ChefName" class="control-label">Enter Name of New Chef:</label>
+            <input asp-for="ChefName" class="form-control" />
+            <span asp-validation-for="ChefName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add new Chef" class="btn btn-primary mt-3">
+            </div>  
+            
+        </form>
+
+    </div>
+
+</div>
+@(
+Html.Kendo().Grid<IdentityUser>()
+.Name("grid")
+.Columns(columns =>
+{
+    columns.Bound(f => f.UserName);
+    columns.Bound(f => f.Id).Title("  ").Width(220).Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' > <a onclick=\"OpenPopUp('#= Id #')\" href='\\#'> Add </a> </div>");
+
+})
+.Editable(editable => editable.Mode(GridEditMode.PopUp))
+.Filterable(filterable => filterable
+    .Extra(false)
+    .Operators(operators => operators
+        .ForString(str => str.Clear()
+.IsEqualTo("Is equal to")
+       )
+   )
+    )
+.Pageable()
+.Sortable()
+.Scrollable()
+.HtmlAttributes(new { style = "height:550px;" })
+.DataSource(d =>
+{
+    d.Ajax()
+    .Model(model =>
+    {
+        model.Id(user => user.Id); // Specify the property which is the unique identifier of the model.
+        model.Field(user => user.Id).Editable(false); // Make the OrderID property not editable.
+    })
+
+    .Read(read => read.Action("AssignChef_read", "Chefs")); // Action invoked when the Grid needs data.
+
+})
+    )
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var grid = $("#grid").data("kendoGrid");
+            grid.cancelChanges();
+            var message = " ";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += "- " + this + "\n";
+                    });
+                }
+            });
+            document.getElementById("error_text").innerText = message;
+            //alert(message);
+        }
+    }
+
+</script>
+<script type="text/javascript">
+    // When the user clicks on div, open the popup
+    function OpenPopUp(Id) {
+        var popup = document.getElementById("myPopup");
+        popup.classList.add("show");
+        document.getElementById("IdentityId").value = Id;
+        document.getElementById("ChefName").value = ` `;
+        //console.log(Id);
+
+    }
+
+
+    function ClosePopUp() {
+        var popup = document.getElementById("myPopup");
+        popup.classList.remove("show");
+    }
+
+</script>

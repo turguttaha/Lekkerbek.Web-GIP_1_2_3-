@@ -7,7 +7,8 @@
 <h1>Index</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 
-@(Html.Kendo().Grid<Lekkerbek.Web.Models.RestaurantOpeninghours>()
+@(
+Html.Kendo().Grid<Lekkerbek.Web.Models.RestaurantOpeninghours>()
 .Name("grid")
 .Columns(columns =>
 {
@@ -16,10 +17,10 @@
     columns.Bound(f => f.EndTime).Format("{0:HH:mm:ss}");
     columns.Bound(f => f.RestaurantOpeninghoursId).Title("  ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/RestaurantManagement/EditOpeningsHour/#=RestaurantOpeninghoursId#'>Edit</a></div>");
 
-    columns.Command(command => { command.Destroy(); }).Width(200);
+    columns.Command(command => {  command.Destroy(); }).Width(200);
 })
 .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/RestaurantManagement/CreateOpeningsHour'>Add New Openings Hour</a></div>"))
-.Editable(editable => editable.Mode(GridEditMode.PopUp))
+.Editable(editable => editable.Mode(GridEditMode.InLine))
 .Pageable()
 .Sortable()
 .Scrollable()

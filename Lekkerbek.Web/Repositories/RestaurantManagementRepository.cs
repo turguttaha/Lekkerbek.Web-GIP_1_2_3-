@@ -29,7 +29,7 @@ namespace Lekkerbek.Web.Repositories
         }
         public void UpdateDatabaseOpeningsHour(RestaurantOpeninghours entity)
         {
-            _context.RestaurantOpeningHours.Update(entity);
+            _context.Update(entity);
             _context.SaveChanges();
         }
 
