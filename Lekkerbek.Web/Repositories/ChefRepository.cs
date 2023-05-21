@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Repositories
@@ -16,6 +17,19 @@ namespace Lekkerbek.Web.Repositories
         {
             return _context.Chefs.ToList();
 
+        }
+
+        public List<ChefViewModel> chefViewModels()
+        {
+             return _context.Chefs.Select(chef => new ChefViewModel
+            //This is another way to make a new object
+            {
+                ChefId = chef.ChefId,
+                ChefName = chef.ChefName,
+                Email= chef.IdentityUser.Email,
+                IdentityId = chef.IdentityUser.Id
+
+            }).ToList();
         }
         public void AddToDataBase(Chef chef)
         {

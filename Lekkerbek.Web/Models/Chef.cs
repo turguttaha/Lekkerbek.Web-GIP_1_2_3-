@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 
 namespace Lekkerbek.Web.Models
@@ -11,6 +12,7 @@ namespace Lekkerbek.Web.Models
         public string ChefName { get; set; }
 
         public virtual ICollection<TimeSlot> TimeSlot { get; set; }
+        public virtual IdentityUser? IdentityUser { get; set; }
 
     }
 }

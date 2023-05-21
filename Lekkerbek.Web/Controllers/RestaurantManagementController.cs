@@ -47,8 +47,42 @@ namespace Lekkerbek.Web.Controllers
         {
             try
             {
-                _restaurantManagementService.CreateOpeningsHour(restaurantOpeninghours);
-                return RedirectToAction(nameof(OpeningsHours));
+                var openingsHourList =  _restaurantManagementService.GetAllOpeningsHours();
+                bool conflict = false;
+                if (restaurantOpeninghours.StartTime < restaurantOpeninghours.EndTime)
+                {
+                    foreach (var openingHour in openingsHourList)
+                    {
+
+                        if (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek && (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.EndTime.TimeOfDay))
+                        {
+
+                            conflict = true;
+
+                        }
+                        if (openingHour.EndTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.StartTime.TimeOfDay)
+                        {
+                            conflict = true;
+                        }
+
+                    }
+                    if (conflict)
+                    {
+                        ModelState.AddModelError("Model", "This time slot is already taken!");
+                        ViewBag.oHError = "This time slot is already taken!";
+                        return View();
+                    }
+                    else
+                        _restaurantManagementService.CreateOpeningsHour(restaurantOpeninghours);
+                    return RedirectToAction(nameof(OpeningsHours));
+                }
+                else
+                {
+                    ModelState.AddModelError("Model", "Start time should be earlier than endtime");
+                    ViewBag.oHError = "Start time should be earlier than endtime";
+                    return View();
+                }
+              
             }
             catch
             {
@@ -81,8 +115,49 @@ namespace Lekkerbek.Web.Controllers
         {
             try
             {
-                _restaurantManagementService.UpdateOpeningsHour(restaurantOpeninghours);
-                return RedirectToAction(nameof(OpeningsHours));
+                var openingsHourList = _restaurantManagementService.GetAllOpeningsHours();
+                bool conflict = false;
+                RestaurantOpeninghours rOH = openingsHourList.Find(o=>o.RestaurantOpeninghoursId==id);
+                    openingsHourList.Remove(rOH);
+                if (restaurantOpeninghours.StartTime < restaurantOpeninghours.EndTime)
+                {
+                    foreach (var openingHour in openingsHourList)
+                    {
+
+                        if (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek && (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.EndTime.TimeOfDay))
+                        {
+
+                            conflict = true;
+
+                        }
+                        if (openingHour.EndTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.StartTime.TimeOfDay)
+                        {
+                            conflict = true;
+                        }
+                    }
+                    if (conflict)
+                    {
+                        ModelState.AddModelError("Model", "This time slot is already taken!");
+                        ViewBag.oHError = "This time slot is already taken!";
+                        return View();
+                    }
+                    else
+                    {
+                        rOH.StartTime = restaurantOpeninghours.StartTime;
+                        rOH.EndTime = restaurantOpeninghours.EndTime;
+                        rOH.DayOfWeek = restaurantOpeninghours.DayOfWeek;
+                        _restaurantManagementService.UpdateOpeningsHour(rOH);
+                        return RedirectToAction(nameof(OpeningsHours));
+                    }
+
+                }
+                else
+                {
+                    ModelState.AddModelError("Model", "Start time should be earlier than endtime");
+                    ViewBag.oHError = "Start time should be earlier than endtime";
+                    return View();
+                }
+
             }
             catch
             {
@@ -168,7 +243,7 @@ namespace Lekkerbek.Web.Controllers
         // POST: RestaurantManagment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditHolidayDay(int id, [Bind("Description,StartDate,EndDate")] RestaurantHoliday restaurantHoliday)
+        public ActionResult EditHolidayDay(int id, [Bind("RestaurantHolidayId,Description,StartDate,EndDate")] RestaurantHoliday restaurantHoliday)
         {
             try
             {

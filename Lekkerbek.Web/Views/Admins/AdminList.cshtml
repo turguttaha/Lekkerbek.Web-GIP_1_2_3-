@@ -1,0 +1,70 @@
+﻿@using Kendo.Mvc.UI;
+@using Microsoft.AspNetCore.Identity;
+
+@{
+    ViewData["Title"] = "AssignAdmin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h1>Admin List</h1>
+<p id="error_text" class="text-danger fw-bold"></p>
+
+@(
+Html.Kendo().Grid<IdentityUser>()
+.Name("grid")
+.Columns(columns =>
+{
+    columns.Bound(f => f.Email);
+    columns.Command(command => {  command.Destroy(); }).Width(250);
+
+
+})
+ .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Admins/AssignAdminList/'>Add Admin</a></div>"))
+.Editable(editable => editable.Mode(GridEditMode.PopUp))
+.Filterable(filterable => filterable
+    .Extra(false)
+    .Operators(operators => operators
+        .ForString(str => str.Clear()
+.IsEqualTo("Is equal to")
+       )
+   )
+    )
+.Pageable()
+.Sortable()
+.Scrollable()
+.HtmlAttributes(new { style = "height:550px;" })
+.DataSource(d =>
+{
+    d.Ajax()
+    .Model(model =>
+    {
+        model.Id(user => user.Id); // Specify the property which is the unique identifier of the model.
+        model.Field(user => user.Id).Editable(false); // Make the OrderID property not editable.
+    })
+
+    .Read(read => read.Action("Admin_read", "Admins")) // Action invoked when the Grid needs data.
+    .Destroy(delete => delete.Action("Delete_Admin", "Admins")); // Action invoked when the user removes a data item.
+
+})
+    )
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var grid = $("#grid").data("kendoGrid");
+            grid.cancelChanges();
+            var message = " ";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += "- " + this + "\n";
+                    });
+                }
+            });
+            document.getElementById("error_text").innerText = message;
+            //alert(message);
+        }
+    }
+
+</script>

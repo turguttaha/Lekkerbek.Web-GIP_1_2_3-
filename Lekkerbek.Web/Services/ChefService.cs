@@ -1,6 +1,7 @@
 ﻿using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
 using Lekkerbek.Web.ViewModel;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Services
@@ -10,10 +11,12 @@ namespace Lekkerbek.Web.Services
         private static bool UpdateDatabase = true;//If true, stores info in the database. If false, session.
 
         private readonly ChefRepository _repository;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public ChefService(ChefRepository chefRepository)
+        public ChefService(ChefRepository chefRepository, UserManager<IdentityUser> userManager)
         {
             _repository = chefRepository;
+            _userManager = userManager;
         }
 
         private IList<Chef> GetAll()
@@ -23,10 +26,18 @@ namespace Lekkerbek.Web.Services
 
             return result;
         }
-        public void Create(ChefViewModel chef)
-        {   Chef chef1 = new Chef()
+
+        public IList<ChefViewModel> GetChefsWithIdentity() {
+            return _repository.chefViewModels();
+        }
+        public async void Create(ChefViewModel chef)
+        {
+            var user = await _userManager.FindByIdAsync(chef.IdentityId);
+            Chef chef1 = new Chef()
         {ChefId=chef.ChefId,
         ChefName=chef.ChefName,
+        IdentityUser = user,
+
         };
             _repository.AddToDataBase(chef1);
         }
@@ -46,6 +57,7 @@ namespace Lekkerbek.Web.Services
 
                 entity.ChefId = chef.ChefId;
                 entity.ChefName = chef.ChefName;
+                entity.IdentityUser = chef.IdentityUser;
 
                 _repository.DeleteFromDataBase(entity);
             }

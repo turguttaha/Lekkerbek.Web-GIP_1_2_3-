@@ -7,5 +7,6 @@ namespace Lekkerbek.Web.Models
     public class ApplicationUser : IdentityUser 
     {
         public virtual Customer? Customer { get; set; }
+        public virtual Chef? Chef { get; set; }
     }
 }

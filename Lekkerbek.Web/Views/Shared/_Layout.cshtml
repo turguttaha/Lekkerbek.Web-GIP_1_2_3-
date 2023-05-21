@@ -42,9 +42,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="RestaurantManagement" asp-action="Index">Restaurant Management</a>
-                        </li>
                         @if(User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
@@ -57,25 +54,22 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="MenuItems" asp-action="Index">Menu Items</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Chefs" asp-action="Index">Chefs</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="RestaurantManagement" asp-action="Index">Restaurant Management</a>
                             </li>
                         }
-                        @if (User.IsInRole("Cashier"))
+                        @if (User.IsInRole("Cashier") )
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="OrdersCashier" asp-action="Index">Orders </a>
                             </li>
                         }
-                        @if (User.IsInRole("Chef"))
+                        @if (User.IsInRole("Chef") )
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="OrdersChef" asp-action="Index">Orders </a>
                             </li>
                         }
-                        @if (User.IsInRole("Customer"))
+                        @if (User.IsInRole("Customer") && !User.IsInRole("Chef") && !User.IsInRole("Cashier") && !User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="OrderModule" asp-action="Index">Orders</a>
