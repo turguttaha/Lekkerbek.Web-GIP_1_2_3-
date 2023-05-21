@@ -127,6 +127,10 @@ namespace Lekkerbek.Web.Services
 
         public List<SelectListItem> ChefSelectList(DateTime startTimeSlot)
         {
+            //check if there is a timeslot this chef is already working on
+            //check if it is the first timeslot
+
+
 
             var usedTimeSlots = _repository.GetTimeSlots().FindAll(t => t.StartTimeSlot == startTimeSlot);
 

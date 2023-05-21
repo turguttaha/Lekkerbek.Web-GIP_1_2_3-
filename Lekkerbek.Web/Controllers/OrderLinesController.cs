@@ -16,12 +16,12 @@ namespace Lekkerbek.Web.Controllers
 
     public class OrderLinesController : Controller
     {
-        private readonly LekkerbekContext _context;
+        
         private readonly OrderLineService _orderLineService;
 
-        public OrderLinesController(LekkerbekContext context, OrderLineService orderLineService)
+        public OrderLinesController(OrderLineService orderLineService)
         {
-            _context = context;
+           
             _orderLineService = orderLineService;
         }
 
@@ -29,7 +29,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines/Create
         public IActionResult Create(int id)
         {
-            ViewData["DishID"] = new SelectList(_context.MenuItems, "MenuItemId", "Name");
+            ViewData["DishID"] = new SelectList(_orderLineService.GetMenuItems(), "MenuItemId", "Name");
             TempData["Orderid"] = id;
             ViewBag.Id = id; 
             return View();
@@ -52,15 +52,15 @@ namespace Lekkerbek.Web.Controllers
             if (User.IsInRole("Customer"))
             return RedirectToAction("EditOrder", "OrderModule", new { id = orderLine.OrderID });
             //}
-            ViewData["DishID"] = new SelectList(_context.MenuItems, "DishId", "DishId", orderLine.MenuItemId);
-            ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
+            ViewData["DishID"] = new SelectList(_orderLineService.GetMenuItems(), "DishId", "DishId", orderLine.MenuItemId);
+            ViewData["OrderID"] = new SelectList(_orderLineService.GetOrders(), "OrderID", "OrderID", orderLine.OrderID);
             return View(orderLine);
         }
 
         // GET: OrderLines/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.OrderLines == null)
+            if (id == null || _orderLineService.GetOrdersLines() == null)
             {
                 return NotFound();
             }
@@ -80,7 +80,7 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.OrderLines == null)
+            if (_orderLineService.GetOrdersLines() == null)
             {
                 return Problem("Entity set 'LekkerbekContext.OrderLines'  is null.");
             }

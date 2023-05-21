@@ -26,6 +26,18 @@ namespace Lekkerbek.Web.Repositories
         {
             return _context.OrderLines.FirstOrDefault(m => m.OrderLineID == id);
         }
+        public List<Order> GetOrders()
+        {
+            return _context.Orders.ToList();
+        }
+        public List<OrderLine> GetOrdersLines()
+        {
+            return _context.OrderLines.ToList();
+        }
+        public List<MenuItem> GetMenuItems()
+        {
+            return _context.MenuItems.ToList();
+        }
         public void DeleteFromDataBase(OrderLine entity)
         {
 

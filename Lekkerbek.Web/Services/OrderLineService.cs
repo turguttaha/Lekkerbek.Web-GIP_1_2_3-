@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Services
 {
@@ -21,6 +22,18 @@ namespace Lekkerbek.Web.Services
         public void AddOrderLine(OrderLine orderLine) 
         {
             _repository.AddToDataBase(orderLine);
+        }
+        public List<Order> GetOrders()
+        {
+            return _repository.GetOrders().ToList();
+        }
+        public List<OrderLine> GetOrdersLines()
+        {
+            return _repository.GetOrdersLines();
+        }
+        public List<MenuItem> GetMenuItems()
+        {
+            return _repository.GetMenuItems();
         }
         public void RemoveOrderLine(OrderLine orderLine)
         {
