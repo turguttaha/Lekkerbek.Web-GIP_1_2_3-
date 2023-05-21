@@ -1,0 +1,61 @@
+﻿@using Kendo.Mvc.UI;
+@using Lekkerbek.Web.Models;
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+<p id="error_text" class="text-danger fw-bold"></p>
+
+@(Html.Kendo().Grid<Lekkerbek.Web.Models.RestaurantHoliday>()
+.Name("grid")
+.Columns(columns =>
+{
+    columns.Bound(f => f.Description);
+    columns.Bound(f => f.StartDate);
+    columns.Bound(f => f.EndDate);
+    columns.Bound(f => f.RestaurantHolidayId).Title("  ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/RestaurantManagement/EditHolidayDay/#=RestaurantHolidayId#'>Edit</a></div>");
+
+    columns.Command(command => { command.Destroy(); }).Width(200);
+})
+.ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/RestaurantManagement/CreateHolidayDay'>Add New Holiday Day</a></div>"))
+.Editable(editable => editable.Mode(GridEditMode.PopUp))
+.Pageable()
+.Sortable()
+.Scrollable()
+.HtmlAttributes(new { style = "height:550px;" })
+.DataSource(d =>
+{
+    d.Ajax()
+    .Model(model =>
+    {
+        model.Id(chef => chef.RestaurantHolidayId); // Specify the property which is the unique identifier of the model.
+        model.Field(chef => chef.RestaurantHolidayId).Editable(false); // Make the OrderID property not editable.
+    })
+    .Events(events => events.Error("error_handler"))
+    .Create(create => create.Action("EditingPopup_Create", "RestaurantManagement")) // Action invoked when the user saves a new data item.
+    .Read(read => read.Action("ReadHolidayDays", "RestaurantManagement")) // Action invoked when the Grid needs data.
+    .Update(update => update.Action("EditingPopup_Update", "RestaurantManagement"))
+    .Destroy(delete => delete.Action("DeleteHolidayDay", "RestaurantManagement")); // Action invoked when the user removes a data item.
+})
+    )
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var grid = $("#grid").data("kendoGrid");
+            grid.cancelChanges();
+            var message = " ";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += "- " + this + "\n";
+                    });
+                }
+            });
+            document.getElementById("error_text").innerText = message;
+            //alert(message);
+        }
+    }
+
+</script>

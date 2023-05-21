@@ -3,7 +3,7 @@
 namespace Lekkerbek.Web.Models
 {
     public enum DayOfWeekEnum {
-        Monday, 
+        Monday,
         Tuesday,
         Wednesday,
         Thursday,

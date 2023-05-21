@@ -18,6 +18,8 @@ using Lekkerbek.Web.Services;
 using Kendo.Mvc.UI;
 using Kendo.Mvc.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using Lekkerbek.Web.NewFolder;
+using Microsoft.AspNetCore.Identity;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -26,12 +28,19 @@ namespace Lekkerbek.Web.Controllers
     {
         private readonly IOrderChefService _orderChefService;
 
-        public OrdersChefController(IOrderChefService orderChefService)
-        {
-            
-            _orderChefService = orderChefService;
-        }
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ICustomerService _customerService;
+        private readonly IOrderService _orderService;
+        private readonly IMenuItemService _menuItemService;
 
+        public OrdersChefController(IOrderChefService orderChefService, ICustomerService customerService, IOrderService orderService, IMenuItemService menuItemService, UserManager<IdentityUser> userManager)
+        {
+            _orderChefService = orderChefService;
+            _customerService = customerService;
+            _orderService = orderService;   
+            _menuItemService = menuItemService;
+            _userManager = userManager;
+        }
         // GET: Orders according to finished property
         public IActionResult Index()
         {
@@ -42,10 +51,26 @@ namespace Lekkerbek.Web.Controllers
             //var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).Where(c=>c.Finished==false);
             //return View(await lekkerbekContext.ToListAsync());
         }
+        public async Task<ActionResult> DetailTemplate_HierarchyBinding_OrderAsync([DataSourceRequest] DataSourceRequest request)
+        {
+            //var user = await _userManager.GetUserAsync(User);
+            //var customer = _customerService.Read().Where(c => c.IdentityUser == user).FirstOrDefault();
+            //return Json(_orderService.FilterOrdersForCustomer(chef.ChefId).ToDataSourceResult(request));
+            //return Json(_customerService.GetAllViews().ToDataSourceResult(request));
+            return Json(_orderChefService.Read().ToDataSourceResult(request));
+        }
+
+        public ActionResult DetailTemplate_HierarchyBinding_Orderline(int orderID, [DataSourceRequest] DataSourceRequest request)
+        {
+            var a = _orderService.GetOrderLines();
+
+            return Json(_orderService.GetOrderLines()
+                .Where(orderline => orderline.OrderID == orderID)
+                .ToDataSourceResult(request));
+        }
         public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
         {
-            var a = Json(_orderChefService.Read().ToDataSourceResult(request));
-            return a;//this was the read, to call all orders
+            return Json(_orderChefService.Read().ToDataSourceResult(request));
         }
         
         // Pay Off page Get: order to pay

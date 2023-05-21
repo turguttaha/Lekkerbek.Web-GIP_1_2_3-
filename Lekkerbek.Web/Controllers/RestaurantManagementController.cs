@@ -27,17 +27,6 @@ namespace Lekkerbek.Web.Controllers
         }
 
 
-
-
-        // GET: HolidayManagement/Details/5
-        public ActionResult CreateRestaurantHolidayDay()
-        {
-            return View();
-        }
-
-
-
-
         // GET: RestaurantManagment/Create
         public ActionResult ReadOpeningsHours([DataSourceRequest] DataSourceRequest request)
         {
@@ -177,6 +166,99 @@ namespace Lekkerbek.Web.Controllers
             }
         }
 
-        
+
+
+
+
+
+
+
+
+
+
+
+        //HOLIDAY///////////////////
+        public ActionResult HolidayDays()
+        {
+            var list = _restaurantManagementService.GetAllHolidayDays();
+            return View(list);
+        }
+
+
+        // GET: RestaurantManagment/Create
+        public ActionResult ReadHolidayDays([DataSourceRequest] DataSourceRequest request)
+        {
+            var list = _restaurantManagementService.GetAllHolidayDays();
+            return Json(list.ToDataSourceResult(request));
+        }
+
+
+        // GET: RestaurantManagment/Details/5
+        public ActionResult CreateHolidayDay()
+        {
+            return View();
+        }
+
+
+        // POST: RestaurantManagment/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateHolidayDay([Bind("Description,StartDate,EndDate")] RestaurantHoliday restaurantHoliday)
+        {
+            try
+            {
+                _restaurantManagementService.CreateHolidayDay(restaurantHoliday);
+                return RedirectToAction(nameof(HolidayDays));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+
+
+
+        public ActionResult DeleteHolidayDay([DataSourceRequest] DataSourceRequest request, RestaurantHoliday restaurantHoliday)
+
+        {
+            ModelState.Remove("StartDate"); ModelState.Remove("EndDate");
+            if (restaurantHoliday != null && ModelState.IsValid)
+            {
+                _restaurantManagementService.DestroyHolidayDay(restaurantHoliday);
+            }
+            return Json(new[] { restaurantHoliday }.ToDataSourceResult(request, ModelState));
+        }
+
+
+
+        // GET: RestaurantManagment/Edit/5
+        public ActionResult EditHolidayDay(int id)
+        {
+            var entity = _restaurantManagementService.GetSpecificHolidayDay(id);
+            return View(entity);
+        }
+
+
+        // POST: RestaurantManagment/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditHolidayDay(int id, [Bind("Description,StartDate,EndDate")] RestaurantHoliday restaurantHoliday)
+        {
+            try
+            {
+                _restaurantManagementService.UpdateHolidayDay(restaurantHoliday);
+                return RedirectToAction(nameof(HolidayDays));
+            }
+            catch
+            {
+                var entity = _restaurantManagementService.GetSpecificHolidayDay(id);
+                return View(entity);
+            }
+        }
+
+
+
+
     }
 }

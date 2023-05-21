@@ -33,5 +33,38 @@ namespace Lekkerbek.Web.Repositories
             _context.SaveChanges();
         }
 
+
+
+
+
+        //HOLIDAY/////
+        public void AddToDatabaseHolidayDay(RestaurantHoliday entity)
+        {
+            _context.Add(entity);
+            _context.SaveChanges();
+        }
+
+        public List<RestaurantHoliday> GetRestaurantHoliday()
+        {
+            return _context.RestaurantHolidays.ToList();
+        }
+
+        public void DeleteFromDatabaseHolidayDay(RestaurantHoliday entity)
+        {
+            _context.RestaurantHolidays.Remove(entity);
+            _context.SaveChanges();
+        }
+
+        public void UpdateDatabaseHolidayDay(RestaurantHoliday entity)
+        {
+            _context.RestaurantHolidays.Update(entity);
+            _context.SaveChanges();
+        }
+
+
+
+
+
+
     }
 }

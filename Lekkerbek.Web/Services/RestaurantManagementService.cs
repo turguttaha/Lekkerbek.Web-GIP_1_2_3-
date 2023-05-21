@@ -6,9 +6,9 @@ namespace Lekkerbek.Web.Services
     public class RestaurantManagementService
     {
         private readonly RestaurantManagementRepository _repository;
-        public RestaurantManagementService(RestaurantManagementRepository repository) 
-        { 
-        _repository = repository;
+        public RestaurantManagementService(RestaurantManagementRepository repository)
+        {
+            _repository = repository;
         }
 
         public void CreateOpeningsHour(RestaurantOpeninghours restaurantOpeninghours)
@@ -18,7 +18,7 @@ namespace Lekkerbek.Web.Services
 
         public List<RestaurantOpeninghours> GetAllOpeningsHours()
         {
-           return _repository.GetRestaurantOpeninghours();
+            return _repository.GetRestaurantOpeninghours();
         }
 
         public void DestroyOpeningsHour(RestaurantOpeninghours openingHours)
@@ -34,5 +34,36 @@ namespace Lekkerbek.Web.Services
         {
             _repository.UpdateDatabaseOpeningsHour(openingHours);
         }
+
+
+
+
+        //HOLIDAY///////////////////////////////////////
+
+        public void CreateHolidayDay(RestaurantHoliday restaurantHoliday)
+        {
+            _repository.AddToDatabaseHolidayDay(restaurantHoliday);
+        }
+
+        public List<RestaurantHoliday> GetAllHolidayDays()
+        {
+            return _repository.GetRestaurantHoliday();
+        }
+
+        public void DestroyHolidayDay(RestaurantHoliday holidayDays)
+        {
+            _repository.DeleteFromDatabaseHolidayDay(holidayDays);
+        }
+        public RestaurantHoliday GetSpecificHolidayDay(int id)
+        {
+            RestaurantHoliday entity = GetAllHolidayDays().Find(x => x.RestaurantHolidayId == id);
+            return entity;
+        }
+        public void UpdateHolidayDay(RestaurantHoliday holidayDays)
+        {
+            _repository.UpdateDatabaseHolidayDay(holidayDays);
+        }
+
     }
 }
+
