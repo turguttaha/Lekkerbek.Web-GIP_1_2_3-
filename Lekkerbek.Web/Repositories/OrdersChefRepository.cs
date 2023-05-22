@@ -34,6 +34,12 @@ namespace Lekkerbek.Web.Repositories
             }).Where(c => c.Finished == false && c.ChefId == null).ToList();
             return a;
         }
+        public Order GetAllOrders(int? id)
+        {
+            //_context.Orders.Find(id);
+            var a = _context.Orders.Include("TimeSlot").Where(c => c.OrderID==id).FirstOrDefault();
+            return a;
+        }
 
         public List<OrderViewModel> GetOrderViewModels()
         {
@@ -130,6 +136,12 @@ namespace Lekkerbek.Web.Repositories
         {
             return _context.Chefs.Where(r => ids.Contains(r.ChefId)==false).ToList();
         }
+        public TimeSlot GetChefsOrderByTimeSlot(int Id, TimeSlot timeSlot) 
+        {
+            return _context.TimeSlots.Where(c=> c.StartTimeSlot==timeSlot.StartTimeSlot && c.ChefId == Id).FirstOrDefault();
+        
+        }
+
         
         public List<Customer> GetAllCustomers()
         {

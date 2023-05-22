@@ -124,59 +124,54 @@ namespace Lekkerbek.Web.Services
             return _repository.GetOrders().Find(c => c.OrderId == id);
              
         }
+        public List<Chef> GetAllChefs() 
+        {
+            return _repository.GetChefs();
+        }
 
-        public List<SelectListItem> ChefSelectList(DateTime startTimeSlot)
+        public string ChefAssignOrder(DateTime startTimeSlot, Chef chef)
         {
             //check if there is a timeslot this chef is already working on
             //check if it is the first timeslot
-
-
-
-            var usedTimeSlots = _repository.GetTimeSlots().FindAll(t => t.StartTimeSlot == startTimeSlot);
-
             var allChefId = _repository.GetChefs();
+            int chefId = chef.ChefId;
 
+
+            var usedTimeSlots = _repository.GetTimeSlots().FindAll(t => t.StartTimeSlot == startTimeSlot && t.ChefId==chefId);
+            
             List<int> ids = new List<int>();
 
 
-            if (usedTimeSlots.Count() != 0)
-            {
-                foreach (var currentTimeSlot in usedTimeSlots)
-                {
-                    if (currentTimeSlot.ChefId != null)
-                    {
-                        ids.Add((int)currentTimeSlot.ChefId);
-                    }
+            
 
-                }
-            }
-            if (ids.Count() < allChefId.Count())
+            var firstTimeSlot = _repository.GetFirstTimeSlot();
+
+            if (startTimeSlot != firstTimeSlot.TimeSlot.StartTimeSlot)
             {
 
-                List<SelectListItem> item = _repository.GetChefsList(ids).ConvertAll(notWorkingChefs =>
-                            {
-                                return new SelectListItem()
-                                {
-                                    Text = notWorkingChefs.ChefName.ToString(),
-                                    Value = notWorkingChefs.ChefId.ToString(),
-                                    Selected = false
-                                };
-                            });
-                //this will return all the chefs that are still free
-                return item;
+                return "There is an earlier order that still needs a chef first for it to be prepared!";
+                
 
             }
             else
             {
-                return null;
+                if (usedTimeSlots.Count() == 0)
+                {
+                    return "";
+                }
+                return "You already have an order you need to prepare at this timeslot!";
             }
 
             
         }
-
-        public void UpdateTimeSlot(TimeSlot timeSlot)
+        public Order GetChefsOrders(int? id) 
         {
-            _repository.UpdateTimeSlot(timeSlot);
+            return _repository.GetAllOrders(id);
+        }
+        public void UpdateTimeSlot(Order order, Chef chef)
+        {
+            order.TimeSlot.ChefId = chef.ChefId;
+            _repository.UpdateOrder(order);
         }
 
         public bool GetChefTimeSlot(int? id, DateTime startTime)

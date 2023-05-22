@@ -44,6 +44,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders according to finished property
         public IActionResult Index()
         {
+
             //var orderCashier = _orderCashierService.Read();
             return View();
             //var lekkerBekContext = _orderCashierService.Read();
@@ -76,47 +77,29 @@ namespace Lekkerbek.Web.Controllers
         // Pay Off page Get: order to pay
         public async Task<IActionResult> OrderDetails(int? id)
         {
-            if (id == null || _orderChefService.Read() == null)
-            {
-                return NotFound();
-            }
             //gets the selected order
-            var order = _orderChefService.GetChefOrders(id);
-            
+            var order = _orderChefService.GetChefsOrders(id);
+
             //gets the chefs that are able to prepare the selected meal (that don't have to prepare another one at that time)
             //In this function we can later on add looking up if a chef has vacation periods and then remove them if they aren't working
-            ViewBag.ChefSelectList = _orderChefService.ChefSelectList(order.StartTimeSlot);
-            TempData["OrderIdFromBill"] = id;
-            int x = (int)id;
-            TempData["OrderID"] = x;
+            var chefIdentity = await _userManager.GetUserAsync(User);
+            var chef = _orderChefService.GetAllChefs().Where(c=>c.IdentityUser==chefIdentity).FirstOrDefault();
 
-
-            //filtering orderlines according to orderId
-            List<OrderLine> allOrderLines = _orderChefService.OrderLineRead(id);
-
-            List <OrderLine> filteredOrderLines = new List<OrderLine>();
-
-            foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
+            var chefError = _orderChefService.ChefAssignOrder(order.TimeSlot.StartTimeSlot, chef);
+            if (chefError!="")
             {
-                if (!filteredOrderLines.Contains(orderLine))
-                    filteredOrderLines.Add(orderLine);
-
+                TempData["ChefError"] = chefError;
             }
-           
-            ViewBag.listOfTheOrder = filteredOrderLines;
-
-
-            if (order == null)
+            else 
             {
-                return NotFound();
+                _orderChefService.UpdateTimeSlot(order, chef);
             }
-        
 
-            //var orderCount = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
-            
-            return View(order);
+
+            //stay on index page
+            return RedirectToAction("Index");
         }
-
+        
         // Pay off page discount func
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -130,14 +113,16 @@ namespace Lekkerbek.Web.Controllers
             if (timeSlot.StartTimeSlot == firstTimeSlot.TimeSlot.StartTimeSlot)
             {
                 timeSlot.ChefId = int.Parse(Request.Form["ChefSelectList"]);
-                _orderChefService.UpdateTimeSlot(timeSlot);
+                //_orderChefService.UpdateTimeSlot(timeSlot);
                 return RedirectToAction(nameof(Index));
             }
             else
             {
+                var chefIdentity = await _userManager.GetUserAsync(User);
+                var chef = _orderChefService.GetAllChefs().Where(c => c.IdentityUser == chefIdentity).FirstOrDefault();
                 ViewData["TimeSlotError"] = "There is an order that needs to be finnished sooner than this one!";
                 var order = _orderChefService.GetChefOrders(id);
-                ViewBag.ChefSelectList = _orderChefService.ChefSelectList(order.StartTimeSlot);
+                
                 TempData["OrderIdFromBill"] = id;
                 int x = (int)id;
                 TempData["OrderID"] = x;
