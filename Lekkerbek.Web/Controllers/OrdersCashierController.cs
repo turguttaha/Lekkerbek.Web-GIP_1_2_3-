@@ -20,6 +20,8 @@ using Kendo.Mvc.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Mime;
 using Lekkerbek.Web.NewFolder;
+using System.ComponentModel;
+using Telerik.SvgIcons;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -275,23 +277,20 @@ header{
     position: relative;
 }
 
-main{
-    border-style: solid;
-    margin: 20px;
-}
 
 .Left{
     margin: 0;
     width: 250px;
-    margin-left: 10px;
+    
 }
 
 .Left-bottom{
-    margin-top: 50px;
-    margin-left: 10px;
+    margin-top: 20px;
+    
     border-style: solid;
     width: 250px;
     padding-left: 10px;
+    margin-bottom: 20px;
 }
 
 .Grid{
@@ -321,6 +320,10 @@ body{
     margin-left: 20px;
 }
 
+.Line-Above{
+    border-top: 1px solid black;
+}
+
 footer{
     display: flex;
     align-items: center;
@@ -331,6 +334,7 @@ footer{
 
 table{
     border-collapse: collapse;
+    border: 1px solid;
 }
 
 th{
@@ -341,9 +345,11 @@ th{
 th, td{
     width:250px;
     text-align:center;
-    padding:5px;
+    padding: 12px;
     border-right: 1px solid black;
-}</style>
+}
+
+</style>
     </head>
     <body>
         <div id=""Container"">
@@ -357,34 +363,40 @@ th, td{
                         <p>Number : " + orderFinish.OrderID + @"</p>
                         <p>Date : " + DateTime.Now.ToString() + @"</p>
                     </div>
-                    <div class=""Right"">
+                    <div class=""Right"">";
+                if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "")
+                {
+                    testMail += "<h2>" + orderFinish.Customer.FirmName + @"</h2>
+                        <p>" + orderFinish.Customer.StreetName + " " + orderFinish.Customer.PostalCode + " " + orderFinish.Customer.City + @"</p>
+                        <p>B.T.W.-nr. :" + orderFinish.Customer.Btw + orderFinish.Customer.BtwNumber + @"</p>";
+                }
+                testMail += @"
+
                     </div>
                 </div>
             </header>
-            <main>
-
-<table>
-                <thead>
-                    <tr>
-                        <th>
-                            Dish Name
-                        </th>
-                        <th>
-                            Dish Price
-                        </th>
-<th>
-                            BTW
-                        </th>
-                        <th>
-                            Dish Amount
-                        </th>
-                        <th>
-                            Sub Total
-                        </th>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Dish Name
+                    </th>
+                    <th>
+                        Dish Price
+                    </th>
+                    <th>
+                        BTW
+                    </th>
+                    <th>
+                        Dish Amount
+                    </th>
+                    <th>
+                        Total
+                    </th>
           
-                    </tr>
-                </thead>
-                <tbody>";
+                </tr>
+            </thead>
+            <tbody>";
                 
 
                 //filtering orderlines occording to orderId
@@ -399,6 +411,7 @@ th, td{
                 }
                 double totalPrice = 0;
                 double totalPriceBTW = 0;
+                double priceBTW = 0;
                 foreach (var item in filteredOrderLines)
                 {
                     
@@ -409,18 +422,22 @@ th, td{
                         <td>
                             " + item.MenuItem.Price + @"
                         </td>
+                        <td>
                             " + item.MenuItem.BtwNumber + @"
+                        </td>                        
                         <td>
                             " + item.DishAmount + @"
                         </td>
                         <td>
-                            " + Math.Round(item.MenuItem.Price * item.DishAmount *(1+ item.MenuItem.BtwNumber/100), 2)+ @"
+                            " + Math.Round(item.MenuItem.Price * item.DishAmount) + @"
                         </td>
                     </tr>";
 
 
                     totalPriceBTW += item.MenuItem.Price* item.DishAmount * (1 + (item.MenuItem.BtwNumber / 100));
+                    priceBTW += item.MenuItem.Price * item.DishAmount *  (item.MenuItem.BtwNumber / 100);
                     totalPrice += item.MenuItem.Price * item.DishAmount;
+
                 }
                 
                 bool discountBool = false;
@@ -444,7 +461,7 @@ th, td{
                         </td>
                         <td>
                         </td>
-<td>
+                        <td>
                         </td>
                     
                             <td>
@@ -454,11 +471,31 @@ th, td{
                     totalPrice = totalPrice * (double)(100 - orderFinish.Discount) / 100;
                     totalPriceBTW = totalPriceBTW * (double)(100 - orderFinish.Discount) / 100;
                 }
-               
+
                 testMail += @"
+
+        
+                <tr class=""Line-Above"">
+                    <td>
+                        <b> Without BTW </b>
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+
+                    </td>
+
+                    <td>
+                        <b> " + Math.Round(totalPrice,2) + @" </b>
+                    </td>          
+                </tr>
                 <tr>
                     <td>
-                        Total Price:
+                        <b> BTW </b>
                     </td>
                     <td>
 
@@ -466,283 +503,47 @@ th, td{
                     <td>
 
                     </td>
-<td>
+                    <td>
 
                     </td>
 
                     <td>
-                        " + Math.Round(totalPriceBTW,2) + @"
-                    </td>
-                    
+                        <b> " + Math.Round(priceBTW,2) + @" </b>
+                    </td>   
                 </tr>
-               </tbody></table></main>
-                <div class=""Above-footer"">
+                <tr>
+                    <td>
+                        <b> With BTW </b>
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+
+                    </td>
+                    <td>
+
+                    </td>
+
+                    <td>
+                        <b> " + Math.Round(totalPriceBTW,2) + @" </b>
+                    </td>                   
+                </tr>
+            </tbody>
+        </table>
+        
+            <div class=""Above-footer"">
                     
-                </div>
+            </div>
             <footer>
                 <p>De Lekkerbek- Culinaire Kringstraat108/2- 3530 HOUTHALEN - TEL. : 0475/22.22.41</p>
                 <p>B.T.W. : BE 04763.352.133        COMPANYNR : 0763.352.133</p>
                 <p>PNB PARIBAS FORTIS : IBAN BE19 0013 5497 5612   -   BIC GEPA BE BB</p>
-            </footer>
-            
+            </footer>    
         </div>    
     </body>
 </html>";
-                if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "") 
-                {
-                    testMail = @"
-                    <!DOCTYPE html>
-                    <html>
-                        <head>
-                            <style>* {
-                        padding: 0;
-                        box-sizing: border-box;
-                    }
-
-                    #Container{
-                        width: 50em;
-                        margin: 0 auto;
-                        background-color: white;
-                    }
-
-                    h1{
-                        margin-left: 4px;
-                    }
-
-                    header{
-                        padding: 10px;
-                        position: relative;
-                    }
-
-                    main{
-                        border-style: solid;
-                        margin: 20px;
-                    }
-
-                    .Left{
-                        margin: 0;
-                        width: 250px;
-                        margin-left: 10px;
-                    }
-
-                    .Left-bottom{
-                        margin-top: 50px;
-                        margin-left: 10px;
-                        border-style: solid;
-                        width: 250px;
-                        padding-left: 10px;
-                    }
-
-                    .Grid{
-                        display: flex;
-                    }
-
-                    .Right{
-                        margin-right: 10px;
-                        margin-left: 150px;
-                    }
-
-                    img{
-                        width: 300px;
-                        height: 150px;
-                    }
-
-                    div{
-                        display: block;
-                    }
-
-                    body{
-                        background-color: gray;
-                    }
-
-                    .Above-footer{
-                        margin-top: 30px;
-                        margin-left: 20px;
-                    }
-
-                    footer{
-                        display: flex;
-                        align-items: center;
-                        border-top: 2px solid black;
-                        font-size: 12px;
-                        padding: 5px;
-                    }
-
-                    table{
-                        border-collapse: collapse;
-                    }
-
-                    th{
-                        background-color: lightgray;
-                        border-bottom: 1px solid black;
-                    }
-
-                    th, td{
-                        width:250px;
-                        text-align:center;
-                        padding:5px;
-                        border-right: 1px solid black;
-                    }</style>
-                        </head>
-                        <body>
-                            <div id=""Container"">
-                                <header>
-                                    <div class=""Left"">
-                                        <img src=""cid:Logo"" alt=""Logo"">
-                                        <H1>Bill</H1>
-                                    </div>
-                                    <div class=""Grid"">
-                                        <div class=""Left-bottom"">
-                                            <p>Number : " + orderFinish.OrderID + @"</p>
-                                            <p>Date : " + DateTime.Now.ToString() + @"</p>
-                                        </div>
-                                        <div class=""Right"">";
-
-
-                    if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "")
-                    {
-                        testMail += "<h2>" + orderFinish.Customer.FirmName + @"</h2>
-                        <p>" + orderFinish.Customer.StreetName + " " + orderFinish.Customer.PostalCode + " " + orderFinish.Customer.City + @"</p>
-                        <p>B.T.W.-nr. :" + orderFinish.Customer.Btw + orderFinish.Customer.BtwNumber + @"</p>";
-                    }
-                    testMail += @"
-                    </div>
-                </div>
-            </header>
-            <main>
-
-<table>
-                <thead>
-                    <tr>
-                        <th>
-                            Dish Name
-                        </th>
-                        <th>
-                            Dish Price
-                        </th>
-                        <th>
-                            Dish Amount
-                        </th>
-                        <th>
-                            Sub Total
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>";
-
-
-                    //filtering orderlines occording to orderId
-                    allOrderLines = _orderCashierService.OrderLineRead(id);
-                    filteredOrderLines = new List<OrderLine>();
-
-                    foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
-                    {
-                        if (!filteredOrderLines.Contains(orderLine))
-                            filteredOrderLines.Add(orderLine);
-
-                    }
-                    totalPrice = 0;
-                    totalPriceBTW = 0;
-                    foreach (var item in filteredOrderLines)
-                    {
-                        /*
-                                testMail += @" <tr>
-                            <td>
-                                " + item.MenuItem.Name + @"
-                            </td>
-                            <td>
-                                " + item.MenuItem.Price + @"
-                            </td>
-                                " + item.MenuItem.BtwNumber + @"
-                            <td>
-                                " + item.DishAmount + @"
-                            </td>
-                            <td>
-                                " + item.MenuItem.Price * item.DishAmount + @"
-                            </td>
-                            <td>
-
-                            </td>
-                        </tr>";*/
-                        testMail += @" <tr>
-                        <td>
-                            " + item.MenuItem.Name + @"
-                        </td>
-                        <td>
-                            " + item.MenuItem.Price + @"
-                        </td>
-                        <td>
-                            " + item.DishAmount + @"
-                        </td>
-                        <td>
-                            " + item.MenuItem.Price * item.DishAmount + @"
-                        </td>
-                    </tr>";
-
-
-                        totalPriceBTW += item.MenuItem.Price * item.DishAmount * (1 + (item.MenuItem.BtwNumber / 100));
-                        totalPrice += item.MenuItem.Price * item.DishAmount;
-                    }
-
-                    discountBool = false;
-                    orderFinishMail = _orderCashierService.GetSpecificOrder(id);
-
-
-                    if (orderFinishMail != null && orderFinishMail.Discount != 0 && orderFinishMail.Discount != null)
-                    {
-                        discountBool = true;
-                    }
-
-                        if (discountBool)
-                        {
-                            testMail += @"
-                            <tr>
-                                <td>
-                                    Discount:
-                                </td>
-                                <td>
-                                </td>
-                                <td>
-                                </td>
-                                    <td>
-                                        " + orderFinishMail.Discount + @"
-                                    </td>
-                            </tr>";
-                            totalPrice = totalPrice * (double)(100 - orderFinish.Discount) / 100;
-                            totalPriceBTW = totalPriceBTW * (double)(100 - orderFinish.Discount) / 100;
-                        }
-
-                        testMail += @"
-                                    <tr>
-                                        <td>
-                                            Total Price:
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                        <td>
-
-                                        </td>
-
-                                        <td>
-                                            " + Math.Round(totalPrice,2) + @"
-                                        </td>
-                    
-                                    </tr>
-                                   </tbody></table></main>
-                                    <div class=""Above-footer"">
-                                        <p>The invoice is payable within 30 days of the invoice date.</p>
-                                    </div>
-                                <footer>
-                                    <p>De Lekkerbek- Culinaire Kringstraat108/2- 3530 HOUTHALEN - TEL. : 0475/22.22.41</p>
-                                    <p>B.T.W. : BE 04763.352.133        COMPANYNR : 0763.352.133</p>
-                                    <p>PNB PARIBAS FORTIS : IBAN BE19 0013 5497 5612   -   BIC GEPA BE BB</p>
-                                </footer>
-            
-                            </div>    
-                        </body>
-                    </html>";
-                }
+                
 
                
                     
@@ -757,10 +558,9 @@ th, td{
                     MailMessage m = new MailMessage();
                     m.AlternateViews.Add(avHtml);
                     EmailService emailService = new EmailService();
-                    emailService.SendMail("gipteam2.lekkerbek@gmail.com", "Your invoice of the Lekkerbek", testMail, m);
-                
-                
-                
+                    emailService.SendMail("gipteam2.lekkerbek@gmail.com", "Your invoice of the Lekkerbek", testMail, m);  
+
+
             }
             catch (DbUpdateConcurrencyException)
             {

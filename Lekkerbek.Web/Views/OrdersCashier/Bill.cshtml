@@ -56,17 +56,14 @@
             <th>
                 Dish Price
             </th>
+                <th>
+                    BTW
+                </th>
             <th>
-                BTW
+                Dish amount
             </th>
             <th>
-                Amount
-            </th>
-            <th>
-                Sub Total
-            </th>
-            <th>
-                
+                Total without BTW
             </th>
         </tr>
     </thead>
@@ -76,200 +73,94 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem=>item.MenuItem.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=>item.MenuItem.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=>item.MenuItem.BtwNumber) %
-                </td>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem=>item.MenuItem.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem=>item.MenuItem.BtwNumber) %
+                    </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DishAmount)
                 </td>
+                
+               
                 <td>
-                    @(Math.Round(item.MenuItem.Price * item.DishAmount *(1+(item.MenuItem.BtwNumber/100)), 2))
+                    @(Math.Round(item.MenuItem.Price * item.DishAmount, 2))
                 </td>
                 <td></td>
             </tr>
         }
-        @{
-            if (ViewBag.Korting)
-            {
-                                        <form asp-action="Bill" asp-route-id="@Model?.OrderID">
 
-                                        <tr>
+            @{
+                if (ViewBag.Korting)
+                {
+                    <form asp-action="Bill" asp-route-id="@Model?.OrderID">
 
-                                            <td>
-                                                Discount:
-                                            </td>
-                                            <td>
-                                            </td>      
-                                            <td>
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td>
-                                                <input class="form-control" min="0" max="80" type="number" value="@ViewBag.Discount" id="discountField" asp-for="Discount" />
-                                            </td>
-                                            <td>
-                                                <input type="submit" value="Add Discount" class="btn btn-primary mt-3" />
-                                            </td>
-                                        </tr>
-                                        <tr>
+                        <tr>
 
-                                            <td>
-                                                Total Price:
-                                            </td>
-                                            <td>
+                            <td>
+                                Discount:
+                            </td>
+                                 
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                                <input class="form-control" min="0" max="80" type="number" value="@ViewBag.Discount" id="discountField" asp-for="Discount" />
+                            </td>
+                            <td>
+                                <input type="submit" value="Add Discount" class="btn btn-primary mt-3" />
+                            </td>
+                        </tr>
+                        <tr>
 
-                                            </td>
-                                            <td>
-                                            </td>
+                            <td>
+                                Total Price:
+                            </td>
+                            <td>
 
-                                            
-                                            <td>
-                                            </td>
-                                            <td>
+                            </td>
+                            <td>
+                            </td>
 
-                                                <input class="form-control" value="@ViewBag.totalPrice" id="discountField" asp-for="Customer" readonly />
-                                            </td>
-                                            <td></td>
-                                        </tr>
 
-                                        </form>
-            }
-            else
-            {
-                                        <tr>
+                            <td>
+                            </td>
+                            <td>
 
-                                            <td>
-                                                Total Price:
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td>
+                                <input class="form-control" value="@ViewBag.totalPrice" id="discountField" asp-for="Customer" readonly />
+                            </td>
+                        </tr>
+
+                    </form>
+                }
+                else
+                {
+                    <tr>
+
+                        <td>
+                            Total Price:
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
 
                             <input class="form-control" value="@ViewBag.totalPriceBTW" id="discountField" asp-for="Customer" readonly />
-                                            </td>
-                                            <td></td>
-                                        </tr>
-            
-            }
+                        </td>
+                    </tr>
+
+                }
 
         }
         
         
             
-    </tbody>
-</table>
-<table class="table" id="noBTW"@* style="visibility:hidden; position:absolute;"*@ hidden>
-    <thead>
-        <tr>
-            <th>
-                Dish Name
-            </th>
-            <th>
-                Dish Price
-            </th>
-            <th>
-                Amount
-            </th>
-            <th>
-                Sub Total
-            </th>
-            <th>
-
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in listOfTheOrder)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem=>item.MenuItem.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem=>item.MenuItem.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DishAmount)
-                </td>
-                <td>
-                    @(item.MenuItem.Price * item.DishAmount)
-                </td>
-                <td></td>
-            </tr>
-        }
-        @{
-            if (ViewBag.Korting)
-            {
-                                        <form asp-action="Bill" asp-route-id="@Model?.OrderID">
-
-                                        <tr>
-
-                                            <td>
-                                                Discount:
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td>
-                                                <input class="form-control" min="0" max="80" type="number" value="@ViewBag.Discount" id="discountField" asp-for="Discount" />
-                                            </td>
-                                            <td>
-                                                <input type="submit" value="Add Discount" class="btn btn-primary mt-3" />
-                                            </td>
-                                        </tr>
-                                        <tr>
-
-                                            <td>
-                                                Total Price:
-                                            </td>
-                                            <td>
-                                            </td>
-
-
-                                            <td>
-                                            </td>
-                                            <td>
-
-                            <input class="form-control" asp-for="Customer" value="@ViewBag.totalPrice" id="discountField" readonly />
-                                            </td>
-                                            <td></td>
-                                        </tr>
-
-                                        </form>
-            }
-            else
-            {
-                                        <tr>
-
-                                            <td>
-                                                Total Price:
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td>
-
-                            <input class="form-control" asp-for="Customer" value="@ViewBag.totalPrice" id="discountField" readonly />
-                                            </td>
-                                            <td></td>
-                                        </tr>
-
-            }
-
-        }
-
-
-
     </tbody>
 </table>
 
