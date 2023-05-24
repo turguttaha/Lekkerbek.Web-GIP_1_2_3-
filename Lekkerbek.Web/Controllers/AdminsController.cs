@@ -14,9 +14,12 @@ using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using System.Collections;
 using Lekkerbek.Web.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Lekkerbek.Web.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class AdminsController : Controller
     {
         private readonly SignInManager<IdentityUser> _signInManager;

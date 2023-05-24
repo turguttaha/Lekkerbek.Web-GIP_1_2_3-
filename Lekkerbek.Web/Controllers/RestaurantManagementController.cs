@@ -2,11 +2,13 @@
 using Kendo.Mvc.UI;
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Lekkerbek.Web.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class RestaurantManagementController : Controller
     {
         private readonly RestaurantManagementService _restaurantManagementService;
