@@ -208,7 +208,7 @@ namespace Lekkerbek.Web.Controllers
                     //check amount of chefs
                     int allChefCount = _restaurantManagementService.GetChefs().Count();
                     //check amount of Chefs on holliday
-                    int getChefsOnHolliday = _restaurantManagementService.GetAllWokerHolidays(workerHoliday.ChefId).Where(c => c.StartDate.Date <= workerHoliday.StartDate.Date && c.EndDate.Date >= workerHoliday.StartDate.Date).Count();
+                    int getChefsOnHolliday = _restaurantManagementService.GetAllWokerHolidays(workerHoliday.ChefId).Where(c => (c.StartDate.Date <= workerHoliday.StartDate.Date && c.EndDate.Date >= workerHoliday.StartDate.Date)||(c.StartDate.Date <= workerHoliday.EndDate.Date && c.EndDate.Date >= workerHoliday.EndDate.Date)).Count();
                     //if == 1 => conflict bool
                     if (allChefCount - getChefsOnHolliday == 1)
                     {
