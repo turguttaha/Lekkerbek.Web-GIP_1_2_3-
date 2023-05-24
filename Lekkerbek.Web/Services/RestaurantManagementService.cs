@@ -1,5 +1,7 @@
 ﻿using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Services
 {
@@ -35,9 +37,67 @@ namespace Lekkerbek.Web.Services
             _repository.UpdateDatabaseOpeningsHour(openingHours);
         }
 
-
-
-
+        //chefs
+        public List<WorkerHoliday> GetAllWorkerHolidays()
+        {
+            DateTime dateTimeNow = DateTime.Now;
+            return _repository.GetWorkerHoliday().Where(c=>c.StartDate>=dateTimeNow && c.EndDate>=dateTimeNow).ToList();
+        }
+        public List<WorkerHoliday> GetAllHolidays()
+        {
+            DateTime dateTimeNow = DateTime.Now;
+            return _repository.GetWorkerHoliday().ToList();
+        }
+        public List<WorkerHoliday> GetAllWokerHolidays(int id)
+        {
+            DateTime dateTimeNow = DateTime.Now;
+            return _repository.GetAllWorkerHoliday(id).ToList();
+        }
+        public List<WorkerHoliday> GetAllHolidaysFromAWorker(int? id)
+        {
+            DateTime dateTimeNow = DateTime.Now;
+            return _repository.GetWorkerHolidayFromWorker(id).ToList();
+        }
+        public void CreateWorkerHoliday(WorkerHoliday workerHoliday)
+        {
+            _repository.AddWorkerHoliday(workerHoliday);
+        }
+        public void DestroyWorkerHoliday(WorkerHoliday holidayDays)
+        {
+            _repository.DeleteWorkerHolliday(holidayDays);
+        }
+        public WorkerHoliday GetSpecificWorkerHoliday(int id)
+        {
+            WorkerHoliday entity = GetAllHolidays().Find(x => x.WorkerHolidayId == id);
+            return entity;
+        }
+        public void UpdateWorkerHoliday(WorkerHoliday workerHoliday)
+        {
+            _repository.UpdateWorkerHoliday(workerHoliday);
+        }
+        public List<Chef> GetChefs() 
+        { 
+        
+            return _repository.GetChefs();
+        }
+        public SelectList ChefsSelectList()
+        {
+            return new SelectList(_repository.GetChefs(), "ChefId", "ChefName");
+        }
+        public List<Order> GetAllOrders(DateTime startDate, DateTime endDate)
+        {
+            return _repository.GetAllOrders(startDate, endDate);
+        }
+        public List<DateTime> GetDateTimeRange(DateTime startDate, DateTime endDate)
+        {
+            List<DateTime> dateTimeList = new List<DateTime>();
+            while (startDate<=endDate) 
+            { 
+                dateTimeList.Add(startDate);
+                startDate = startDate.AddDays(1);
+            }
+                return dateTimeList;
+        }
         //HOLIDAY///////////////////////////////////////
 
         public void CreateHolidayDay(RestaurantHoliday restaurantHoliday)

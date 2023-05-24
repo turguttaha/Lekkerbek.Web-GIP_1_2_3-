@@ -166,6 +166,225 @@ namespace Lekkerbek.Web.Controllers
                 return View(entity);
             }
         }
+        //chef hollidays
+        public ActionResult ChefHoliday()
+        {
+            var list = _restaurantManagementService.GetAllHolidayDays();
+            return View(list);
+        }
+        public ActionResult ReadChefHoliday([DataSourceRequest] DataSourceRequest request)
+        {
+            var list = _restaurantManagementService.GetAllWorkerHolidays();
+            return Json(list.ToDataSourceResult(request));
+        }
+        public ActionResult CreateChefHoliday()
+        {
+            ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
+
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateChefHoliday([Bind("Description,ChefId,StartDate,EndDate")] WorkerHoliday workerHoliday)
+        {
+
+            //extra check, amount of chefs that are on holliday compared to the total amount of chefs (if its the last chef, dont allow)
+            //check how many orders there are, if the amount of orders on a given time range, is equal to the working chefs, then dont allow
+
+            
+            
+            
+            
+            try
+            {
+                bool conflict = false;
+                var holidayList = _restaurantManagementService.GetAllHolidaysFromAWorker(workerHoliday.ChefId);
+
+                List<DateTime> tempWorkerHolliday = _restaurantManagementService.GetDateTimeRange(workerHoliday.StartDate, workerHoliday.EndDate);
+                List<Order> orderTimeSlots = _restaurantManagementService.GetAllOrders(workerHoliday.StartDate, workerHoliday.EndDate);
+
+                foreach (DateTime dateTime in tempWorkerHolliday)
+                {
+                    //check amount of chefs
+                    int allChefCount = _restaurantManagementService.GetChefs().Count();
+                    //check amount of Chefs on holliday
+                    int getChefsOnHolliday = _restaurantManagementService.GetAllWokerHolidays(workerHoliday.ChefId).Where(c => c.StartDate.Date <= workerHoliday.StartDate.Date && c.EndDate.Date >= workerHoliday.StartDate.Date).Count();
+                    //if == 1 => conflict bool
+                    if (allChefCount - getChefsOnHolliday == 1)
+                    {
+                        ModelState.AddModelError("Model", "There are not enough chefs working in this period for this chef to take vacation!");
+                        ViewBag.hError = "There are not enough chefs working in this period for this chef to take vacation!";
+                        ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
+                        return View();
+                    }
+
+                    foreach (Order order in orderTimeSlots)
+                    {
+
+                        if (orderTimeSlots.GroupBy(c => c.TimeSlot.StartTimeSlot).Where(x => x.Count() == allChefCount) != null)
+                        {
+                            ModelState.AddModelError("Model", "This chef has an order that he needs to prepare during these dates!");
+                            ViewBag.hError = "This chef has an order that he needs to prepare during these dates!";
+                            ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
+                            return View();
+                        }
+                    }
+
+                }
+
+
+                if (workerHoliday.StartDate < workerHoliday.EndDate)
+                {
+                    foreach (var holiday in holidayList)
+                    {
+                        if ((workerHoliday.StartDate < holiday.StartDate && workerHoliday.EndDate < holiday.StartDate) || (workerHoliday.StartDate > holiday.EndDate && workerHoliday.EndDate > holiday.EndDate))
+                        {
+
+                        }
+                        else
+                        {
+                            conflict = true;
+                        }
+                    }
+                    if (conflict)
+                    {
+                        ModelState.AddModelError("Model", "This chef already is already on holliday during part of this time, check that there is no overlap between hollidays!");
+                        ViewBag.hError = "This chef already is already on holliday during part of this time, check that there is no overlap between hollidays!";
+                        ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
+                        return View();
+                    }
+                    else
+                        _restaurantManagementService.CreateWorkerHoliday(workerHoliday);
+                    return RedirectToAction(nameof(ChefHoliday));
+                }
+                else
+                {
+                    ModelState.AddModelError("Model", "Start time should be earlier than endtime");
+                    ViewBag.hError = "Start time should be earlier than endtime";
+                    ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
+                    return View();
+                }
+            }
+            catch
+            {
+                return View();
+            }
+        }
+        public ActionResult DeleteWorkerHoliday([DataSourceRequest] DataSourceRequest request, WorkerHoliday workerHoliday)
+
+        {
+            ModelState.Remove("StartDate"); ModelState.Remove("EndDate");
+            if (workerHoliday != null && ModelState.IsValid)
+            {
+                _restaurantManagementService.DestroyWorkerHoliday(workerHoliday);
+            }
+            return Json(new[] { workerHoliday }.ToDataSourceResult(request, ModelState));
+        }
+
+
+
+        // GET: RestaurantManagment/Edit/5
+        public ActionResult EditWorkerHoliday(int id)
+        {
+            var entity = _restaurantManagementService.GetSpecificWorkerHoliday(id);
+            return View(entity);
+        }
+
+
+        // POST: RestaurantManagment/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditWorkerHoliday(int id, [Bind("WorkerHolidayId,ChefId,Description,StartDate,EndDate")] WorkerHoliday workerHoliday)
+        {
+            try
+            {
+                var allWorkersHolidayList = _restaurantManagementService.GetAllWorkerHolidays();
+                WorkerHoliday workerHoliday1 = allWorkersHolidayList.Find(h => h.WorkerHolidayId == id);
+                allWorkersHolidayList.Remove(workerHoliday1);
+                bool conflict = false;
+                var holidayList = _restaurantManagementService.GetAllHolidaysFromAWorker(workerHoliday.ChefId);
+
+                List<DateTime> tempWorkerHolliday = _restaurantManagementService.GetDateTimeRange(workerHoliday.StartDate, workerHoliday.EndDate);
+                List<Order> orderTimeSlots = _restaurantManagementService.GetAllOrders(workerHoliday.StartDate, workerHoliday.EndDate);
+                
+                foreach(DateTime dateTime in tempWorkerHolliday)
+                {
+                    //check amount of chefs
+                    int allChefCount = _restaurantManagementService.GetChefs().Count();
+                    //check amount of Chefs on holliday
+                    int getChefsOnHolliday = allWorkersHolidayList.Where(c => c.StartDate <= workerHoliday.StartDate && c.EndDate >= workerHoliday.StartDate).Count();
+                    //if == 1 => conflict bool
+                    if (allChefCount - getChefsOnHolliday == 0)
+                    {
+                        ModelState.AddModelError("Model", "There are not enough chefs working in this period for this chef to take vacation!");
+                        ViewBag.hError = "There are not enough chefs working in this period for this chef to take vacation!";
+                        ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
+                        return View();
+                    }
+
+                    foreach (Order order in orderTimeSlots)
+                    {
+
+                        if (orderTimeSlots.GroupBy(c => c.TimeSlot.StartTimeSlot).Where(x => x.Count() == allChefCount) != null)
+                        {
+                            ModelState.AddModelError("Model", "This chef has an order that he needs to prepare during these dates!");
+                            ViewBag.hError = "This chef has an order that he needs to prepare during these dates!";
+                            ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
+                            return View();
+                        }
+                    }
+
+
+                    
+                }
+
+
+                if (workerHoliday.StartDate < workerHoliday.EndDate)
+                {
+                    allWorkersHolidayList = allWorkersHolidayList.Where(c => c.ChefId == workerHoliday.ChefId).ToList();
+                    foreach (var holiday in allWorkersHolidayList)
+                    {
+
+                        if ((workerHoliday.StartDate < holiday.StartDate && workerHoliday.EndDate < holiday.StartDate) || (workerHoliday.StartDate > holiday.EndDate && workerHoliday.EndDate > holiday.EndDate))
+                        {
+
+                        }
+                        else
+                        {
+                            conflict = true;
+                        }
+
+                    }
+                    if (conflict)
+                    {
+                        ModelState.AddModelError("Model", "This chef already is already on holliday during part of this time, check that there is no overlap between hollidays!");
+                        ViewBag.hError = "This chef already is already on holliday during part of this time, check that there is no overlap between hollidays!";
+                        return View();
+                    }
+                    else
+                        workerHoliday1.StartDate = workerHoliday.StartDate;
+                    workerHoliday1.EndDate = workerHoliday.EndDate;
+                    workerHoliday1.Description = workerHoliday.Description;
+                    _restaurantManagementService.UpdateWorkerHoliday(workerHoliday1);
+                    return RedirectToAction(nameof(ChefHoliday));
+                }
+                else
+                {
+                    ModelState.AddModelError("Model", "Start time should be earlier than endtime");
+                    ViewBag.hError = "Start time should be earlier than endtime";
+                    return View();
+                }
+                /////////////
+                //_restaurantManagementService.UpdateHolidayDay(workerHoliday);
+                return RedirectToAction(nameof(ChefHoliday));
+            }
+            catch
+            {
+                
+                var entity = _restaurantManagementService.GetSpecificHolidayDay(id);
+                return View(entity);
+            }
+        }
 
         //HOLIDAY///////////////////
         public ActionResult HolidayDays()
@@ -173,8 +392,7 @@ namespace Lekkerbek.Web.Controllers
             var list = _restaurantManagementService.GetAllHolidayDays();
             return View(list);
         }
-
-
+        
         // GET: RestaurantManagment/Create
         public ActionResult ReadHolidayDays([DataSourceRequest] DataSourceRequest request)
         {

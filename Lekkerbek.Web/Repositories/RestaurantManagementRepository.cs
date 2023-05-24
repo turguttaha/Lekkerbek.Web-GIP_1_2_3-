@@ -1,5 +1,6 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Repositories
 {
@@ -35,7 +36,42 @@ namespace Lekkerbek.Web.Repositories
 
 
 
-
+        public List<WorkerHoliday> GetWorkerHoliday()
+        {
+            return _context.WorkerHolidays.ToList();
+        }
+        public List<WorkerHoliday> GetAllWorkerHoliday(int id)
+        {
+            return _context.WorkerHolidays.Where(c=>c.ChefId!=id).ToList();
+        }
+        public List<WorkerHoliday> GetWorkerHolidayFromWorker(int? id)
+        {
+            return _context.WorkerHolidays.Where(c=>c.ChefId==id).ToList();
+        }
+        public void AddWorkerHoliday(WorkerHoliday entity)
+        {
+            _context.Add(entity);
+            _context.SaveChanges();
+        }
+        public void DeleteWorkerHolliday(WorkerHoliday entity)
+        {
+            _context.WorkerHolidays.Remove(entity);
+            _context.SaveChanges();
+        }
+        public void UpdateWorkerHoliday(WorkerHoliday entity)
+        {
+            _context.WorkerHolidays.Update(entity);
+            _context.SaveChanges();
+        }
+        public List<Chef> GetChefs()
+        {
+            return _context.Chefs.ToList();
+        }
+        public List<Order> GetAllOrders(DateTime startDate, DateTime endDate) 
+        {
+           
+            return _context.Orders.Include("TimeSlot").Where(c => c.TimeSlot.StartTimeSlot >= startDate && c.TimeSlot.StartTimeSlot <= endDate).ToList();
+        }
 
         //HOLIDAY/////
         public void AddToDatabaseHolidayDay(RestaurantHoliday entity)
