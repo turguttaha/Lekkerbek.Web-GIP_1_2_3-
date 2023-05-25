@@ -70,7 +70,7 @@ namespace Lekkerbek.Web.Repositories
         public List<Order> GetAllOrders(DateTime startDate, DateTime endDate) 
         {
            
-            return _context.Orders.Include("TimeSlot").Where(c => c.TimeSlot.StartTimeSlot >= startDate && c.TimeSlot.StartTimeSlot <= endDate).ToList();
+            return _context.Orders.Include("TimeSlot").Where(c => c.TimeSlot.StartTimeSlot.Date >= startDate.Date && c.TimeSlot.StartTimeSlot.Date <= endDate.Date).ToList();
         }
 
         //HOLIDAY/////
