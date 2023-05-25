@@ -28,7 +28,7 @@
             <div class="form-group">
             <input onclick="UpdateAdress()" type="submit" value="Save" class="btn btn-success mt-2 mb-4" />
             </div>
-
+        
     </div>
 </div>
 
@@ -61,8 +61,9 @@
 
             <p id="createError" class="text-danger">@TempData["CreateError"]</p>
             <div class="form-group">
-                <input type="submit" value="Complete Order" class="btn btn-primary" />
+                <input id="saveButton" type="submit" value="Complete Order" class="btn btn-primary" />
             </div>
+            <p class="text-danger" id="chefError"></p>
         </form>
     </div>
 </div>
@@ -99,6 +100,8 @@
                         if (response.timeSlots.length == 0) {
                             //Javascript shows this always, idk why, it also wont reset in the else, in other words the pop up if no chefs are availible is broken
                             $("#chefError").html("No chefs availible");
+                                $("#time").empty();
+                                document.getElementById("saveButton").disabled = true;
                             console.log("test");
                         }
                         else {
@@ -108,7 +111,7 @@
                             for (var i = 0; i < response.timeSlots.length; i++) {
                                 s += '<option value="' + response.timeSlots[i].Value + '">' + response.timeSlots[i].Text + '</option>';
                             }
-
+                            document.getElementById("saveButton").disabled = false;
                             $("#time").html(s);
                         }
 
