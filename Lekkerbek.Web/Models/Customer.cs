@@ -24,11 +24,18 @@ namespace Lekkerbek.Web.Models
         [DataType(DataType.PhoneNumber)]
         public string? PhoneNumber { get; set; }
 
+
+
+
         [Display(Name = "Birthday")]
         [DataType(DataType.Date)]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
 
         public DateTime? Birthday { get; set; }
+
+
+
+
 
         [StringLength(30, ErrorMessage = "Your Firm Name can contain only 30 characters")]
         [Display(Name = "Firm Name")]
