@@ -1,4 +1,5 @@
 ﻿using Lekkerbek.Web.Models;
+using Lekkerbek.Web.NewFolder;
 using Lekkerbek.Web.Repositories;
 using Lekkerbek.Web.ViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,9 +15,11 @@ namespace Lekkerbek.Web.Services
 
 
         private readonly OrdersRepository _repository;
-        public OrderService(OrdersRepository repository)
+        private readonly ICustomerService _customerService;
+        public OrderService(OrdersRepository repository, ICustomerService customerService)
         {
             _repository = repository;
+            _customerService = customerService;
         }
        
         public List<SelectListItem> GetTimeDropDownList(DateTime askDateTime)
@@ -137,11 +140,13 @@ namespace Lekkerbek.Web.Services
         }
         public SelectList CustomerSelectList()
         {
-            return new SelectList(_repository.GetCustomers(), "CustomerId", "FName");
+            var customerListWithView = _customerService.GetAllViews();
+            return new SelectList(customerListWithView, "CustomerId", "Name");
         }
         public SelectList CustomerSelectList(object? selectedValue)
         {
-                return new SelectList(_repository.GetCustomers(), "CustomerId", "FName", selectedValue);
+            var customerListWithView = _customerService.GetAllViews();
+            return new SelectList(customerListWithView, "CustomerId", "Name", selectedValue);
         }
         public SelectList MenuItemSelectList()
         {

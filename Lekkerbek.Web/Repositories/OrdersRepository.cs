@@ -97,9 +97,10 @@ namespace Lekkerbek.Web.Repositories
                 OrderID = order.OrderID,
                 Finished = order.Finished,
                 CustomerId = order.CustomerId,
-                CustomerName = order.Customer.FName + " " + order.Customer.LName,
+                //CustomerName = order.Customer.FName + " " + order.Customer.LName,
+                CustomerName = (order.Customer.FirmName!=null? order.Customer.FirmName : order.Customer.FName + " " + order.Customer.LName),
                 Discount = order.Discount,
-                StartTimeSlot = order.TimeSlot.StartTimeSlot,
+                TimeSlot = order.TimeSlot.StartTimeSlot,
 
 
             }).ToList();

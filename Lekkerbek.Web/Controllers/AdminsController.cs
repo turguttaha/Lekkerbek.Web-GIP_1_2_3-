@@ -55,10 +55,8 @@ namespace Lekkerbek.Web.Controllers
 
 
             IList<IdentityUser> users = await _userManager.GetUsersInRoleAsync("Administrator");
-
-            //ViewData["IdentityUsers"] = new SelectList(users, "Id", "UserName");
             return Json(users.ToDataSourceResult(request));
-            //return View(users);
+            
         }
         public IActionResult AssignAdminList()
         {
@@ -75,9 +73,7 @@ namespace Lekkerbek.Web.Controllers
                 if(!await _userManager.IsInRoleAsync(user, "Administrator")) { newList.Add(user); }
             }
 
-            //ViewData["IdentityUsers"] = new SelectList(users, "Id", "UserName");
             return Json(newList.ToDataSourceResult(request));
-            //return View(users);
         }
 
         public async Task<IActionResult> AssignAdmin(string id)
@@ -90,10 +86,8 @@ namespace Lekkerbek.Web.Controllers
 
         public async Task<ActionResult> Delete_Admin([DataSourceRequest] DataSourceRequest request, IdentityUser admin)
         {
-
                 var user = await _userManager.FindByIdAsync(admin.Id);
                 await _userManager.RemoveFromRoleAsync(user, "Administrator");
-
 
             return Json(new[] { user }.ToDataSourceResult(request, ModelState));
         }

@@ -72,6 +72,11 @@ namespace Lekkerbek.Web.Repositories
            
             return _context.Orders.Include("TimeSlot").Where(c => c.TimeSlot.StartTimeSlot.Date >= startDate.Date && c.TimeSlot.StartTimeSlot.Date <= endDate.Date).ToList();
         }
+        public List<Order> GetAllOrders(DateTime startDate)
+        {
+
+            return _context.Orders.Include("TimeSlot").Where(c => c.TimeSlot.StartTimeSlot >= startDate).ToList();
+        }
 
         //HOLIDAY/////
         public void AddToDatabaseHolidayDay(RestaurantHoliday entity)
