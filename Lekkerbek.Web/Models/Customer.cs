@@ -15,10 +15,10 @@ namespace Lekkerbek.Web.Models
         [Display(Name = "First Name")]
 
         
-        public string FName { get; set; } = string.Empty;
+        public string? FName { get; set; } = string.Empty;
         [StringLength(20, MinimumLength = 2)]
         [Display(Name = "Last Name")]
-        public string LName { get; set; } = string.Empty;
+        public string? LName { get; set; } = string.Empty;
 
         [Display(Name = "GSM")]
         [DataType(DataType.PhoneNumber)]

@@ -14,7 +14,7 @@
                             .Name("grid")
                             .Columns(columns =>
                             {
-                                columns.Bound(p => p.Name);
+                                columns.Bound(p => p.Name).Title("Name/Firm Name");
                                 columns.Bound(p => p.Email);
                                 columns.Bound(p => p.PhoneNumber);      
                                 columns.Bound(p => p.PreferredDishName).Title("Preferred Dish");
@@ -62,8 +62,8 @@
                             .Name("grid_#=CustomerId#") // template expression, to be evaluated in the master context
                             .Columns(columns =>
                             {
-                                        columns.Bound(p => p.ContactPerson);
-                                        columns.Bound(p => p.Address).Width(100);
+                                        columns.Bound(p => p.ContactPerson).Width(150);
+                                        columns.Bound(p => p.Address).Width(350);
                                         columns.Bound(p => p.Btw).Width(100); 
                                         columns.Bound(p => p.BtwNumber);
 
