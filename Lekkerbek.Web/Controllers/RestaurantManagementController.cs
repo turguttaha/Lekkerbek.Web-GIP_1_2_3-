@@ -57,10 +57,10 @@ namespace Lekkerbek.Web.Controllers
                     foreach (var openingHour in openingsHourList)
                     {
 
-                        if (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek && (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.EndTime.TimeOfDay))
+                        if (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek )
                         {
-
-                            conflict = true;
+                            if ((openingHour.StartTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.EndTime.TimeOfDay))
+                            { conflict = true; }
 
                         }
                         if (openingHour.EndTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.StartTime.TimeOfDay)
@@ -117,7 +117,26 @@ namespace Lekkerbek.Web.Controllers
         public ActionResult EditOpeningsHour(int id, [Bind("DayOfWeek,StartTime,EndTime")] RestaurantOpeninghours restaurantOpeninghours)
         {
             try
-            {
+            {  //add here controle
+                List<Order> orderListAffterNow = _restaurantManagementService.GetAllOrders(DateTime.Now);
+                List<Order> conflictedOrders = new List<Order>();
+                foreach (Order order in orderListAffterNow)
+                {
+                    
+                    if(order.TimeSlot.StartTimeSlot.DayOfWeek.ToString() == restaurantOpeninghours.DayOfWeek.ToString())
+                    {
+                        if (order.TimeSlot.StartTimeSlot.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay || order.TimeSlot.StartTimeSlot.TimeOfDay > restaurantOpeninghours.EndTime.TimeOfDay)
+                        {
+                            conflictedOrders.Add(order);
+                        }
+                    }
+                }
+                if(conflictedOrders.Count > 0) 
+                {
+                    ModelState.AddModelError("Model", "There is a pre-created order out of the selected time range, so you cannot change opening Hours!");
+                    ViewBag.oHError = "There is a pre-created order out of the selected time range, so you cannot change opening Hours!";
+                    return View();
+                }
                 var openingsHourList = _restaurantManagementService.GetAllOpeningsHours();
                 bool conflict = false;
                 RestaurantOpeninghours rOH = openingsHourList.Find(o=>o.RestaurantOpeninghoursId==id);
@@ -138,6 +157,7 @@ namespace Lekkerbek.Web.Controllers
                             conflict = true;
                         }
                     }
+                  
                     if (conflict)
                     {
                         ModelState.AddModelError("Model", "This time slot is already taken!");
@@ -417,6 +437,13 @@ namespace Lekkerbek.Web.Controllers
         {
             try
             {
+                List<Order> orderTimeSlots = _restaurantManagementService.GetAllOrders(restaurantHoliday.StartDate, restaurantHoliday.EndDate);
+                if(orderTimeSlots.Count > 0)
+                {
+                    ModelState.AddModelError("Model", "There is a pre-created order in the selected time range, so you cannot plan a holiday within this date range!");
+                    ViewBag.hError = "There is a pre-created order in the selected time range, so you cannot plan a holiday within this date range!";
+                    return View();
+                }
                 var holidayList = _restaurantManagementService.GetAllHolidayDays();
                 bool conflict = false;
                 if (restaurantHoliday.StartDate < restaurantHoliday.EndDate)
@@ -488,6 +515,13 @@ namespace Lekkerbek.Web.Controllers
         {
             try
             {
+                List<Order> orderTimeSlots = _restaurantManagementService.GetAllOrders(restaurantHoliday.StartDate, restaurantHoliday.EndDate);
+                if (orderTimeSlots.Count > 0)
+                {
+                    ModelState.AddModelError("Model", "There is a pre-created order in the selected time range, so you cannot plan a holiday within this date range!");
+                    ViewBag.hError = "There is a pre-created order in the selected time range, so you cannot plan a holiday within this date range!";
+                    return View();
+                }
                 var holidayList = _restaurantManagementService.GetAllHolidayDays();
                 RestaurantHoliday restaurantHoliday1 = holidayList.Find(h=>h.RestaurantHolidayId == id);
                 holidayList.Remove(restaurantHoliday1);

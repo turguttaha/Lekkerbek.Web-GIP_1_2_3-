@@ -88,6 +88,10 @@ namespace Lekkerbek.Web.Services
         {
             return _repository.GetAllOrders(startDate, endDate);
         }
+        public List<Order> GetAllOrders(DateTime startDate)
+        {
+            return _repository.GetAllOrders(startDate);
+        }
         public List<DateTime> GetDateTimeRange(DateTime startDate, DateTime endDate)
         {
             List<DateTime> dateTimeList = new List<DateTime>();

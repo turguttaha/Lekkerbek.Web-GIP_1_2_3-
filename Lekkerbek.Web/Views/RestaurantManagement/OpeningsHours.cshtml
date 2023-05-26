@@ -27,6 +27,7 @@ Html.Kendo().Grid<Lekkerbek.Web.Models.RestaurantOpeninghours>()
 .DataSource(d =>
 {
     d.Ajax()
+    .Sort(sort => sort.Add("DayOfWeek").Ascending())
     .Sort(sort => sort.Add("EndTime").Ascending())
     .Model(model =>
     {
