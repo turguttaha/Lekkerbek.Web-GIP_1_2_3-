@@ -10,6 +10,8 @@ namespace Lekkerbek.Web.Models
         public int Id { get; set; }
         [Display(Name = "Time Slot")]
         [DataType(DataType.DateTime)]
+        //[FutureDateTime]
+        //[Range(DateTime.Now, "??", ErrorMessage = "The field {0} must be greater than {1}.")]
         public DateTime StartTimeSlot { get; set; }
         public int? ChefId  { get; set; }
         public virtual Chef Chef { get; set; }
