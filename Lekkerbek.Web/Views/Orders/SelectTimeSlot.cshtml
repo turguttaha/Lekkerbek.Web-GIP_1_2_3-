@@ -53,8 +53,9 @@
 
             <p id="chefError" class="text-danger"></p>
             <div class="form-group">
-                <input type="submit" value="Next Step" class="btn btn-primary" />
+                <input id="saveButton" type="submit" value="Next Step" class="btn btn-primary" />
             </div>
+            <p class="text-danger" id="chefError"></p>
         </form>
     </div>
 </div>
@@ -91,6 +92,7 @@
                 //Javascript shows this always, idk why, it also wont reset in the else, in other words the pop up if no chefs are availible is broken
                 $("#chefError").html("No chefs availible");
                 $("#time").empty();
+                                document.getElementById("saveButton").disabled = true;
             }
             else
             {
@@ -100,7 +102,7 @@
                 for (var i = 0; i < response.timeSlots.length; i++) {
                                     s += '<option value="' + response.timeSlots[i].Value + '">' + response.timeSlots[i].Text + '</option>';
                 }
-            
+                                document.getElementById("saveButton").disabled = false;
                 $("#time").html(s);
             }
    

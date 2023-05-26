@@ -193,10 +193,6 @@ namespace Lekkerbek.Web.Controllers
             //extra check, amount of chefs that are on holliday compared to the total amount of chefs (if its the last chef, dont allow)
             //check how many orders there are, if the amount of orders on a given time range, is equal to the working chefs, then dont allow
 
-            
-            
-            
-            
             try
             {
                 bool conflict = false;
@@ -235,11 +231,11 @@ namespace Lekkerbek.Web.Controllers
                 }
 
 
-                if (workerHoliday.StartDate < workerHoliday.EndDate)
+                if (workerHoliday.StartDate.Date <= workerHoliday.EndDate.Date)
                 {
                     foreach (var holiday in holidayList)
                     {
-                        if ((workerHoliday.StartDate < holiday.StartDate && workerHoliday.EndDate < holiday.StartDate) || (workerHoliday.StartDate > holiday.EndDate && workerHoliday.EndDate > holiday.EndDate))
+                        if ((workerHoliday.StartDate.Date < holiday.StartDate.Date && workerHoliday.EndDate.Date < holiday.StartDate.Date) || (workerHoliday.StartDate.Date > holiday.EndDate.Date && workerHoliday.EndDate.Date > holiday.EndDate.Date))
                         {
 
                         }
@@ -267,8 +263,9 @@ namespace Lekkerbek.Web.Controllers
                     return View();
                 }
             }
-            catch
+            catch(Exception e)
             {
+                Console.WriteLine(e.Message);
                 return View();
             }
         }
@@ -314,9 +311,9 @@ namespace Lekkerbek.Web.Controllers
                     //check amount of chefs
                     int allChefCount = _restaurantManagementService.GetChefs().Count();
                     //check amount of Chefs on holliday
-                    int getChefsOnHolliday = allWorkersHolidayList.Where(c => c.StartDate <= workerHoliday.StartDate && c.EndDate >= workerHoliday.StartDate).Count();
+                    int getChefsOnHolliday = allWorkersHolidayList.Where(c => c.StartDate <= workerHoliday.StartDate.Date && c.EndDate >= workerHoliday.StartDate.Date).Count();
                     //if == 1 => conflict bool
-                    if (allChefCount - getChefsOnHolliday == 0)
+                    if (allChefCount - getChefsOnHolliday == 1)
                     {
                         ModelState.AddModelError("Model", "There are not enough chefs working in this period for this chef to take vacation!");
                         ViewBag.hError = "There are not enough chefs working in this period for this chef to take vacation!";
@@ -341,7 +338,7 @@ namespace Lekkerbek.Web.Controllers
                 }
 
 
-                if (workerHoliday.StartDate < workerHoliday.EndDate)
+                if (workerHoliday.StartDate <= workerHoliday.EndDate)
                 {
                     allWorkersHolidayList = allWorkersHolidayList.Where(c => c.ChefId == workerHoliday.ChefId).ToList();
                     foreach (var holiday in allWorkersHolidayList)
