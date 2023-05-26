@@ -42,7 +42,17 @@ namespace Lekkerbek.Web.Services
                     item.StartTime = item.StartTime.AddMinutes(15);
                 }
             }
-                        
+            var closingDays = _repository.GetRestaurantHolliday();
+            foreach (var item in closingDays)
+            {
+                if (item.StartDate <= askDateTime && askDateTime <= item.EndDate)
+                {
+                    timeSlotSelectListNew.Clear();
+                    return timeSlotSelectListNew;
+
+                }
+
+            }
             //filter out the timeslots that are already fully booked
             //gets the timeslot of a specific day
             List<TimeSlot> timeSlotOfADay = _repository.GetUsedTimeSlots(askDateTime);
