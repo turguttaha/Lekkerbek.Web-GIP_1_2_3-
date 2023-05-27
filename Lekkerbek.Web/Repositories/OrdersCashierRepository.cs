@@ -1,4 +1,5 @@
 ﻿using Lekkerbek.Web.Data;
+using Lekkerbek.Web.Migrations;
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.ViewModel;
 using Microsoft.EntityFrameworkCore;
@@ -60,15 +61,12 @@ namespace Lekkerbek.Web.Repositories
                 OrderID = order.OrderID,
                 Finished = order.Finished,
                 CustomerId = order.CustomerId,
-                CustomerName = order.Customer.FName + " " + order.Customer.LName,
+                CustomerName = (order.Customer.FirmName != null ? order.Customer.FirmName : order.Customer.FName + " " + order.Customer.LName),
                 Discount = order.Discount,
                 TimeSlot = order.TimeSlot.StartTimeSlot,
-
-
             }).Where(c => c.Finished == false).ToList();
             return result;
         }
-
         public Order GetOrder(int? id)
         {
            return _context.Orders.Include("OrderLines.MenuItem").Include("Customer").Include("TimeSlot").Where(c => c.OrderID == id).ToList()[0];

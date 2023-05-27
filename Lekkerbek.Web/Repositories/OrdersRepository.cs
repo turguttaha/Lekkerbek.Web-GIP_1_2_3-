@@ -119,9 +119,9 @@ namespace Lekkerbek.Web.Repositories
         {
             return _context.RestaurantOpeningHours.Where(c=>((int)c.DayOfWeek)==dayOfWeek).OrderBy(c => c.StartTime.TimeOfDay).ToList();
         }
-        public List<WorkerSchedule> GetChefsWorkschedueles(string dayOfWeek)
+        public List<RestaurantHoliday> GetRestaurantHolliday()
         {
-            return _context.WorkerSchedules.Where(c => (c.DayOfTheWeek) == dayOfWeek).ToList();
+            return _context.RestaurantHolidays.ToList();
         }
         public List<WorkerHoliday> GetChefsHollidays()
         {

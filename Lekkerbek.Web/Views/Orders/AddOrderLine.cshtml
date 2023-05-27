@@ -108,15 +108,15 @@
 
 <script type="text/javascript">
 
-        var timeslot = document.getElementById("timeslot");
-        var timeslotError = document.getElementById("timeslot-error");//
-        var date = new Date();
+        var selectedTimeSlot = document.getElementById("timeslot").value;
+        var timeslotError = document.getElementById("timeslot-error");
+        //var date = new Date();
         
-        timeslot.max = date.toISOString().split("T")[0];
+        //timeslot.max = datetime.now;
 
         timeslot.addEventListener('change', function () {
-            var selectedDate = new Date(timeslot.value);
-            if (selectedDate < date) {
+            //var selectedDate = new Date(timeslot.value);
+            if (selectedTimeSlot < DateTime.now) {
                 timeslotError.style.display = 'block';
                 timeslot.setCustomValidity('Please choose a timeslot in the future.');
             } else {

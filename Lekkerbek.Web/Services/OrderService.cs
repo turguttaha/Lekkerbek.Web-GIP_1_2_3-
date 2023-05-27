@@ -42,7 +42,17 @@ namespace Lekkerbek.Web.Services
                     item.StartTime = item.StartTime.AddMinutes(15);
                 }
             }
-                        
+            var closingDays = _repository.GetRestaurantHolliday();
+            foreach (var item in closingDays)
+            {
+                if (item.StartDate <= askDateTime && askDateTime <= item.EndDate)
+                {
+                    timeSlotSelectListNew.Clear();
+                    return timeSlotSelectListNew;
+
+                }
+
+            }
             //filter out the timeslots that are already fully booked
             //gets the timeslot of a specific day
             List<TimeSlot> timeSlotOfADay = _repository.GetUsedTimeSlots(askDateTime);
@@ -63,12 +73,16 @@ namespace Lekkerbek.Web.Services
                 }
                 
             }
-            
+            DateTime dateTime= DateTime.Now;
             //we loop through all of the timeslots
             foreach (var item in timeSlotSelectListNew.ToList())
             {
                 //if the amount of orders on this time is equal to the amount of chefs, then its fully booked, remove from the timeslotlist             
                 if (timeSlotOfADay.Where(c => c.StartTimeSlot.ToString("HH:mm:ss") == item.Value).Count() == chefCount)
+                {
+                    tempTimeSlotSelectList.Remove(item);
+                }
+                else if (Convert.ToDateTime(askDateTime.Date.ToString("dd/MM/yyyy")+" " + item.Value) < dateTime) 
                 {
                     tempTimeSlotSelectList.Remove(item);
                 }
