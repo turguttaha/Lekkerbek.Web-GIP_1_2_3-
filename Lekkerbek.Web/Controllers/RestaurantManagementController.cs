@@ -191,8 +191,8 @@ namespace Lekkerbek.Web.Controllers
         //chef hollidays
         public ActionResult ChefHoliday()
         {
-            var list = _restaurantManagementService.GetAllHolidayDays();
-            return View(list);
+           
+            return View();
         }
         public ActionResult ReadChefHoliday([DataSourceRequest] DataSourceRequest request)
         {

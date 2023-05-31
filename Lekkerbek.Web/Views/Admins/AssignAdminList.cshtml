@@ -7,7 +7,7 @@
 }
 
 
-<h3 class="text-secondary">You can select the user you want to promote to the admin class from the list below!</h3>
+<h3 class="text-secondary">U kunt de gebruiker die u wilt promoveren tot de beheerdersklasse uit de onderstaande lijst selecteren!</h3>
 <p id="error_text" class="text-danger fw-bold"></p>
 
 @(
@@ -16,7 +16,7 @@ Html.Kendo().Grid<IdentityUser>()
 .Columns(columns =>
 {
     columns.Bound(f => f.UserName);
-    columns.Bound(f => f.Id).Title("  ").Width(220).Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Admins/AssignAdmin/#=Id#'>Assign To Admin</a></div>");
+    columns.Bound(f => f.Id).Title("  ").Width(220).Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Admins/AssignAdmin/#=Id#'>Toewijzen als beheerder</a></div>");
 
 })
 .Editable(editable => editable.Mode(GridEditMode.PopUp))
@@ -24,7 +24,7 @@ Html.Kendo().Grid<IdentityUser>()
     .Extra(false)
     .Operators(operators => operators
         .ForString(str => str.Clear()
-.IsEqualTo("Is equal to")
+.IsEqualTo("Is gelijk aan")
        )
    )
     )
@@ -46,7 +46,7 @@ Html.Kendo().Grid<IdentityUser>()
 })
     )
 <div>
-    <a asp-action="AdminList">Back to List</a>
+    <a asp-action="AdminList">Terug naar lijst</a>
 </div>
 <script type="text/javascript">
     function error_handler(e) {
