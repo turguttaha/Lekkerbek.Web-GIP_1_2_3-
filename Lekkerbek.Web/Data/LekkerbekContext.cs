@@ -43,7 +43,7 @@ namespace Lekkerbek.Web.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=ucllgipsqlteam2v2.database.windows.net;Database=gip2db;user=gipteam2;password=Gipteam_2;trustservercertificate=true;");
+            optionsBuilder.UseSqlServer("Server=ucllgipsqlteam2v4.database.windows.net;Database=gip2db;user=gipteam2;password=Gipteam_2;trustservercertificate=true;");
             base.OnConfiguring(optionsBuilder);
         }
     }
