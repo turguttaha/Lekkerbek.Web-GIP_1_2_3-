@@ -7,31 +7,31 @@
     Layout = "_Layout";
 }
 
-<h1>Customer List</h1>
+<h1>Klant Lijst</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 
 @(Html.Kendo().Grid<CustomerViewModel>()
                             .Name("grid")
                             .Columns(columns =>
                             {
-                                columns.Bound(p => p.Name);
+                                columns.Bound(p => p.Name).Title("Naam/Firm Naam");
                                 columns.Bound(p => p.Email);
                                 columns.Bound(p => p.PhoneNumber);      
                                 columns.Bound(p => p.PreferredDishName);
-                                columns.Bound(p => p.CustomerId).Title("  ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Customers/Edit/#=CustomerId#'>Edit</a></div>");
-                                columns.Command(command => { command.Destroy(); }).Width(200);
+                                columns.Bound(p => p.CustomerId).Title("  ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Customers/Edit/#=CustomerId#'>Wijzigen</a></div>");
+                                columns.Command(command => { command.Destroy().Text("Verwijderen"); }).Width(200);
 
                             })
-                            .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Customers/Create'>Add New Customer</a></div>"))
+                            .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Customers/Create'>Nieuwe klant Toevoegen</a></div>"))
                             .Pageable()
                             .Sortable()
                             .Filterable(filterable => filterable
     .Extra(false)
     .Operators(operators => operators
         .ForString(str => str.Clear()
-            .StartsWith("Starts with")
-            .IsEqualTo("Is equal to")
-            .IsNotEqualTo("Is not equal to")
+            .StartsWith("Begin met")
+            .IsEqualTo("Is gelijk aan")
+            .IsNotEqualTo("Is niet gelijk aan")
                    )
                )
     )

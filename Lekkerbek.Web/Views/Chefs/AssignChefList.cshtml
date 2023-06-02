@@ -8,7 +8,7 @@
 }
 
 
-<h3 class="text-secondary">You can select the user you want to promote to the Chef class from the list below!</h3>
+<h3 class="text-secondary">U kunt de gebruiker die u wilt promoveren naar de Chef-klasse selecteren uit de onderstaande lijst!</h3>
 <p id="error_text" class="text-danger fw-bold"></p>
 @* Pop Up HTML*@
 <div class="popup">
@@ -22,12 +22,12 @@
             <span asp-validation-for="IdentityId" class="text-danger"></span>
             </div>
             <div class="form-group">
-            <label asp-for="ChefName" class="control-label">Enter Name of New Chef:</label>
+            <label asp-for="ChefName" class="control-label">Voer de naam van de nieuwe chef-kok in:</label>
             <input asp-for="ChefName" class="form-control" />
             <span asp-validation-for="ChefName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Add new Chef" class="btn btn-primary mt-3">
+                <input type="submit" value="Nieuwe Chef Toevoegen" class="btn btn-primary mt-3">
             </div>  
             
         </form>
@@ -41,7 +41,7 @@ Html.Kendo().Grid<IdentityUser>()
 .Columns(columns =>
 {
     columns.Bound(f => f.UserName);
-    columns.Bound(f => f.Id).Title("  ").Width(220).Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' > <a onclick=\"OpenPopUp('#= Id #')\" href='\\#'> Add </a> </div>");
+    columns.Bound(f => f.Id).Title("  ").Width(220).Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' > <a onclick=\"OpenPopUp('#= Id #')\" href='\\#'> Toevoegen </a> </div>");
 
 })
 .Editable(editable => editable.Mode(GridEditMode.PopUp))
@@ -49,7 +49,7 @@ Html.Kendo().Grid<IdentityUser>()
     .Extra(false)
     .Operators(operators => operators
         .ForString(str => str.Clear()
-.IsEqualTo("Is equal to")
+.IsEqualTo("Is gelijk aan")
        )
    )
     )
@@ -71,7 +71,7 @@ Html.Kendo().Grid<IdentityUser>()
 })
     )
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Terug naar lijst</a>
 </div>
 
 @section Scripts {
