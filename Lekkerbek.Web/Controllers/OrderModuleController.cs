@@ -362,7 +362,7 @@ namespace Lekkerbek.Web.Controllers
         public async Task<JsonResult> RemoveOrderLine(string id)
         {
 
-          List<OrderLine> list =  Order.TemproraryCart;
+            List<OrderLine> list =  Order.TemproraryCart;
             bool test = false;
             OrderLine newItem = null;
             foreach (var item in list) 
@@ -381,7 +381,8 @@ namespace Lekkerbek.Web.Controllers
             { 
                 Order.TemproraryCart.Remove(newItem);
             }
-            return Json(new { status = "Het product is verwijderd" });
+            
+            return Json(new { status = "Het product is verwijderd", temporaryCart = list });
         }
 
 
