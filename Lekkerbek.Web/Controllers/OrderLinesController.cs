@@ -9,6 +9,8 @@ using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Lekkerbek.Web.Services;
+using Lekkerbek.Web.NewFolder;
+using Microsoft.AspNetCore.Identity;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -18,17 +20,35 @@ namespace Lekkerbek.Web.Controllers
     {
         
         private readonly OrderLineService _orderLineService;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly ICustomerService _customerService;
+        private readonly IOrderService _orderService;
 
-        public OrderLinesController(OrderLineService orderLineService)
+        public OrderLinesController(OrderLineService orderLineService, UserManager<IdentityUser> userManager, ICustomerService customerService, IOrderService orderService)
         {
-           
+
             _orderLineService = orderLineService;
+            _userManager = userManager;
+            _customerService = customerService;
+            _orderService = orderService;
+        }
+        private async Task<Customer> GetCustomerAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var customer = _customerService.Read().Where(c => c.IdentityUser == user).FirstOrDefault();
+            return customer;
         }
 
-
         // GET: OrderLines/Create
-        public IActionResult Create(int id)
+        public async Task<IActionResult> Create(int id)
         {
+            if (User.IsInRole("Customer"))
+            {
+                Order order = _orderService.GetSpecificOrder(id);
+                Customer customer = await GetCustomerAsync();
+                if (order.CustomerId != customer.CustomerId) { return NotFound(); }
+            }
+
             ViewData["DishID"] = new SelectList(_orderLineService.GetMenuItems(), "MenuItemId", "Name");
             TempData["Orderid"] = id;
             ViewBag.Id = id; 
@@ -64,8 +84,16 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
-
             var orderLine = _orderLineService.GetSpecificOrderLineDetailed(id);
+
+            if (User.IsInRole("Customer"))
+            {
+                Customer customer = await GetCustomerAsync();
+                if (orderLine == null || orderLine.Order.CustomerId != customer.CustomerId)
+                {
+                    return NotFound();
+                }
+            }        
                 
             if (orderLine == null)
             {
@@ -84,18 +112,29 @@ namespace Lekkerbek.Web.Controllers
             {
                 return Problem("Entity set 'LekkerbekContext.OrderLines'  is null.");
             }
-            var orderLine = _orderLineService.GetSpecificOrderLine(id);
-            if (orderLine != null)
-            {
-                _orderLineService.RemoveOrderLine(orderLine);
-            }
-            
-           
-            
-            if (User.IsInRole("Administrator"))
-                return RedirectToAction("EditOrder", "Orders",new { id = orderLine.OrderID });
+            var orderLine = _orderLineService.GetSpecificOrderLineDetailed(id);
             if (User.IsInRole("Customer"))
+            {
+                Customer customer = await GetCustomerAsync();
+                if (orderLine == null || orderLine.Order.CustomerId != customer.CustomerId)
+                {
+                    return NotFound();
+                }
+                if (orderLine != null)
+                {
+                    _orderLineService.RemoveOrderLine(orderLine);
+                }
                 return RedirectToAction("EditOrder", "OrderModule", new { id = orderLine.OrderID });
+            }
+            else if (User.IsInRole("Administrator"))
+            {
+                if (orderLine != null)
+                {
+                    _orderLineService.RemoveOrderLine(orderLine);
+                }
+                return RedirectToAction("EditOrder", "Orders", new { id = orderLine.OrderID });
+            }
+                           
             return View(orderLine);
         }
 

@@ -5,7 +5,7 @@ namespace Lekkerbek.Web.Models
     public class OrderLine
     {
         public int OrderLineID { get; set; }
-        [Display(Name = "Extra Details")]
+        [Display(Name = "Extra gegevens")]
         public string? ExtraDetails { get; set; }
         [Display(Name = "Gerechten Bedrag")]
         [Range(1,100)]

@@ -24,6 +24,11 @@ namespace Lekkerbek.Web.Controllers
         private readonly IOrderService _orderService;
         public MenuItemsController(IMenuItemService menuItemService, IOrderService orderService)
         {
+            //this makes it so the culture is forced to english, so the separator is with a .
+            var cInfo = CultureInfo.CreateSpecificCulture("en-us");
+            cInfo.NumberFormat.NumberDecimalSeparator = ".";
+            Thread.CurrentThread.CurrentCulture = cInfo;
+
             _menuItemService = menuItemService;
             _orderService = orderService;
         }
@@ -89,7 +94,7 @@ namespace Lekkerbek.Web.Controllers
             //if (ModelState.IsValid)
             //{
 
-            menuItem.Price = double.Parse(formDetails["Price"].ToString().Replace('.', ','));//i LOVE when one side of the app works with , as a seperator, and the other with a . :D
+            
 
             _menuItemService.Create(menuItem);
 
@@ -101,11 +106,12 @@ namespace Lekkerbek.Web.Controllers
         // GET: Dishes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            
             if (id == null || _menuItemService.Read() == null)
             {
                 return NotFound();
             }
-
+            
             var dish = _menuItemService.GetSpecificMenuItem(id);
             if (dish == null)
             {
@@ -133,8 +139,8 @@ namespace Lekkerbek.Web.Controllers
           //  {
                 try
                 {
-                menuItem.Price = double.Parse(formDetails["Price"].ToString().Replace('.', ','));
-                _menuItemService.Update(menuItem);
+               
+                    _menuItemService.Update(menuItem);
 
             }
                 catch (DbUpdateConcurrencyException)

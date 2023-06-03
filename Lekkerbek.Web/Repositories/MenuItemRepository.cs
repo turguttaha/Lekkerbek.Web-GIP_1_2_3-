@@ -1,6 +1,7 @@
 ﻿using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.ViewModel;
+using System.Globalization;
 
 namespace Lekkerbek.Web.Repositories
 {
@@ -22,7 +23,7 @@ namespace Lekkerbek.Web.Repositories
             //This is another way to make a new object
             {
                 MenuItemId = item.MenuItemId,
-                Price = item.Price,
+                Price = Convert.ToDouble(item.Price, new CultureInfo("en-EN")),
                 Sort = item.Sort,
                 BtwNumber = item.BtwNumber,
                 Description = item.Description,

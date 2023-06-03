@@ -68,8 +68,9 @@
                     @Html.DisplayFor(modelItem => item.ExtraDetails)
                 </td>
                 <td>
-                    <a asp-action="EditOrderLine" asp-route-id="@item.OrderLineID">Edit</a>
-                    <a asp-controller="Orderlines" asp-action="Delete" asp-route-id="@item.OrderLineID">Delete</a>
+                                <a asp-action="EditOrderLine" asp-route-id="@item.OrderLineID">Edit</a>
+                                <a asp-controller="Orderlines" asp-action="Delete" asp-route-id="@item.OrderLineID">Delete</a>
+
                 </td>
             </tr>
         }

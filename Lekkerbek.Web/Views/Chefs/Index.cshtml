@@ -6,7 +6,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Chef Lijst</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 
 @(
@@ -18,7 +18,7 @@ Html.Kendo().Grid<ChefViewModel>()
     columns.Bound(f => f.Email);
     columns.Command(command => { command.Edit().Text("Wijzigen"); command.Destroy().Text("Verwijderen"); }).Width(250);
 })
- .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Chefs/AssignChefList/'>Add Chef</a></div>"))
+ .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Chefs/AssignChefList/'>Chef Toevoegen</a></div>"))
 .Editable(editable => editable.Mode(GridEditMode.InLine))
 .Pageable()
 .Sortable()

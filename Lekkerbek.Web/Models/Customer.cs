@@ -12,12 +12,12 @@ namespace Lekkerbek.Web.Models
         //[ScaffoldColumn(false)]
         public int CustomerId { get; set; }
         [StringLength(20, ErrorMessage = "Your First Name can contain only 20 characters")]
-        [Display(Name = "First Name")]
+        [Display(Name = "Voornaam")]
 
         
         public string? FName { get; set; } = string.Empty;
         [StringLength(20, MinimumLength = 2)]
-        [Display(Name = "Last Name")]
+        [Display(Name = "Familienaam")]
         public string? LName { get; set; } = string.Empty;
 
         [Display(Name = "GSM")]
@@ -27,7 +27,7 @@ namespace Lekkerbek.Web.Models
 
 
 
-        [Display(Name = "Birthday")]
+        [Display(Name = "Geboortedatum")]
         [DataType(DataType.Date)]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
 
@@ -38,29 +38,33 @@ namespace Lekkerbek.Web.Models
 
 
         [StringLength(30, ErrorMessage = "Your Firm Name can contain only 30 characters")]
-        [Display(Name = "Firm Name")]
+        [Display(Name = "Bedrijfsnaam")]
         public string? FirmName { get; set; } = string.Empty;
 
         [StringLength(30, ErrorMessage = "Your contact person can contain only 30 characters")]
-        [Display(Name = "Contact Person")]
+        [Display(Name = "Contact Persoon")]
         public string? ContactPerson { get; set; } = string.Empty;
 
         [StringLength(450, ErrorMessage = "Your street name can contain only 450 characters")]
-        [Display(Name = "Street name")]
+        [Display(Name = "Straatnaam")]
         public string? StreetName { get; set; } = string.Empty;
 
         [StringLength(20, ErrorMessage = "Your city can contain only 20 characters")]
-        [Display(Name = "City")]
+        [Display(Name = "Stad")]
         public string? City { get; set; } = string.Empty;
 
-        [Display(Name = "Postal code")]
+        [Display(Name = "Post code")]
         public string? PostalCode { get; set; }
 
         [StringLength(20, ErrorMessage = "Your BTW can contain only 20 characters")]
+        [MaxLength(2)]
         [Display(Name = "BTW")]
+        [RegularExpression("^[a-zA-Z]{2}", ErrorMessage = "Enkel geldige landcodes mogen ingevuld worden")]
+        
         public string? Btw { get; set; } = string.Empty;
 
-        [Display(Name = "BTW number")]
+        [Display(Name = "BTW nummer")]
+        [RegularExpression("^[0-9]{9}", ErrorMessage ="Het btw nummer moet 9 cijfers lang zijn")]
         public string? BtwNumber { get; set; }
 
         [Display(Name = "E-mail")]
@@ -73,7 +77,7 @@ namespace Lekkerbek.Web.Models
         public bool? LoyaltyScore { get; set; }
 
         //Foreign Key van Preferred Dish
-
+        [Display(Name ="Voorkeursgerecht")]
         public int? PreferredDishId { get; set; }
 
         public virtual PreferredDish PreferredDish { get; set; }

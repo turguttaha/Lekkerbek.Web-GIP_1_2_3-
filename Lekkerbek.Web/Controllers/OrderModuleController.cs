@@ -16,15 +16,17 @@ namespace Lekkerbek.Web.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ICustomerService _customerService;
         private readonly IOrderService _orderService;
+        private readonly OrderLineService _orderLineService;
         private readonly IMenuItemService _menuItemService;
 
 
-        public OrderModuleController(ICustomerService customerService, IOrderService orderService, IMenuItemService menuItemService, UserManager<IdentityUser> userManager)
+        public OrderModuleController(ICustomerService customerService, IOrderService orderService, IMenuItemService menuItemService, UserManager<IdentityUser> userManager, OrderLineService orderLineService)
         {
             _customerService = customerService;
             _orderService = orderService;
             _menuItemService = menuItemService;
             _userManager = userManager;
+            _orderLineService = orderLineService;
         }
         private async Task<Customer> GetCustomerAsync()
         {
@@ -63,8 +65,9 @@ namespace Lekkerbek.Web.Controllers
             }
 
             var order = _orderService.GetSpecificOrder(id);
+            Customer customer = await GetCustomerAsync();
 
-            if (order == null)
+            if (order == null||customer.CustomerId!=order.CustomerId)
             {
                 return NotFound();
             }
@@ -99,6 +102,12 @@ namespace Lekkerbek.Web.Controllers
         public async Task<IActionResult> EditOrder(int id, [Bind("OrderID,Finished,CustomerId")] Order order, IFormCollection collection)
         {
             if (id != order.OrderID)
+            {
+                return NotFound();
+            }
+
+            Customer customer = await GetCustomerAsync();
+            if(customer.CustomerId !=order.CustomerId)
             {
                 return NotFound();
             }
@@ -151,7 +160,8 @@ namespace Lekkerbek.Web.Controllers
             }
 
             var orderLine = _orderService.GetSpecificOrderLine(id);
-            if (orderLine == null)
+            Customer customer = await GetCustomerAsync();
+            if (orderLine == null || orderLine.Order.CustomerId!=customer.CustomerId)
             {
                 return NotFound();
             }
@@ -165,13 +175,21 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOrderLine(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,MenuItemId")] OrderLine orderLine)
+        public async Task<IActionResult> EditOrderLine(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,MenuItemId,Order")] OrderLine orderLine)
         {
             if (id != orderLine.OrderLineID)
             {
                 return NotFound();
             }
-
+            Customer customer = await GetCustomerAsync();
+            var customersOrders = _orderService.Read().Where(o => o.CustomerId == customer.CustomerId);
+            bool orderlineCheck = true;
+            foreach(Order order in customersOrders) 
+            {           
+                    if(order.OrderID!=orderLine.OrderID)
+                    orderlineCheck = false;
+            }
+            if (!orderlineCheck) { return NotFound(); }
             // if (ModelState.IsValid)
             //{
             try
@@ -206,13 +224,15 @@ namespace Lekkerbek.Web.Controllers
             }
 
             var order = _orderService.GetSpecificOrder(id);
-
-            ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
-
-            if (order == null)
+            Customer customer = await GetCustomerAsync();
+            if (order == null||customer.CustomerId!=order.CustomerId)
             {
                 return NotFound();
             }
+
+            ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
+
+
             TempData["TimesPast"] = "";
             return View(order);
         }
@@ -228,6 +248,11 @@ namespace Lekkerbek.Web.Controllers
             }
 
             var order = _orderService.GetSpecificOrder(id);
+            Customer customer = await GetCustomerAsync();
+            if(order.CustomerId!=customer.CustomerId)
+            {
+                return NotFound();
+            }
 
 
             if (order != null)
@@ -246,10 +271,7 @@ namespace Lekkerbek.Web.Controllers
             return NotFound();
         }
 
-
-
         //// GET: Customers/Edit/5
-
         public async Task<IActionResult> EditCustomer()
         {
            
