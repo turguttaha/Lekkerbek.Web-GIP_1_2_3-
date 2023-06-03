@@ -155,6 +155,11 @@ namespace Lekkerbek.Web.Repositories
                     BtwNumber = orderLine.MenuItem.BtwNumber,
                     Sort = orderLine.MenuItem.Sort,
                 },
+                Order = new Order()
+                {
+                    CustomerId = orderLine.Order.CustomerId,
+
+                }
 
             }).ToList();
             return result;
