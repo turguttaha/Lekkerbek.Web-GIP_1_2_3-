@@ -75,7 +75,7 @@
     columns.Bound(f => f.BtwNumber).Title("BTW %").Filterable(false);
     columns.Bound(c => c.MenuItemId)
               .Title(" ").Filterable(false)
-              .ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary'> <a onclick=\"OpenPopUp('#= MenuItemId #' , '#= Name #')\" href='\\#'> Add </a> </div>");
+              .ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary'> <a onclick=\"OpenPopUp('#= MenuItemId #' , '#= Name #')\" > Add </a> </div>");
 
 })
 .Editable(editable => editable.Mode(GridEditMode.PopUp))
@@ -161,6 +161,7 @@ function DeleteOrderline(id){
                 // en de text vervangen met de status.
                 // Status krijgen we van de action Message mee.
                 //$("#statusSpan").text(response.status);
+
             },
             error: function (response) {
                 // Indien onze request faalt, kunnen we hier een mooie
@@ -190,12 +191,14 @@ function DeleteOrderline(id){
             // request successvol is.
             success: function (response) {
                 console.log(response);
+               
                 // Hier gaan we de span met id "statusSpan" ophalen
                 // en de text vervangen met de status.
                 // Status krijgen we van de action Message mee.
                 //$("#statusSpan").text(response.status);
             },
             error: function (response) {
+                
                 // Indien onze request faalt, kunnen we hier een mooie
                 // foutmelding tonen.
                 // In ons geval gaan we een alert tonen op het scherm
@@ -216,7 +219,7 @@ function DeleteOrderline(id){
             // zie de les frontend.
             type: "POST",
             // Hier geven we de action naam en controler naam mee.
-            url: '@Url.Action("RemoveOrderLine", "OrderModule")',
+                url: '@Url.Action("RemoveOrderLine", "OrderModule")',
             // Hier gaan we data meegeven in een JSON formaat.
             data: { "menuItemId": id},
             dataType: "json",
@@ -224,6 +227,7 @@ function DeleteOrderline(id){
             // request successvol is.
             success: function (response) {
                 console.log(response);
+                    
                 // Hier gaan we de span met id "statusSpan" ophalen
                 // en de text vervangen met de status.
                 // Status krijgen we van de action Message mee.
@@ -235,6 +239,7 @@ function DeleteOrderline(id){
                 // In ons geval gaan we een alert tonen op het scherm
                 // (in praktijk moet je dit beter afhandelen!).
                 alert(response);
+                
             }
         });
         var popup = document.getElementById("myPopup");

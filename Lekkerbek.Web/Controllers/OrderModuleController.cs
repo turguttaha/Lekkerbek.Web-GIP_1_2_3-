@@ -363,17 +363,24 @@ namespace Lekkerbek.Web.Controllers
         {
 
           List<OrderLine> list =  Order.TemproraryCart;
-
+            bool test = false;
+            OrderLine newItem = null;
             foreach (var item in list) 
             {
                 string itemId = string.Empty;
                 itemId = item.MenuItemId.ToString()+item.DishAmount+item.ExtraDetails;
                 if (itemId == id) 
-                { Order.TemproraryCart.Remove(item); }
+                {
+                    test = true;
+                    newItem = item;
+                }
                     
 
             }
-
+            if (test) 
+            { 
+                Order.TemproraryCart.Remove(newItem);
+            }
             return Json(new { status = "Het product is verwijderd" });
         }
 
