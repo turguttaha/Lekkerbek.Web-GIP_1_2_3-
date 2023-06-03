@@ -7,7 +7,7 @@ namespace Lekkerbek.Web.Models
         public int OrderLineID { get; set; }
         [Display(Name = "Extra Details")]
         public string? ExtraDetails { get; set; }
-        [Display(Name = "Dish Amount")]
+        [Display(Name = "Gerechten Bedrag")]
         [Range(1,100)]
         public int DishAmount { get; set; }
 
