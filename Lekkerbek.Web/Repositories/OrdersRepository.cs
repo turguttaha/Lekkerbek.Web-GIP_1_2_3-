@@ -155,6 +155,11 @@ namespace Lekkerbek.Web.Repositories
                     BtwNumber = orderLine.MenuItem.BtwNumber,
                     Sort = orderLine.MenuItem.Sort,
                 },
+                Order = new Order()
+                {
+                    CustomerId = orderLine.Order.CustomerId,
+
+                }
 
             }).ToList();
             return result;
@@ -162,7 +167,7 @@ namespace Lekkerbek.Web.Repositories
         }
 		public List<Customer> GetCustomers()
         {
-            return _context.Customers.Include(o=>o.PreferredDish).ToList();
+            return _context.Customers.Include("PreferredDish").ToList();
         }
 
         public List<TimeSlot> GetTimeSlots()

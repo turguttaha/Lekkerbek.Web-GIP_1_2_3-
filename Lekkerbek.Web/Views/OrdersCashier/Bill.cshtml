@@ -6,7 +6,7 @@
 
 }
 
-<h1>To Pay</h1>
+<h1>Te betalen</h1>
 
 <div>
     <hr/>
@@ -37,33 +37,29 @@
 </div>
 
 <div class="btn btn-info mt-3">
-    <a asp-controller="OrdersCashier" asp-action="EditCustomer" asp-route-id="@Model.CustomerId" class="link-light text-decoration-none fw-bolder">Edit Customer</a>
+    <a asp-controller="OrdersCashier" asp-action="EditCustomer" asp-route-id="@Model.CustomerId" class="link-light text-decoration-none fw-bolder">Wijzig klant gegevens</a>
 
 </div>
-<div class="mt-3">
 
-    <input type="checkbox" id="btwCheck">
-    <label for="btwCheck"> Without BTW </label>
-</div>
 
 <div>
 <table class="table" id="BTW" @*style="position:absolute;"*@>
     <thead>
         <tr>
             <th>
-                Dish Name
+                Naam
             </th>
             <th>
-                Dish Price
+                Prijs
             </th>
                 <th>
                     BTW
                 </th>
             <th>
-                Dish amount
+                Hoeveelheid
             </th>
             <th>
-                Total without BTW
+                Totaal zonder BTW
             </th>
         </tr>
     </thead>
@@ -100,7 +96,7 @@
                         <tr>
 
                             <td>
-                                Discount:
+                                Korting:
                             </td>
                                  
                             <td>
@@ -111,13 +107,13 @@
                                 <input class="form-control" min="0" max="80" type="number" value="@ViewBag.Discount" id="discountField" asp-for="Discount" />
                             </td>
                             <td>
-                                <input type="submit" value="Add Discount" class="btn btn-primary mt-3" />
+                                <input type="submit" value="Voeg korting toe" class="btn btn-primary mt-3" />
                             </td>
                         </tr>
                         <tr>
 
                             <td>
-                                Total Price:
+                                Totale Prijs:
                             </td>
                             <td>
 
@@ -141,7 +137,7 @@
                     <tr>
 
                         <td>
-                            Total Price:
+                            Totale Prijs:
                         </td>
                         <td>
                         </td>
@@ -167,10 +163,10 @@
     <p id="messagePaid" class="fw-bolder text-danger"></p>
 
 <form asp-action="Pay" asp-route-id="@Model?.OrderID">
-    <input id="buttonpay" type="submit" value="Pay" class="btn btn-primary mt-3" />
+    <input id="buttonpay" type="submit" value="Betaal" class="btn btn-primary mt-3" />
 </form>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Terug naar de lijst</a>
 </div>
 </div>
 

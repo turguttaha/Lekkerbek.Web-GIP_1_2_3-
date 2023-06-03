@@ -84,7 +84,9 @@ namespace Lekkerbek.Web.Controllers
         public IActionResult SelectTimeSlot(IFormCollection collection)
         {
             string x = collection["TimeSlotsSelectList"];
-            string selectedDate = collection["StartTimeSlot"] + " "+ x;
+            string selectedDate = collection["StartTimeSlot"] + " " + x;
+            if (DateTime.Now < DateTime.Parse(collection["TimeSlotsSelectList"])) //Now use viewbag to carry info from controller to view and vice versa. error message to the view.
+            { return View(); }
             DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
             TempData["SelectedDateTime"] = timeSlotDateAndTime;
             //TempData["SelectedChef"] = int.Parse(collection["ChefId"]);
@@ -92,7 +94,7 @@ namespace Lekkerbek.Web.Controllers
             return RedirectToAction("AddOrderLine", "Orders");
         }
         public async Task<JsonResult> LookUpChefs(string date)
-        {
+            {
 
             //get datetime of today for first check instead of hardcoded value
             DateTime timeSlotDateAndTime = Convert.ToDateTime(date + " 00:00");

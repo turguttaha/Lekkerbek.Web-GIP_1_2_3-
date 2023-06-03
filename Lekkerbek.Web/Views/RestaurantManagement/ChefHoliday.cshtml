@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Chef Vakantiedagen</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 
 @(Html.Kendo().Grid<Lekkerbek.Web.Models.WorkerHoliday>()
@@ -18,7 +18,7 @@
 
     columns.Command(command => { command.Destroy(); }).Width(200);
 })
-.ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/RestaurantManagement/CreateChefHoliday'>Add New Holiday</a></div>"))
+.ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/RestaurantManagement/CreateChefHoliday'>Voeg Nieuwe Vakantiedag Toe</a></div>"))
 .Editable(editable => editable.Mode(GridEditMode.PopUp))
 .Pageable()
 .Scrollable()

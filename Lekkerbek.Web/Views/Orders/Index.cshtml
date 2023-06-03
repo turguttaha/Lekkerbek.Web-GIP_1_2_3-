@@ -7,7 +7,7 @@
     Layout = "_Layout";
 }
 
-<h1>Orders</h1>
+<h1>Bestellingen</h1>
 <p class="text-danger">@TempData["TimesPast"]</p>
 @(Html.Kendo().Grid<OrderViewModel>()
     .Name("grid")
@@ -19,14 +19,14 @@
         columns.Bound(p => p.Finished);
         columns.Bound(p => p.TimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}");
         columns.Bound(p => p.OrderID)
-                                .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/EditOrder/#=OrderID#'>Edit</a></div>");
+                                .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/EditOrder/#=OrderID#'>Aanpassen</a></div>");
         //columns.Bound(p => p.OrderID)
         //                        .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Details/#=OrderID#'>Details</a></div>");
         columns.Bound(p => p.OrderID)
-        .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Delete/#=OrderID#'>Delete</a></div>");
+        .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Delete/#=OrderID#'>Verwijderen</a></div>");
 
     })
-    .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Orders/SelectCustomer'>Add New Order</a></div>"))
+    .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Orders/SelectCustomer'>Maak nieuwe bestelling</a></div>"))
     .Pageable()
     .Sortable()
         .Filterable(filterable => filterable

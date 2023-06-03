@@ -4,9 +4,9 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Aanmaken</h1>
 
-<h4>OrderLine</h4>
+<h4>OrderLijn</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -36,7 +36,7 @@
 @if (User.IsInRole("Adinistrator"))
 {
     <div>
-        <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
+        <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Terug naar Bestellen</a>
     </div>
 }
 else
@@ -44,11 +44,11 @@ else
     <div>
         @if (User.IsInRole("Administrator"))
         {
-            <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
+            <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Terug naar Bestellen</a>
         }
         @if (User.IsInRole("Customer")&& !User.IsInRole("Administrator"))
         {
-            <a asp-controller="OrderModule" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
+            <a asp-controller="OrderModule" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Terug naar Bestellen</a>
 
         }
     </div>
