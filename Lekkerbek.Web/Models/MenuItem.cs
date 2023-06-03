@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace Lekkerbek.Web.Models
 {
@@ -14,8 +15,8 @@ namespace Lekkerbek.Web.Models
         [Display(Name = "Beschrijving")]
 
         public string Description { get; set; } = string.Empty;
+        
         [Range(0.00, 1000.00)]
-
         [Display(Name = "Prijs")]
         
         public double Price { get; set; }

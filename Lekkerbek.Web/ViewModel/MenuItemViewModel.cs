@@ -19,6 +19,7 @@ namespace Lekkerbek.Web.ViewModel
 
         [Display(Name = "Prijs")]
         [Range(0.00, 1000.00)]
+       
         public double Price { get; set; }
 
 
