@@ -48,12 +48,6 @@ namespace Lekkerbek.Web.Controllers
         {
               return View();
         }
-        //public IActionResult ReadChefs([DataSourceRequest] DataSourceRequest request)
-        //{
-        //    var chefs = _chefService.Read();
-        //    return Json(chefs.ToDataSourceResult(request));
-        //}
-
         public IActionResult ReadChefs([DataSourceRequest] DataSourceRequest request)
         {
             var chefs = _chefService.GetChefsWithIdentity();
@@ -89,7 +83,6 @@ namespace Lekkerbek.Web.Controllers
         public async Task<IActionResult> AssignChef_read([DataSourceRequest] DataSourceRequest request)
         {
 
-
             IList<IdentityUser> users = await _userManager.GetUsersInRoleAsync("Customer");
             IList<IdentityUser> newList = new List<IdentityUser>();
             foreach (IdentityUser user in users)
@@ -98,33 +91,22 @@ namespace Lekkerbek.Web.Controllers
             }
   
             return Json(newList.ToDataSourceResult(request));
-
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignChef([Bind("IdentityId,ChefName")] ChefViewModel chef)
+        public async Task<IActionResult> AssignChef([Bind("IdentityId,ChefName,Email")] ChefViewModel chef)
         {
-
-            var userAddRole = await _userManager.FindByIdAsync(chef.IdentityId);
-            await _userManager.AddToRoleAsync(userAddRole, "Chef");
-            //await _userManager.RemoveFromRoleAsync(userAddRole, "Customer");
-
-            _chefService.Create(chef);
-            return RedirectToAction("Index");
-        }
-
-        public ActionResult EditingPopup_Create([DataSourceRequest] DataSourceRequest request, ChefViewModel product)
-        {
-            //ModelState.Remove("TimeSlot");
-
-            if (product != null && ModelState.IsValid)
+           
+            if (ModelState.IsValid)
             {
-                _chefService.Create(product);
+                var userAddRole = await _userManager.FindByIdAsync(chef.IdentityId);
+                await _userManager.AddToRoleAsync(userAddRole, "Chef");
+                //await _userManager.RemoveFromRoleAsync(userAddRole, "Customer");
+                _chefService.Create(chef);
+                return RedirectToAction("Index");
             }
-
-            return Json(new[] { product }.ToDataSourceResult(request, ModelState));
+            return RedirectToAction("AssignChefList");
         }
-
         
         public async Task<ActionResult> EditingPopup_Update([DataSourceRequest] DataSourceRequest request, ChefViewModel product)
         {
