@@ -8,7 +8,7 @@ namespace Lekkerbek.Web.Models
     {
         [ScaffoldColumn(false)]
         public int ChefId { get; set; }
-        [Display(Name = "Chef Name")]
+        [Display(Name = "Chef Naam")]
         public string ChefName { get; set; }
 
         public virtual ICollection<TimeSlot> TimeSlot { get; set; }
