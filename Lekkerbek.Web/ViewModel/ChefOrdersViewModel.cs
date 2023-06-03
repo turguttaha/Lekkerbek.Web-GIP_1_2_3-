@@ -13,6 +13,7 @@ namespace Lekkerbek.Web.ViewModel
 
         //Foreign Key van Customer
         public int? CustomerId { get; set; }
+        [Display(Name = "Korting")]
         public int? Discount { get; set; }
         
 
@@ -20,7 +21,7 @@ namespace Lekkerbek.Web.ViewModel
         public virtual ICollection<OrderLine> OrderLines { get; set; }
 
         
-        [Display(Name = "Time Slot")]
+        [Display(Name = "Tijdslot")]
         [DataType(DataType.DateTime)]
         public DateTime StartTimeSlot { get; set; }
         public int? ChefId { get; set; }

@@ -46,6 +46,7 @@
                     <th class="popup-th">
                        Amount
                     </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody class="popup-tbody" id="CartBody">
@@ -57,7 +58,6 @@
         <form asp-action="CompleteOrder" >
             <input type="submit" value="Complete Order" class="btn btn-danger mt-3">
         </form>
-
     </div>
 </div>
 
@@ -141,6 +141,36 @@
 
 
 }
+
+function DeleteOrderline(id){
+        $.ajax({
+            // Hier kan je kiezen tussen GET, POST, PUT, DELETE....
+            // Elk van deze keywords heeft een andere nut,
+            // zie de les frontend.
+            type: "POST",
+            // Hier geven we de action naam en controler naam mee.
+            url: '@Url.Action("RemoveOrderLine", "OrderModule")',
+            // Hier gaan we data meegeven in een JSON formaat.
+            data: { "id": id },
+            dataType: "json",
+            // Hier gaan we jQuery/javascript code schrijven indien onze
+            // request successvol is.
+            success: function (response) {
+                console.log(response);
+                // Hier gaan we de span met id "statusSpan" ophalen
+                // en de text vervangen met de status.
+                // Status krijgen we van de action Message mee.
+                //$("#statusSpan").text(response.status);
+            },
+            error: function (response) {
+                // Indien onze request faalt, kunnen we hier een mooie
+                // foutmelding tonen.
+                // In ons geval gaan we een alert tonen op het scherm
+                // (in praktijk moet je dit beter afhandelen!).
+                alert(response);
+            }
+        });
+}
     function SendInfoToController() {
         let id = document.getElementById("id").value;
         let amount = document.getElementById("amount").value;
@@ -155,6 +185,40 @@
             url: '@Url.Action("AddOrderLine", "OrderModule")',
             // Hier gaan we data meegeven in een JSON formaat.
             data: { "menuItemId": id, "menuItemAmount": amount, "extraDetails": extraDetails },
+            dataType: "json",
+            // Hier gaan we jQuery/javascript code schrijven indien onze
+            // request successvol is.
+            success: function (response) {
+                console.log(response);
+                // Hier gaan we de span met id "statusSpan" ophalen
+                // en de text vervangen met de status.
+                // Status krijgen we van de action Message mee.
+                //$("#statusSpan").text(response.status);
+            },
+            error: function (response) {
+                // Indien onze request faalt, kunnen we hier een mooie
+                // foutmelding tonen.
+                // In ons geval gaan we een alert tonen op het scherm
+                // (in praktijk moet je dit beter afhandelen!).
+                alert(response);
+            }
+        });
+        var popup = document.getElementById("myPopup");
+        popup.classList.remove("show");
+    }
+
+    function RemoveItem(){
+        let id = document.getElementById("id").value;
+
+        $.ajax({
+            // Hier kan je kiezen tussen GET, POST, PUT, DELETE....
+            // Elk van deze keywords heeft een andere nut,
+            // zie de les frontend.
+            type: "POST",
+            // Hier geven we de action naam en controler naam mee.
+            url: '@Url.Action("RemoveOrderLine", "OrderModule")',
+            // Hier gaan we data meegeven in een JSON formaat.
+            data: { "menuItemId": id},
             dataType: "json",
             // Hier gaan we jQuery/javascript code schrijven indien onze
             // request successvol is.
@@ -207,10 +271,11 @@
 
                
                 response.temporaryCart.forEach((item) => {
+                    var extra = (item.ExtraDetails ? item.ExtraDetails:"")
                     tbody.innerHTML += ` <tr>
                     <td>${item.MenuItem.Name} </td>
                     <td>${item.DishAmount} </td>
-
+                            <td><div class='text-light k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' onclick="DeleteOrderline('${item.MenuItemId}${item.DishAmount}${extra}')"> - </div></td>
                     </tr>`;
                 })
                 

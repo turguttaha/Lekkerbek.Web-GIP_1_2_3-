@@ -3,24 +3,17 @@
 namespace Lekkerbek.Web.Models
 {
     public enum DayOfWeekEnum {
-        [Display(Name ="Maandag")]
         Monday,
-        [Display(Name = "Dinsdag")]
 
         Tuesday,
-        [Display(Name = "Woensdag")]
 
         Wednesday,
-        [Display(Name = "Donderdag")]
 
         Thursday,
-        [Display(Name = "Vrijdag")]
 
         Friday,
-        [Display(Name = "Zaterdag")]
 
         Saturday,
-        [Display(Name = "Zondag")]
         Sunday
 
     }
