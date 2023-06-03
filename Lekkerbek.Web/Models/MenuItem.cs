@@ -17,7 +17,7 @@ namespace Lekkerbek.Web.Models
         [Range(0.00, 1000.00)]
 
         [Display(Name = "Prijs")]
-
+        
         public double Price { get; set; }
         [Display(Name = "BTW %")]
         public double BtwNumber { get; set; }
