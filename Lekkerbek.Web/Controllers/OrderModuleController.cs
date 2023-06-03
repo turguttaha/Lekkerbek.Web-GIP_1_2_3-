@@ -1,5 +1,6 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Lekkerbek.Web.Migrations;
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -328,11 +329,30 @@ namespace Lekkerbek.Web.Controllers
             orderLine.MenuItemId = int.Parse(menuItemId);
             orderLine.DishAmount = int.Parse(menuItemAmount);
             orderLine.ExtraDetails = extraDetails;
+            
             orderLine.MenuItem = _orderService.GetSpecificMenuItem(orderLine.MenuItemId);
             Order.TemproraryCart.Add(orderLine);
             
             return Json(new { status = "Your Menu Item is Added!" });
 
+        }
+
+        public async Task<JsonResult> RemoveOrderLine(string id)
+        {
+
+          List<OrderLine> list =  Order.TemproraryCart;
+
+            foreach (var item in list) 
+            {
+                string itemId = string.Empty;
+                itemId = item.MenuItemId.ToString()+item.DishAmount+item.ExtraDetails;
+                if (itemId == id) 
+                { Order.TemproraryCart.Remove(item); }
+                    
+
+            }
+
+            return Json(new { status = "Het product is verwijderd" });
         }
 
 

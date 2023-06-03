@@ -8,7 +8,9 @@ namespace Lekkerbek.Web.Models
     {
         [ScaffoldColumn(false)]
         public int ChefId { get; set; }
-        [Display(Name = "Chef Name")]
+        [Display(Name = "Chefnaam")]
+        [Required(ErrorMessage = "{0}")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "Chefnaam moet minimum 2 en maximum 20 karakters bevatten")]
         public string ChefName { get; set; }
 
         public virtual ICollection<TimeSlot> TimeSlot { get; set; }
