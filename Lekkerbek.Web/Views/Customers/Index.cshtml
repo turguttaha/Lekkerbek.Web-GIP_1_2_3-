@@ -25,6 +25,7 @@
                             .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Customers/Create'>Nieuwe klant Toevoegen</a></div>"))
                             .Pageable()
                             .Sortable()
+
                             .Filterable(filterable => filterable
     .Extra(false)
     .Operators(operators => operators
@@ -33,6 +34,7 @@
             .IsEqualTo("Is gelijk aan")
             .IsNotEqualTo("Is niet gelijk aan")
                    )
+                  
                )
     )
                             .Scrollable()
@@ -40,13 +42,14 @@
                             .HtmlAttributes(new { style = "height:550px;" })
                             .DataSource(dataSource => dataSource
                                 .Ajax()
+                                
                                 .PageSize(20)
                                 .Events(events => events.Error("error_handler"))
                                 .Model(model => model.Id(p => p.CustomerId))
                                 //.Create(update => update.Action("EditingPopup_Create", "Customers"))
                                 .Read(read => read.Action("DetailTemplate_HierarchyBinding_Customers", "Customers"))
-                            //.Read(read => read.Action("EditingPopup_Read", "Customers"))
-                            .Destroy(update => update.Action("EditingPopup_Destroy", "Customers"))
+                                //.Read(read => read.Action("EditingPopup_Read", "Customers"))
+                                .Destroy(update => update.Action("EditingPopup_Destroy", "Customers"))
                             ))
 
 
@@ -85,7 +88,13 @@
                         .ToClientTemplate())
 </script>
 
+<script >  
+    kendo.culture("nl-BE");
+    console.log(kendo.culture().name);
+
+</script>
 <script id="template" type="text/javascript">
+   
     function error_handler(e) {
         if (e.errors) {
             var grid = $("#grid").data("kendoGrid");
@@ -102,7 +111,7 @@
             //alert(message);
         }
     }
-
+   
 </script>
 <style>
     .k-detail-cell .k-tabstrip .demo-section {

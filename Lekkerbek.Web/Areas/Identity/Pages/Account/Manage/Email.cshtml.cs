@@ -125,10 +125,10 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
                     protocol: Request.Scheme);
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    "Bevestig uw email",
+                    $"Bevestig uw account door <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'> hier te klikken.</a>.");
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                StatusMessage = "Bevestigingslink om verzonden e-mail te wijzigen. Controleer uw e-mail.";
                 return RedirectToPage();
             }
 
@@ -161,10 +161,10 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                 "Bevestig uw email",
+                 $"Bevestig uw account door <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'> hier te klikken.</a>.");
 
-            StatusMessage = "Verification email sent. Please check your email.";
+            StatusMessage = "Verificatie-e-mail verzonden. Controleer uw e-mail.";
             return RedirectToPage();
         }
     }

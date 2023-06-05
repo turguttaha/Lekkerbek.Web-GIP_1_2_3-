@@ -144,8 +144,8 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Bevestig wachtwoord")]
+            [Compare("Wachtwoord", ErrorMessage = "Het wachtwoord en het bevestigingswachtwoord komen niet overeen.")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -204,8 +204,8 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Hello Mr./Mrs.{customer.LName},<br> As the Lekkerbek family, we are happy to see you among us.Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync(Input.Email, "Bevestig uw email",
+                        $"Hallo Meneer/Mevrouv{customer.LName},<br> Als de Lekkerbek familie, we zijn blij dat u klant bij ons bent geworden. Bevestig uw account door <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'> hier te klikken.</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

@@ -88,7 +88,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
             }
-            var customer = _customerService.Read().Where(b => b.IdentityUser == user).FirstOrDefault();
+            var customer = _customerService.GetAllViews().Where(b => b.IdentityUser == user).FirstOrDefault();
             _customerService.Destroy(customer);
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
