@@ -8,7 +8,7 @@ namespace Lekkerbek.Web.Services
         public IEnumerable<MenuItemViewModel> Read();
         public void Destroy(MenuItemViewModel menuItem);
         public void Create(MenuItem menuItem);
-        public MenuItemViewModel GetSpecificMenuItem(int? id);
+        public MenuItem GetSpecificMenuItem(int? id);
         public void Update(MenuItem menuItem);
         public bool MenuItemExists(int id);
     }

@@ -28,6 +28,6 @@ namespace Lekkerbek.Web.ViewModel
 
 
         [Display(Name = "Soort")]
-        public string Sort { get; set; } = string.Empty;
+        public string Type { get; set; } = string.Empty;
     }
 }
