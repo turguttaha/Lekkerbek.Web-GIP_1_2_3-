@@ -15,15 +15,15 @@ namespace Lekkerbek.Web.ViewModel
         [Display(Name = "Geboorte datum")]
         public DateTime? Birthday { get; set; }
         [Display(Name = "Bedrijfsnaam")]
-        public string FirmName { get; set; }
+        public string? FirmName { get; set; }
         [Display(Name = "Contactpersoon")]
-        public string ContactPerson { get; set; }
+        public string? ContactPerson { get; set; }
         [Display(Name = "Adres")]
         public string Address { get; set; }
         [Display(Name = "BTW")]
-        public string Btw { get; set; }
+        public string? Btw { get; set; }
         [Display(Name = "BTW nummer")]
-        public string BtwNumber { get; set; }
+        public string? BtwNumber { get; set; }
         [Display(Name = "Email")]
         public string Email { get; set; }
 
