@@ -76,44 +76,44 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [Display(Name = "First Name")]
+            [Display(Name = "Naam")]
             public string FName { get; set; }
             [Required]
-            [Display(Name = "Last Name")]
+            [Display(Name = "Familienaam")]
             public string LName { get; set; }
             [Required]
             [Display(Name = "GSM")]
             [DataType(DataType.PhoneNumber)]
             public string? PhoneNumber { get; set; }
             [Required]
-            [Display(Name = "Birthday")]
+            [Display(Name = "Geboortedatum")]
             [DataType(DataType.Date)]
             public DateTime? Birthday { get; set; }
 
-            [StringLength(30, ErrorMessage = "Your Firm Name can contain only 30 characters")]
-            [Display(Name = "Firm Name")]
+            [StringLength(30, ErrorMessage = "Bedrijfsnaam mag maar 30 tekens bevatten")]
+            [Display(Name = "Bedrijfsnaam")]
             public string? FirmName { get; set; } = string.Empty;
 
-            [StringLength(30, ErrorMessage = "Your contact person can contain only 30 characters")]
-            [Display(Name = "Contact Person")]
+            [StringLength(30, ErrorMessage = "Contactpersoon mag maar 30 tekens bevatten")]
+            [Display(Name = "Contactpersoon")]
             public string? ContactPerson { get; set; } = string.Empty;
             [Required]
-            [StringLength(450, ErrorMessage = "Your street name can contain only 450 characters")]
-            [Display(Name = "Street name")]
+            [StringLength(450, ErrorMessage = "Straat mag maar 450 tekens bevatten")]
+            [Display(Name = "Straat")]
             public string? StreetName { get; set; } = string.Empty;
             [Required]
-            [StringLength(20, ErrorMessage = "Your city can contain only 20 characters")]
-            [Display(Name = "City")]
+            [StringLength(20, ErrorMessage = "Stad mag maar 20 tekens bevatten")]
+            [Display(Name = "Stad")]
             public string? City { get; set; } = string.Empty;
             [Required]
-            [Display(Name = "Postal code")]
+            [Display(Name = "Postcode")]
             public string? PostalCode { get; set; }
 
-            [StringLength(20, ErrorMessage = "Your BTW can contain only 20 characters")]
+            [StringLength(20, ErrorMessage = "Btw mag maar 20 tekens bevatten")]
             [Display(Name = "BTW")]
             public string? Btw { get; set; } = string.Empty;
 
-            [Display(Name = "BTW number")]
+            [Display(Name = "BTW nummer")]
             public string? BtwNumber { get; set; }
 
             //Foreign Key van Preferred Dish
@@ -134,9 +134,9 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "De {0} mag minimum {2} en maximum {1} tekens bevatten.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
 
             /// <summary>
