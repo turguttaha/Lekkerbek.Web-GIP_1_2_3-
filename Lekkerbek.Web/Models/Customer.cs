@@ -13,8 +13,6 @@ namespace Lekkerbek.Web.Models
         public int CustomerId { get; set; }
         [StringLength(20, ErrorMessage = "Uw voornaam mag maar 20 tekens lang zijn")]
         [Display(Name = "Voornaam")]
-
-        
         public string? FName { get; set; } = string.Empty;
         [StringLength(20, MinimumLength = 2, ErrorMessage = "Uw familienaam mag maar 20 tekens lang zijn")]
         [Display(Name = "Familienaam")]
@@ -24,13 +22,9 @@ namespace Lekkerbek.Web.Models
         [DataType(DataType.PhoneNumber)]
         public string? PhoneNumber { get; set; }
 
-
-
-
         [Display(Name = "Geboortedatum")]
         [DataType(DataType.Date)]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-
         public DateTime? Birthday { get; set; }
 
 
@@ -80,11 +74,11 @@ namespace Lekkerbek.Web.Models
         [Display(Name = "Favoriete Gerechten")]
         public int? PreferredDishId { get; set; }
 
-        public virtual PreferredDish PreferredDish { get; set; }
+        public virtual PreferredDish? PreferredDish { get; set; }
 
         //Relatie met order
         //aan de Order class - virtual Customer property - int CustomerId -  moeten toegevoegd worden dus elke klant kan een of meer bestelling hebben maar elke bestelling is van slechts een klant
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Order>? Orders { get; set; }
 
         public virtual IdentityUser? IdentityUser { get; set; }
 

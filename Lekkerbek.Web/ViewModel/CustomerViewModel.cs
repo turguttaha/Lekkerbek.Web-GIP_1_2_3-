@@ -15,9 +15,9 @@ namespace Lekkerbek.Web.ViewModel
         [Display(Name = "Geboorte datum")]
         public DateTime? Birthday { get; set; }
         [Display(Name = "Bedrijfsnaam")]
-        public string FirmName { get; set; }
+        public string? FirmName { get; set; }
         [Display(Name = "Contactpersoon")]
-        public string ContactPerson { get; set; }
+        public string? ContactPerson { get; set; }
         [Display(Name = "Adres")]
         public string Address { get; set; }
         [Display(Name = "BTW")]

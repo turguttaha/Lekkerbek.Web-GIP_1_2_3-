@@ -17,9 +17,9 @@
         <form asp-action="AssignChef">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-            <label asp-for="IdentityId" class="control-label"></label>
             <input asp-for="IdentityId" class="form-control" readonly hidden/>
-            <span asp-validation-for="IdentityId" class="text-danger"></span>
+            <input asp-for="Email" class="form-control" readonly hidden />
+
             </div>
             <div class="form-group">
             <label asp-for="ChefName" class="control-label">Voer de naam van de nieuwe chef-kok in:</label>
@@ -41,7 +41,7 @@ Html.Kendo().Grid<IdentityUser>()
 .Columns(columns =>
 {
     columns.Bound(f => f.UserName);
-    columns.Bound(f => f.Id).Title("  ").Width(220).Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' > <a onclick=\"OpenPopUp('#= Id #')\" href='\\#'> Toevoegen </a> </div>");
+    columns.Bound(f => f.Id).Title("  ").Width(220).Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' > <a onclick=\"OpenPopUp('#= Id #', '#= Email #')\" href='\\#'> Toevoegen </a> </div>");
 
 })
 .Editable(editable => editable.Mode(GridEditMode.PopUp))
@@ -100,10 +100,11 @@ Html.Kendo().Grid<IdentityUser>()
 </script>
 <script type="text/javascript">
     // When the user clicks on div, open the popup
-    function OpenPopUp(Id) {
+    function OpenPopUp(Id,Email) {
         var popup = document.getElementById("myPopup");
         popup.classList.add("show");
         document.getElementById("IdentityId").value = Id;
+        document.getElementById("Email").value=Email;
         document.getElementById("ChefName").value = ` `;
         //console.log(Id);
 
