@@ -69,7 +69,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
             /// </summary>
             [Required]
             [EmailAddress]
-            [Display(Name = "New email")]
+            [Display(Name = "Nieuwe e-mail")]
             public string NewEmail { get; set; }
         }
 
@@ -91,7 +91,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Kan gebruiker met ID niet laden '{_userManager.GetUserId(User)}'.");
             }
 
             await LoadAsync(user);
@@ -103,7 +103,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Kan gebruiker met ID niet laden '{_userManager.GetUserId(User)}'.");
             }
 
             if (!ModelState.IsValid)
@@ -132,7 +132,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
                 return RedirectToPage();
             }
 
-            StatusMessage = "Your email is unchanged.";
+            StatusMessage = "Uw e-mail is ongewijzigd.";
             return RedirectToPage();
         }
 
@@ -141,7 +141,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Kan gebruiker met ID niet laden'{_userManager.GetUserId(User)}'.");
             }
 
             if (!ModelState.IsValid)
