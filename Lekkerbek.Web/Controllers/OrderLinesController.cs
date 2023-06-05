@@ -42,7 +42,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines/Create
         public async Task<IActionResult> Create(int id)
         {
-            if (User.IsInRole("Customer"))
+            if (User.IsInRole("Customer")&&!User.IsInRole("Administrator"))
             {
                 Order order = _orderService.GetSpecificOrder(id);
                 Customer customer = await GetCustomerAsync();
