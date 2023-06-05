@@ -90,7 +90,7 @@ namespace Lekkerbek.Web.Controllers
             ModelState.Remove("Birthday");
             if (_orderService.Read().Any(ol => ol.CustomerId == customer.CustomerId))
             {
-                ModelState.AddModelError("Model", "Unable to delete (present in (an) order(s))!");
+                ModelState.AddModelError("Model", "Kan niet verwijdert worden(aanwezig in een bestelling)!");
             }
             else if (customer != null)
             {

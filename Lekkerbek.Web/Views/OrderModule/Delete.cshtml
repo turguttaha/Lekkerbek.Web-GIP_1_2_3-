@@ -5,11 +5,11 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<h1>Annuleren</h1>
 
-<h3>Are you sure you want to cancel this order?</h3>
+<h3>Bent u zeker dat u deze bestelling wilt annuleren?</h3>
 <div>
-    <h4>Order</h4>
+    
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -37,13 +37,13 @@
         <thead>
             <tr>
                 <th>
-                    Dish Name
+                    Menu item
                 </th>
                 <th>
-                    Dish Amount
+                    Aantal
                 </th>
                 <th>
-                    Extra Details
+                    Extra Wensen
                 </th>
             </tr>
         </thead>
@@ -67,7 +67,7 @@
     <p class="text-danger">@TempData["TimesPast"]</p>
     <form asp-action="Delete">
         <input type="hidden" asp-for="OrderID" />
-        <input type="submit" value="Cancel Order" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Annuleer bestelling" class="btn btn-danger" /> |
+        <a asp-action="Index">Terug naar de lijst</a>
     </form>
 </div>

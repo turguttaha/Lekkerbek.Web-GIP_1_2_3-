@@ -3,17 +3,19 @@
 namespace Lekkerbek.Web.Models
 {
     public enum DayOfWeekEnum {
+        [Display(Name = "Maandag")]
         Monday,
-
+        [Display(Name = "Dinsdag")]
         Tuesday,
-
+        [Display(Name = "Woensdag")]
         Wednesday,
-
+        [Display(Name = "Donderdag")]
         Thursday,
-
+        [Display(Name = "Vrijdag")]
         Friday,
-
+        [Display(Name = "Zaterdag")]
         Saturday,
+        [Display(Name = "Zondag")]
         Sunday
 
     }
@@ -24,10 +26,10 @@ namespace Lekkerbek.Web.Models
         [Display(Name = "Dag van de week")]
         public DayOfWeekEnum DayOfWeek { get; set; }
         [DataType(DataType.Time)]
-        [Display(Name = "Begin Tijd")]
+        [Display(Name = "Begin uur")]
         public DateTime StartTime { get; set; }
         [DataType(DataType.Time)]
-        [Display(Name = "Eind Tijd")]
+        [Display(Name = "Eind uur")]
         public DateTime EndTime { get; set; }
 
     }

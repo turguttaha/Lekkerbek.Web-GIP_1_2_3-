@@ -9,7 +9,8 @@ namespace Lekkerbek.Web.ViewModel
     {
        
         public int OrderId { get; set; }
-        public bool Finished { get; set; }//idk if this is needed, in perfect case we know an order is finished when the time is later than the orderfinished time
+        [Display(Name ="Afgerond")]
+        public bool Finished { get; set; }
 
         //Foreign Key van Customer
         public int? CustomerId { get; set; }
