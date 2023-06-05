@@ -1,5 +1,6 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Lekkerbek.Web.Migrations;
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -90,7 +91,7 @@ namespace Lekkerbek.Web.Controllers
 
                 return View(order);
             }
-            TempData["TimesPast"] = "Order has less than 1 hours to prepare so no changes can be made to the order.";
+            TempData["TimesPast"] = "U kan geen de bestelling niet wijzigen 1u voor deze wordt klaargemaakt.";
             return RedirectToAction("Index");
         }
 
@@ -263,7 +264,7 @@ namespace Lekkerbek.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                TempData["TimesPast"] = "Order has less than 2 hours to prepare so it cannot be cancelled.";
+                TempData["TimesPast"] = "De bestelling kan niet geannuleerd worden 2u voor deze klaargemaakt wordt.";
                 ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
 
                 return View(order);
@@ -350,11 +351,38 @@ namespace Lekkerbek.Web.Controllers
             orderLine.MenuItemId = int.Parse(menuItemId);
             orderLine.DishAmount = int.Parse(menuItemAmount);
             orderLine.ExtraDetails = extraDetails;
+            
             orderLine.MenuItem = _orderService.GetSpecificMenuItem(orderLine.MenuItemId);
             Order.TemproraryCart.Add(orderLine);
             
-            return Json(new { status = "Your Menu Item is Added!" });
+            return Json(new { status = "Menu item is toegevoegd!" });
 
+        }
+
+        public async Task<JsonResult> RemoveOrderLine(string id)
+        {
+
+            List<OrderLine> list =  Order.TemproraryCart;
+            bool test = false;
+            OrderLine newItem = null;
+            foreach (var item in list) 
+            {
+                string itemId = string.Empty;
+                itemId = item.MenuItemId.ToString()+item.DishAmount+item.ExtraDetails;
+                if (itemId == id) 
+                {
+                    test = true;
+                    newItem = item;
+                }
+                    
+
+            }
+            if (test) 
+            { 
+                Order.TemproraryCart.Remove(newItem);
+            }
+            
+            return Json(new { status = "Het product is verwijderd", temporaryCart = list });
         }
 
 
@@ -368,7 +396,7 @@ namespace Lekkerbek.Web.Controllers
         {
             if(Order.TemproraryCart.Count == 0)
             {
-                TempData["temporaryCartError"] = "You have to add at least 1 Menu Item before continue!";
+                TempData["temporaryCartError"] = "U moet minstens 1 menu item toevoegen!";
                 return RedirectToAction(nameof(MenuItemList));
             }
             DateTime now = DateTime.Now;
@@ -403,7 +431,7 @@ namespace Lekkerbek.Web.Controllers
                 customer.PostalCode = postalCode;
 
                 _customerService.Update(customer);
-                return Json(new { status = "Your adress is succesfully updated" });
+                return Json(new { status = "Uw adres is werd aangepast" });
             }
             catch {
                 return Json(new { status = "Error" });
@@ -417,7 +445,7 @@ namespace Lekkerbek.Web.Controllers
             Customer customer = await GetCustomerAsync();
             if (customer.StreetName == null || customer.City == null || customer.PostalCode == null)
             {
-                TempData["CreateError"] = "Please update your adress before complete the order ";
+                TempData["CreateError"] = "Uw adres moet ingevuld zijn voor u uw bestelling kunt plaatsen ";
                 return RedirectToAction(nameof(CompleteOrder));
             }
             //it might be IFormCollection???

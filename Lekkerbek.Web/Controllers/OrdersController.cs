@@ -84,7 +84,8 @@ namespace Lekkerbek.Web.Controllers
         public IActionResult SelectTimeSlot(IFormCollection collection)
         {
             string x = collection["TimeSlotsSelectList"];
-            string selectedDate = collection["StartTimeSlot"] + " "+ x;
+            string selectedDate = collection["StartTimeSlot"] + " " + x;
+            
             DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
             TempData["SelectedDateTime"] = timeSlotDateAndTime;
             //TempData["SelectedChef"] = int.Parse(collection["ChefId"]);
@@ -92,7 +93,7 @@ namespace Lekkerbek.Web.Controllers
             return RedirectToAction("AddOrderLine", "Orders");
         }
         public async Task<JsonResult> LookUpChefs(string date)
-        {
+            {
 
             //get datetime of today for first check instead of hardcoded value
             DateTime timeSlotDateAndTime = Convert.ToDateTime(date + " 00:00");
@@ -124,7 +125,7 @@ namespace Lekkerbek.Web.Controllers
             orderLine.MenuItem = _orderService.GetSpecificMenuItem(orderLine.MenuItemId);
             Order.TemproraryCart.Add(orderLine);
             
-            ViewData["Message"] = "Your Dish is added";
+            ViewData["Message"] = "Het item werdt toegevoegd";
 
             ViewBag.TemproraryCart = Order.TemproraryCart;
             ViewData["MenuItemId"] = _orderService.MenuItemSelectList();
@@ -189,7 +190,7 @@ namespace Lekkerbek.Web.Controllers
 
                 return View(order);
             }
-            TempData["TimesPast"] = "Order has less than 1 hours to prepare so no changes can be made to the order.";
+            TempData["TimesPast"] = "U kan geen de bestelling niet wijzigen 1u voor deze wordt klaargemaakt.";
             return RedirectToAction("Index", "Orders");
         }
 
@@ -340,7 +341,7 @@ namespace Lekkerbek.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
       
-                TempData["TimesPast"] = "Order has less than 2 hours to prepare so it cannot be cancelled.";
+                TempData["TimesPast"] = "De bestelling kan niet geannuleerd worden 2u voor deze klaargemaakt wordt.";
                 ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
 
                 return View(order);

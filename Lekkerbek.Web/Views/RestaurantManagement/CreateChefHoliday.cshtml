@@ -15,7 +15,7 @@
         <form asp-action="CreateChefHoliday">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ChefId" class="control-label"></label>
+                <label asp-for="ChefId" class="control-label">Chef</label>
                 <select asp-for="ChefId" class="form-control" asp-items="ViewBag.ChefId"></select>
                 <span asp-validation-for="ChefId" class="text-danger"></span>
             </div>
@@ -35,14 +35,14 @@
                 <span asp-validation-for="EndDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Aanmaken" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="ChefHoliday">Back to Restaurant Managment Page</a>
+    <a asp-action="ChefHoliday">Terug naar Restaurant Management Pagina</a>
 </div>
 
 @section Scripts {

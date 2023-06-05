@@ -48,7 +48,7 @@ namespace Lekkerbek.Web.Controllers
             ModelState.Remove("Sort");
             if (_orderService.GetOrderLines().Any(ol => ol.MenuItemId == menuItemViewModel.MenuItemId))
             {
-                ModelState.AddModelError("Model", "Unable to delete (present in (an) order(s))!");
+                ModelState.AddModelError("Model", "Kan niet verwijdert worden(aanwezig in een bestelling)!");
             }
             //else if(menuItem != null)
                 else if (menuItemViewModel != null)

@@ -86,7 +86,7 @@ namespace Lekkerbek.Web.Controllers
             }
             var orderLine = _orderLineService.GetSpecificOrderLineDetailed(id);
 
-            if (User.IsInRole("Customer"))
+            if (User.IsInRole("Customer")&& !User.IsInRole("Administrator"))
             {
                 Customer customer = await GetCustomerAsync();
                 if (orderLine == null || orderLine.Order.CustomerId != customer.CustomerId)
@@ -113,7 +113,7 @@ namespace Lekkerbek.Web.Controllers
                 return Problem("Entity set 'LekkerbekContext.OrderLines'  is null.");
             }
             var orderLine = _orderLineService.GetSpecificOrderLineDetailed(id);
-            if (User.IsInRole("Customer"))
+            if (User.IsInRole("Customer")&&!User.IsInRole("Administrator"))
             {
                 Customer customer = await GetCustomerAsync();
                 if (orderLine == null || orderLine.Order.CustomerId != customer.CustomerId)

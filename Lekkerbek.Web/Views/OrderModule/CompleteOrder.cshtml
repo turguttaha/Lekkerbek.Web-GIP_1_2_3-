@@ -3,25 +3,25 @@
     ViewData["Title"] = "View";
 }
 
-<h1>Create Order</h1>
-<h4>Your adress</h4>
+<h1>Bestelling afronden</h1>
+<h4>Adresgegevens</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
 
 
             <div class="form-group">
-                <label for="Street" class="control-label">Street </label>
+                <label for="Street" class="control-label">Straatnaam </label>
                 <input name="Street" id="Street" value="@TempData["Street"]" type="text" class="form-control" />
             </div>
 
             <div class="form-group">
-                <label for="City" class="control-label">City </label>
+                <label for="City" class="control-label">Stad </label>
                 <input name="City" id="City" value="@TempData["City"]" type="text" class="form-control" />
 
             </div>
             <div class="form-group">
-                <label for="PostalCode" class="control-label">Post Code </label>
+                <label for="PostalCode" class="control-label">Postcode </label>
                 <input name="PostalCode" id="PostalCode" value="@TempData["PostalCode"]" type="text" class="form-control" maxlength="100" />
             </div>
            <p id="adressResponse" class="text-danger"></p>
@@ -32,7 +32,7 @@
     </div>
 </div>
 
-<h4>Select Time Slot</h4>
+<h4>Selecteer Tijdslot</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -41,7 +41,7 @@
             
             <div class="form-group">
 
-                <label asp-for="StartTimeSlot" class="control-label">Date</label>
+                <label asp-for="StartTimeSlot" class="control-label">Datum</label>
                 <input id="date" value="@TempData["SelectDate"]" asp-for="StartTimeSlot" type="date" class="form-control" />
 
 
@@ -50,7 +50,7 @@
             
             <div class="form-group">
 
-                <label asp-for="StartTimeSlot" class="control-label">Time</label> <br>
+                <label asp-for="StartTimeSlot" class="control-label">Tijdslot</label> <br>
                 @Html.DropDownList("TimeSlotsSelectList", (IEnumerable<SelectListItem>)ViewBag.TimeSlotsSelectList, new{@id="time"})
                 <span asp-validation-for="StartTimeSlot" class="text-danger"></span>
 
@@ -61,7 +61,7 @@
 
             <p id="createError" class="text-danger">@TempData["CreateError"]</p>
             <div class="form-group">
-                <input id="saveButton" type="submit" value="Complete Order" class="btn btn-primary" />
+                <input id="saveButton" type="submit" value="Bestelling afronden" class="btn btn-primary" />
             </div>
             <p class="text-danger" id="chefError"></p>
         </form>
@@ -99,7 +99,7 @@
                         // Status krijgen we van de action Message mee.
                         if (response.timeSlots.length == 0) {
                             //Javascript shows this always, idk why, it also wont reset in the else, in other words the pop up if no chefs are availible is broken
-                            $("#chefError").html("No chefs availible");
+                            $("#chefError").html("Geen chefs beschikbaar");
                                 $("#time").empty();
                                 document.getElementById("saveButton").disabled = true;
                             console.log("test");

@@ -167,7 +167,7 @@ namespace Lekkerbek.Web.Repositories
         }
 		public List<Customer> GetCustomers()
         {
-            return _context.Customers.Include(o=>o.PreferredDish).ToList();
+            return _context.Customers.Include("PreferredDish").ToList();
         }
 
         public List<TimeSlot> GetTimeSlots()

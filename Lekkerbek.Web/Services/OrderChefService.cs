@@ -149,7 +149,7 @@ namespace Lekkerbek.Web.Services
             if (startTimeSlot != firstTimeSlot.TimeSlot.StartTimeSlot)
             {
 
-                return "There is an earlier order that still needs a chef first for it to be prepared!";
+                return "Er is een bestelling vroeger die eerst moet klaargemaakt worden!";
                 
 
             }
@@ -159,7 +159,7 @@ namespace Lekkerbek.Web.Services
                 {
                     return "";
                 }
-                return "You already have an order you need to prepare at this timeslot!";
+                return "U hebt al een order op dit tijdslot dat u moet klaarmaken!";
             }
 
             

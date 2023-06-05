@@ -4,10 +4,11 @@ namespace Lekkerbek.Web.Models
 {
     public class OrderLine
     {
+        [Display(Name ="Menu item")]
         public int OrderLineID { get; set; }
-        [Display(Name = "Extra gegevens")]
+        [Display(Name = "Extra wensen")]
         public string? ExtraDetails { get; set; }
-        [Display(Name = "Gerechten Bedrag")]
+        [Display(Name = "Aantal")]
         [Range(1,100)]
         public int DishAmount { get; set; }
 
@@ -16,6 +17,7 @@ namespace Lekkerbek.Web.Models
         public virtual Order Order { get; set; }
 
         //Foreign Key van Dish
+        [Display(Name ="Menu item")]
         public int? MenuItemId { get; set; }
         public virtual MenuItem MenuItem { get; set; }
 

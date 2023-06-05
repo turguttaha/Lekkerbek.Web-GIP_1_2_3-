@@ -5,9 +5,9 @@
     List<OrderLine> listOfTheOrder = ViewBag.listOfTheOrder;
 }
 
-<h1>Edit</h1>
+<h1>Wijzigen</h1>
 
-<h4>Order</h4>
+<h4>Bestellingen</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -16,20 +16,20 @@
             <input type="hidden" asp-for="OrderID" />
             
             <div class="form-group">
-                <label asp-for="CustomerId" class="control-label">Customer Name</label>
+                <label asp-for="CustomerId" class="control-label">Naam</label>
                 <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerID"></select>
                 <span asp-validation-for="CustomerId" class="text-danger"></span>
             </div>
             <div class="form-group">
 
-                <label asp-for="TimeSlotID" class="control-label">Date</label>
-                <input id="date" value="@TempData["SelectDate"]" asp-for="TimeSlotID" type="date" class="form-control" />
+                <label asp-for="TimeSlotID" class="control-label">Datum</label>
+                <input value="@TempData["SelectDate"]" asp-for="TimeSlotID" type="date" class="form-control" />
 
             </div>
             <div class="form-group">
 
-                <label asp-for="TimeSlotID" class="control-label">Time Slot</label>
-                @Html.DropDownList("TimeSlotsSelectList",new SelectList(ViewBag.TimeSlotsSelectList, "Value", "Text",TempData["time"]), new{@id="time"})
+                <label asp-for="TimeSlotID" class="control-label">Tijdslot</label>
+                @Html.DropDownList("TimeSlotsSelectList",new SelectList(ViewBag.TimeSlotsSelectList, "Value", "Text",TempData["time"]))
                 <span asp-validation-for="TimeSlotID" class="text-danger"></span>
 
 @*                <label asp-for="TimeSlotID" class="control-label"></label>
@@ -41,18 +41,18 @@
                     <input class="form-check-input" asp-for="Finished" /> @Html.DisplayNameFor(model => model.Finished)
                 </label>
             </div>
-<a asp-controller="Orderlines" asp-action="Create" asp-route-id="@Model.OrderID">Add New Dish</a>
+<a asp-controller="Orderlines" asp-action="Create" asp-route-id="@Model.OrderID">Voeg menu item toe</a>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Dish Name
+                Menu item
             </th>
             <th>
-                Dish Amount
+                Aantal
             </th>
             <th>
-                Extra Details
+                Extra wensen
             </th>
             <th></th>
         </tr>
@@ -71,22 +71,22 @@
                     @Html.DisplayFor(modelItem => item.ExtraDetails)
                 </td>
                 <td>
-                    <a asp-action="EditOrderLine" asp-route-id="@item.OrderLineID">Edit</a>
-                    <a asp-controller="Orderlines" asp-action="Delete" asp-route-id="@item.OrderLineID">Delete</a>
+                    <a asp-action="EditOrderLine" asp-route-id="@item.OrderLineID">Wijzigen</a>
+                    <a asp-controller="Orderlines" asp-action="Delete" asp-route-id="@item.OrderLineID">Verwijderen</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
             <div class="form-group">
-                <input id="saveButton" type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Opslaan" class="btn btn-primary" />
             </div>
             <p class="text-danger" id="chefError"></p>
         </form>
     </div>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Terug naar de lijst</a>
 </div>
 
 @section Scripts {

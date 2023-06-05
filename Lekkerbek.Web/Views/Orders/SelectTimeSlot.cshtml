@@ -8,25 +8,22 @@
 <div>
     <ol class="stepper">
         <li class="stepper__item-done">
-            <h3 class="stepper__title">Step 1</h3>
-            <p class="stepper__desc">Select Customer</p>
+            <h3 class="stepper__title">Stap 1</h3>
+            <p class="stepper__desc">Selecteer klant</p>
         </li>
         <li class="stepper__item-doing">
-            <h3 class="stepper__title">Step 2</h3>
-            <p class="stepper__desc">Select Time Slot</p>
+            <h3 class="stepper__title">Stap 2</h3>
+            <p class="stepper__desc">Kies tijdslot</p>
         </li>
+        
         <li class="stepper__item">
-            <h3 class="stepper__title">Step 3</h3>
-            <p class="stepper__desc">Select Chef</p>
-        </li>
-        <li class="stepper__item">
-            <h3 class="stepper__title">Step 4</h3>
-            <p class="stepper__desc">Add to orderline</p>
+            <h3 class="stepper__title">Stap 3</h3>
+            <p class="stepper__desc">Voeg menu item toe</p>
         </li>
     </ol>
 </div>
 
-<h4>Select Time Slot</h4>
+<h4>Selecteer Tijdslot</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -34,7 +31,7 @@
             <div asp-validation-summary="ModelOnly" ></div>
             <div class="form-group">
                 
-                <label asp-for="StartTimeSlot" class="control-label"></label>
+                <label asp-for="StartTimeSlot" class="control-label">Datum</label>
                 <input id="date" value="@TempData["SelectDate"]" asp-for="StartTimeSlot" type="date" class="form-control" />
                
                 

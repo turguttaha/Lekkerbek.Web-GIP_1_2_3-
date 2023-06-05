@@ -9,10 +9,12 @@ namespace Lekkerbek.Web.ViewModel
     {
        
         public int OrderId { get; set; }
-        public bool Finished { get; set; }//idk if this is needed, in perfect case we know an order is finished when the time is later than the orderfinished time
+        [Display(Name ="Afgerond")]
+        public bool Finished { get; set; }
 
         //Foreign Key van Customer
         public int? CustomerId { get; set; }
+        [Display(Name = "Korting")]
         public int? Discount { get; set; }
         
 
@@ -20,7 +22,7 @@ namespace Lekkerbek.Web.ViewModel
         public virtual ICollection<OrderLine> OrderLines { get; set; }
 
         
-        [Display(Name = "Time Slot")]
+        [Display(Name = "Tijdslot")]
         [DataType(DataType.DateTime)]
         public DateTime StartTimeSlot { get; set; }
         public int? ChefId { get; set; }
