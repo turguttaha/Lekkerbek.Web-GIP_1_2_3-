@@ -57,7 +57,7 @@ namespace Lekkerbek.Web.Controllers
 
             if (_orderService.Read().Any(ol => ol.CustomerId == customer.CustomerId))
             {
-                ModelState.AddModelError("Model", "Kan niet verwijderen (aanwezig in (een) bestelling(en))!");
+                ModelState.AddModelError("Model", "Kan niet verwijdert worden(aanwezig in een bestelling)!");
             }
             else if (customer != null)
             {

@@ -120,7 +120,7 @@ namespace Lekkerbek.Web.Controllers
             {
                 var chefIdentity = await _userManager.GetUserAsync(User);
                 var chef = _orderChefService.GetAllChefs().Where(c => c.IdentityUser == chefIdentity).FirstOrDefault();
-                ViewData["TimeSlotError"] = "There is an order that needs to be finnished sooner than this one!";
+                ViewData["TimeSlotError"] = "Er is een bestelling dat eerder moet afgerond worden dan deze!";
                 var order = _orderChefService.GetChefOrders(id);
                 
                 TempData["OrderIdFromBill"] = id;

@@ -58,7 +58,7 @@ namespace Lekkerbek.Web.Controllers
             //can't delete
             if (_chefService.GetTimeSlots().Any(ol => ol.ChefId == chef.ChefId))
             {
-                ModelState.AddModelError("Model", "Unable to delete (present in (an) order(s))!");
+                ModelState.AddModelError("Model", "Kan niet verwijdert worden(aanwezig in een bestelling)!");
             }
             else if (chef != null)
             {

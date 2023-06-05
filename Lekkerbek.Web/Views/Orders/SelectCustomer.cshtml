@@ -9,19 +9,16 @@
     <ol class="stepper">
         <li class="stepper__item-doing">
             <h3 class="stepper__title">Stap 1</h3>
-            <p class="stepper__desc">Kies Klant</p>
+            <p class="stepper__desc">Selecteer klant</p>
         </li>
         <li class="stepper__item">
             <h3 class="stepper__title">Stap 2</h3>
-            <p class="stepper__desc">Kies Tijdslot</p>
+            <p class="stepper__desc">Kies tijdslot</p>
         </li>
-        <li class="stepper__item">
-            <h3 class="stepper__title">Stap 3</h3>
-            <p class="stepper__desc">Kies Chef</p>
-        </li>
+        
         <li class="stepper__item">
             <h3 class="stepper__title">Stap 4</h3>
-            <p class="stepper__desc">Voeg toe aan orderline</p>
+            <p class="stepper__desc">Voeg menu item toe</p>
         </li>
     </ol>
 </div>
@@ -33,7 +30,7 @@
         <form asp-action="SelectCustomer">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group mb-3">
-                <a class="btn btn-danger" asp-area="" asp-controller="Customers" asp-action="Create">Maak Nieuwe Klant</a>
+                <a class="btn btn-danger" asp-area="" asp-controller="Customers" asp-action="Create">Maak Nieuwe Klant Aan</a>
             </div>
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label">Klant Naam</label>

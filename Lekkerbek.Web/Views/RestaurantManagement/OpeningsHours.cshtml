@@ -19,7 +19,7 @@ Html.Kendo().Grid<Lekkerbek.Web.Models.RestaurantOpeninghours>()
 
     columns.Command(command => {  command.Destroy().Text("Verwijderen"); }).Width(200);
 })
-.ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/RestaurantManagement/CreateOpeningsHour'>Voeg nieuw openingsuur toe</a></div>"))
+.ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/RestaurantManagement/CreateOpeningsHour'>Voeg nieuwe openingsuren toe</a></div>"))
 .Editable(editable => editable.Mode(GridEditMode.InLine))
 .Pageable()
 .Scrollable()

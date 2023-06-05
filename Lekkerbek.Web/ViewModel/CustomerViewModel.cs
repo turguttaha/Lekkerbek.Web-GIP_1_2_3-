@@ -21,9 +21,11 @@ namespace Lekkerbek.Web.ViewModel
         [Display(Name = "Adres")]
         public string Address { get; set; }
         [Display(Name = "BTW")]
-        public string? Btw { get; set; }
+        [RegularExpression("^[a-zA-Z]{2}", ErrorMessage = "Enkel geldige landcodes mogen ingevuld worden")]
+        public string Btw { get; set; }
         [Display(Name = "BTW nummer")]
-        public string? BtwNumber { get; set; }
+        [RegularExpression("^[0][0-9]{9}", ErrorMessage = "Het btw nummer moet 9 cijfers lang zijn")]
+        public string BtwNumber { get; set; }
         [Display(Name = "Email")]
         public string Email { get; set; }
 

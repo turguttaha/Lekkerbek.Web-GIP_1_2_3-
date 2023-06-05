@@ -18,16 +18,16 @@
         
         <input id="id" type="number" name="id" value=" " readonly hidden>
         
-        <label for="menuItemName" >Menu Item Name:</label><br>
+        <label for="menuItemName" >Menu Item:</label><br>
         <input id="menuItemName" type="text" name="menuItemName" value=" " readonly ><br>
         
-        <label for="extraDetails">Extra Details:</label><br>
+        <label for="extraDetails">Extra Wensen:</label><br>
         <input type="text" id="extraDetails" name="extraDetails" value=" "><br>
         
-        <label for="amount">Amount: </label><br>
+        <label for="amount">Aantal: </label><br>
         <input type="number" id="amount" name="amount" value="1" min="1"><br>
 
-        <input class="btn btn-primary mt-3" type="Button" onclick="SendInfoToController()" value="Add">
+        <input class="btn btn-primary mt-3" type="Button" onclick="SendInfoToController()" value="Toevoegen">
     </div>
 
 </div>
@@ -41,10 +41,10 @@
             <thead>
                 <tr>
                     <th class ="popup-th">
-                       Name
+                       Naam
                     </th>
                     <th class="popup-th">
-                       Amount
+                       Aantal
                     </th>
                     <th></th>
                 </tr>
@@ -56,7 +56,7 @@
             </tbody>
         </table>
         <form asp-action="CompleteOrder" >
-            <input type="submit" value="Complete Order" class="btn btn-danger mt-3">
+            <input type="submit" value="Bestelling afronden" class="btn btn-danger mt-3">
         </form>
     </div>
 </div>
@@ -75,7 +75,7 @@
     columns.Bound(f => f.BtwNumber).Title("BTW %").Filterable(false);
     columns.Bound(c => c.MenuItemId)
               .Title(" ").Filterable(false)
-              .ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary'> <a onclick=\"OpenPopUp('#= MenuItemId #' , '#= Name #')\" href='\\#'> Add </a> </div>");
+              .ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary'> <a onclick=\"OpenPopUp('#= MenuItemId #' , '#= Name #')\" > Toevoegen </a> </div>");
 
 })
 .Editable(editable => editable.Mode(GridEditMode.PopUp))
@@ -161,6 +161,20 @@ function DeleteOrderline(id){
                 // en de text vervangen met de status.
                 // Status krijgen we van de action Message mee.
                 //$("#statusSpan").text(response.status);
+                document.getElementById("CartBody").innerHTML = "";
+                    response.temporaryCart.forEach((item) => {
+                        var extra = (item.ExtraDetails ? item.ExtraDetails : "")
+                        document.getElementById("CartBody").innerHTML += ` <tr>
+                            <td>${item.MenuItem.Name} </td>
+                            <td>${item.DishAmount} </td>
+                                    <td><div class='text-light k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' onclick="DeleteOrderline('${item.MenuItemId}${item.DishAmount}${extra}')"> - </div></td>
+                            </tr>`;
+                    })
+                
+                
+                
+                
+                    
             },
             error: function (response) {
                 // Indien onze request faalt, kunnen we hier een mooie
@@ -190,12 +204,14 @@ function DeleteOrderline(id){
             // request successvol is.
             success: function (response) {
                 console.log(response);
+               
                 // Hier gaan we de span met id "statusSpan" ophalen
                 // en de text vervangen met de status.
                 // Status krijgen we van de action Message mee.
                 //$("#statusSpan").text(response.status);
             },
             error: function (response) {
+                
                 // Indien onze request faalt, kunnen we hier een mooie
                 // foutmelding tonen.
                 // In ons geval gaan we een alert tonen op het scherm
@@ -216,7 +232,7 @@ function DeleteOrderline(id){
             // zie de les frontend.
             type: "POST",
             // Hier geven we de action naam en controler naam mee.
-            url: '@Url.Action("RemoveOrderLine", "OrderModule")',
+                url: '@Url.Action("RemoveOrderLine", "OrderModule")',
             // Hier gaan we data meegeven in een JSON formaat.
             data: { "menuItemId": id},
             dataType: "json",
@@ -224,10 +240,12 @@ function DeleteOrderline(id){
             // request successvol is.
             success: function (response) {
                 console.log(response);
+                    
                 // Hier gaan we de span met id "statusSpan" ophalen
                 // en de text vervangen met de status.
                 // Status krijgen we van de action Message mee.
                 //$("#statusSpan").text(response.status);
+
             },
             error: function (response) {
                 // Indien onze request faalt, kunnen we hier een mooie
@@ -235,6 +253,7 @@ function DeleteOrderline(id){
                 // In ons geval gaan we een alert tonen op het scherm
                 // (in praktijk moet je dit beter afhandelen!).
                 alert(response);
+                
             }
         });
         var popup = document.getElementById("myPopup");
