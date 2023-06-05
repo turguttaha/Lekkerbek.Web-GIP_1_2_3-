@@ -79,10 +79,10 @@ namespace Lekkerbek.Web.Jobs
 
                     MailMessage message = new MailMessage();
                     message.From = new MailAddress(fromMail);
-                    message.Subject = "Your order is almost ready!";
+                    message.Subject = "Uw bestelling is bijna klaar!";
                     message.To.Add(new MailAddress("gipteam2.lekkerbek@gmail.com"));
                     //message.To.Add(new MailAddress(item.Customer.Email));
-                    message.Body = " Mr./Mrs." + item.Customer.FName + " " + item.Customer.LName + ",\n\n Your order will be ready in approximately 3 hours at " + endTimeSlot.TimeOfDay + ". \n\n We hope you have a nice day \n Lekkerbek";
+                    message.Body = " Meneer/Mevrouw" + item.Customer.FName + " " + item.Customer.LName + ",\n\n Uw bestelling zal binnen 3 uur ongeveer klaar zijn. " + endTimeSlot.TimeOfDay + ". \n\n We wensen u een fijne dag! \n Lekkerbek";
 
 
 

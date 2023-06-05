@@ -13,7 +13,7 @@ namespace Lekkerbek.Web.Models
         public int CustomerId { get; set; }
         [StringLength(20, ErrorMessage = "Uw voornaam mag maar 20 tekens lang zijn")]
         [Display(Name = "Voornaam")]
-
+        public string? FName { get; set; } = string.Empty;
         [StringLength(20, MinimumLength = 2)]
         [Display(Name = "Familienaam")]
         public string? LName { get; set; } = string.Empty;
