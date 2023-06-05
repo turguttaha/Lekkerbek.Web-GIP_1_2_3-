@@ -250,7 +250,7 @@ namespace Lekkerbek.Web.Controllers
             try
             {
 
-                orderFinish.Finished = true;
+                orderFinish.Finished = true;    
                 _orderCashierService.Update(orderFinish);
 
                 string testMail = @"
@@ -356,12 +356,12 @@ th, td{
             <header>
                 <div class=""Left"">
                     <img src=""cid:Logo"" alt=""Logo"">
-                    <H1>Bill</H1>
+                    <H1>Rekening</H1>
                 </div>
                 <div class=""Grid"">
                     <div class=""Left-bottom"">
-                        <p>Number : " + orderFinish.OrderID + @"</p>
-                        <p>Date : " + DateTime.Now.ToString() + @"</p>
+                        <p>Nummer : " + orderFinish.OrderID + @"</p>
+                        <p>Datum : " + DateTime.Now.ToString() + @"</p>
                     </div>
                     <div class=""Right"">";
                 if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "")
@@ -379,19 +379,19 @@ th, td{
             <thead>
                 <tr>
                     <th>
-                        Dish Name
+                        Gerecht
                     </th>
                     <th>
-                        Dish Price
+                        Prijs
                     </th>
                     <th>
                         BTW
                     </th>
                     <th>
-                        Dish Amount
+                        Hoeveelheid
                     </th>
                     <th>
-                        Total
+                        Totaal
                     </th>
           
                 </tr>
@@ -455,7 +455,7 @@ th, td{
                     <tr>
 
                         <td>
-                            Discount:
+                            Korting:
                         </td>
                         <td>
                         </td>
@@ -477,7 +477,7 @@ th, td{
         
                 <tr class=""Line-Above"">
                     <td>
-                        <b> Without BTW </b>
+                        <b> Zonder BTW </b>
                     </td>
                     <td>
 
@@ -513,7 +513,7 @@ th, td{
                 </tr>
                 <tr>
                     <td>
-                        <b> With BTW </b>
+                        <b> Met BTW </b>
                     </td>
                     <td>
 
@@ -537,7 +537,7 @@ th, td{
             </div>
             <footer>
                 <p>De Lekkerbek- Culinaire Kringstraat108/2- 3530 HOUTHALEN - TEL. : 0475/22.22.41</p>
-                <p>B.T.W. : BE 04763.352.133        COMPANYNR : 0763.352.133</p>
+                <p>B.T.W. : BE 04763.352.133        BEDRIJFNR : 0763.352.133</p>
                 <p>PNB PARIBAS FORTIS : IBAN BE19 0013 5497 5612   -   BIC GEPA BE BB</p>
             </footer>    
         </div>    
@@ -558,7 +558,8 @@ th, td{
                     MailMessage m = new MailMessage();
                     m.AlternateViews.Add(avHtml);
                     EmailService emailService = new EmailService();
-                    emailService.SendMail("gipteam2.lekkerbek@gmail.com", "Your invoice of the Lekkerbek", testMail, m);  
+                    emailService.SendMail("gipteam2.lekkerbek@gmail.com", "Je rekening van de Lekkerbek", testMail, m);
+
 
 
             }

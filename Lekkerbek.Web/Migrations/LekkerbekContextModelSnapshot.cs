@@ -46,7 +46,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasIndex("WorkerScheduleId");
 
-                    b.ToTable("Chefs");
+                    b.ToTable("Chefs", (string)null);
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.Customer", b =>
@@ -115,7 +115,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasIndex("PreferredDishId");
 
-                    b.ToTable("Customers");
+                    b.ToTable("Customers", (string)null);
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.MenuItem", b =>
@@ -146,7 +146,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("MenuItemId");
 
-                    b.ToTable("MenuItems");
+                    b.ToTable("MenuItems", (string)null);
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.Order", b =>
@@ -175,7 +175,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasIndex("TimeSlotID");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.OrderLine", b =>
@@ -204,7 +204,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasIndex("OrderID");
 
-                    b.ToTable("OrderLines");
+                    b.ToTable("OrderLines", (string)null);
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.PreferredDish", b =>
@@ -221,7 +221,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("PreferredDishId");
 
-                    b.ToTable("PreferredDishes");
+                    b.ToTable("PreferredDishes", (string)null);
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.RestaurantHoliday", b =>
@@ -244,7 +244,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("RestaurantHolidayId");
 
-                    b.ToTable("RestaurantHolidays");
+                    b.ToTable("RestaurantHolidays", (string)null);
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.RestaurantOpeninghours", b =>
@@ -266,7 +266,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("RestaurantOpeninghoursId");
 
-                    b.ToTable("RestaurantOpeningHours");
+                    b.ToTable("RestaurantOpeningHours", (string)null);
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.TimeSlot", b =>
@@ -287,7 +287,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasIndex("ChefId");
 
-                    b.ToTable("TimeSlots");
+                    b.ToTable("TimeSlots", (string)null);
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.WorkerHoliday", b =>
@@ -313,7 +313,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("WorkerHolidayId");
 
-                    b.ToTable("WorkerHolidays");
+                    b.ToTable("WorkerHolidays", (string)null);
                 });
 
             modelBuilder.Entity("Lekkerbek.Web.Models.WorkerSchedule", b =>
@@ -339,7 +339,7 @@ namespace Lekkerbek.Web.Migrations
 
                     b.HasKey("WorkerScheduleId");
 
-                    b.ToTable("WorkerSchedules");
+                    b.ToTable("WorkerSchedules", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
