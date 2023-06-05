@@ -46,17 +46,14 @@ namespace Lekkerbek.Web.Controllers
 
         public IActionResult AdminList()
         {
-            
             return View();
         }
 
         public async Task<IActionResult> Admin_read([DataSourceRequest] DataSourceRequest request)
         {
-
-
             IList<IdentityUser> users = await _userManager.GetUsersInRoleAsync("Administrator");
+
             return Json(users.ToDataSourceResult(request));
-            
         }
         public IActionResult AssignAdminList()
         {
@@ -65,7 +62,6 @@ namespace Lekkerbek.Web.Controllers
         public async Task<IActionResult> AssignAdmin_read([DataSourceRequest] DataSourceRequest request)
         {
 
-            
             IList<IdentityUser> users = await _userManager.GetUsersInRoleAsync("Customer");
             IList<IdentityUser> newList = new List<IdentityUser>();
             foreach (IdentityUser user in users)
