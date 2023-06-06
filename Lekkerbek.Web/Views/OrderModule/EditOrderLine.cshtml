@@ -14,9 +14,9 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="OrderLineID" />
             <div class="form-group">
-                <label asp-for="OrderID" class="control-label"></label>
-                <input asp-for="OrderID" class="form-control" readonly />
-                <span asp-validation-for="OrderID" class="text-danger"></span>
+               
+                <input asp-for="OrderID" class="form-control" readonly hidden/>
+                
             </div>
             <div class="form-group">
                 <label asp-for="MenuItemId" class="control-label"></label>

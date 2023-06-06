@@ -71,6 +71,7 @@ namespace Lekkerbek.Web.NewFolder
             else
             return customer;
         }
+
         public bool CustomerExists(int id)
         {
             return _repository.GetCustomers().Any(e => e.CustomerId == id);

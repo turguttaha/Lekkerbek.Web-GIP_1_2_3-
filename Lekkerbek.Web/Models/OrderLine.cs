@@ -14,12 +14,12 @@ namespace Lekkerbek.Web.Models
 
         ////Foreign Key van Order
         public int? OrderID { get; set; }
-        public virtual Order Order { get; set; }
+        public virtual Order? Order { get; set; }
 
         //Foreign Key van Dish
         [Display(Name ="Menu item")]
         public int? MenuItemId { get; set; }
-        public virtual MenuItem MenuItem { get; set; }
+        public virtual MenuItem? MenuItem { get; set; }
 
 
     }

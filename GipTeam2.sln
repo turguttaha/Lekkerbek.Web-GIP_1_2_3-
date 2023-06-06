@@ -5,7 +5,7 @@ VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lekkerbek.Web", "Lekkerbek.Web\Lekkerbek.Web.csproj", "{2F00E4C0-8A12-4E9F-83D4-F22BAC87153D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GipTeam2.Tests", "GipTeam2.Tests\GipTeam2.Tests.csproj", "{8409E337-799A-4CE9-A494-FD5F7D257618}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LekkerbekTestProject", "LekkerbekTestProject\LekkerbekTestProject.csproj", "{ABA3CEBF-3B81-44EA-8866-0C24A40EAA55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{2F00E4C0-8A12-4E9F-83D4-F22BAC87153D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F00E4C0-8A12-4E9F-83D4-F22BAC87153D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F00E4C0-8A12-4E9F-83D4-F22BAC87153D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8409E337-799A-4CE9-A494-FD5F7D257618}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8409E337-799A-4CE9-A494-FD5F7D257618}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8409E337-799A-4CE9-A494-FD5F7D257618}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8409E337-799A-4CE9-A494-FD5F7D257618}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABA3CEBF-3B81-44EA-8866-0C24A40EAA55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABA3CEBF-3B81-44EA-8866-0C24A40EAA55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABA3CEBF-3B81-44EA-8866-0C24A40EAA55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABA3CEBF-3B81-44EA-8866-0C24A40EAA55}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -37,7 +37,7 @@ namespace Lekkerbek.Web.Controllers
 
             return View();
          }
-    public IActionResult ReadMenuItems([DataSourceRequest] DataSourceRequest request)
+        public IActionResult ReadMenuItems([DataSourceRequest] DataSourceRequest request)
         {
             var menuItems = _menuItemService.Read();
             return Json(menuItems.ToDataSourceResult(request));
@@ -45,14 +45,13 @@ namespace Lekkerbek.Web.Controllers
 
         public IActionResult DeleteMenuItem([DataSourceRequest] DataSourceRequest request, MenuItemViewModel menuItemViewModel)
         {
-            ModelState.Remove("Sort");
+            
             if (_orderService.GetOrderLines().Any(ol => ol.MenuItemId == menuItemViewModel.MenuItemId))
             {
                 ModelState.AddModelError("Model", "Kan niet verwijdert worden(aanwezig in een bestelling)!");
             }
-            //else if(menuItem != null)
-                else if (menuItemViewModel != null)
-                    {
+            else if (menuItemViewModel != null)
+            {
                 // Delete the item in the data base or follow with the dummy data.
 
                 //_menuItemService.Destroy(menuItem);
@@ -77,29 +76,15 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem, IFormCollection formDetails)
-
+        public async Task<IActionResult> Create([Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem)
         {
-            ////if (ModelState.IsValid)
-            ////{
-
-            //menuItem.Price = double.Parse(formDetails["Price"].ToString().Replace('.',','));//i LOVE when one side of the app works with , as a seperator, and the other with a . :D
-
-            //_menuItemService.Create(menuItem);
-
-            //    return RedirectToAction(nameof(Index));
-            ////}
-            //return View(menuItem);
-
-            //if (ModelState.IsValid)
-            //{
-
-            
+            if (ModelState.IsValid)
+            {  
 
             _menuItemService.Create(menuItem);
-
             return RedirectToAction(nameof(Index));
-            //}
+
+            }
             return View(menuItem);
         }
 
@@ -126,39 +111,36 @@ namespace Lekkerbek.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public async Task<IActionResult> Edit(int id, [Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem, IFormCollection formDetails)
-        public async Task<IActionResult> Edit(int id, [Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem, IFormCollection formDetails)
-
+        public async Task<IActionResult> Edit(int id, [Bind("MenuItemId,Name,Description,Price,Sort,BtwNumber")] Models.MenuItem menuItem)
         {
-            //if (id != menuItem.MenuItemId)
+
             if (id != menuItem.MenuItemId)
             {
                 return NotFound();
             }
 
-           // if (ModelState.IsValid)
-          //  {
+            if (ModelState.IsValid)
+            {
                 try
                 {
                
                     _menuItemService.Update(menuItem);
 
-            }
+                }
                 catch (DbUpdateConcurrencyException)
                 {
-                //if (!_menuItemService.MenuItemExists(menuItem.MenuItemId))
                 if (!_menuItemService.MenuItemExists(menuItem.MenuItemId))
                 {
                     
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                }
+                else
+                {
+                 throw;
+                }
                 }
                 return RedirectToAction(nameof(Index));
-            //  }
-            //return View(menuItem);
+              }
             return View(menuItem);
         }
 

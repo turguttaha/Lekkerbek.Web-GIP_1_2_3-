@@ -44,34 +44,18 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders according to finished property
         public IActionResult Index()
         {
-
-            //var orderCashier = _orderCashierService.Read();
             return View();
-            //var lekkerBekContext = _orderCashierService.Read();
-            //return View();
-            //var lekkerbekContext = _context.Orders.Include(o => o.Customer).Include(o => o.TimeSlot).Where(c=>c.Finished==false);
-            //return View(await lekkerbekContext.ToListAsync());
         }
         public async Task<ActionResult> DetailTemplate_HierarchyBinding_OrderAsync([DataSourceRequest] DataSourceRequest request)
         {
-            //var user = await _userManager.GetUserAsync(User);
-            //var customer = _customerService.Read().Where(c => c.IdentityUser == user).FirstOrDefault();
-            //return Json(_orderService.FilterOrdersForCustomer(chef.ChefId).ToDataSourceResult(request));
-            //return Json(_customerService.GetAllViews().ToDataSourceResult(request));
             return Json(_orderChefService.Read().ToDataSourceResult(request));
         }
 
         public ActionResult DetailTemplate_HierarchyBinding_Orderline(int orderID, [DataSourceRequest] DataSourceRequest request)
         {
-            var a = _orderService.GetOrderLines();
-
             return Json(_orderService.GetOrderLines()
                 .Where(orderline => orderline.OrderID == orderID)
                 .ToDataSourceResult(request));
-        }
-        public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
-        {
-            return Json(_orderChefService.Read().ToDataSourceResult(request));
         }
         
         // Pay Off page Get: order to pay
@@ -99,60 +83,6 @@ namespace Lekkerbek.Web.Controllers
             //stay on index page
             return RedirectToAction("Index");
         }
-        
-        // Pay off page discount func
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OrderDetails(int id, [Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order orderInfo, IFormCollection collection)
-        {
-            var orderFinish = _orderChefService.GetSpecificOrder(id);
-            var timeSlot = _orderChefService.GetTimeSlot(orderFinish.TimeSlotID);
-            var firstTimeSlot = _orderChefService.GetFirstTimeSlot();
-            
-            
-            if (timeSlot.StartTimeSlot == firstTimeSlot.TimeSlot.StartTimeSlot)
-            {
-                timeSlot.ChefId = int.Parse(Request.Form["ChefSelectList"]);
-                //_orderChefService.UpdateTimeSlot(timeSlot);
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                var chefIdentity = await _userManager.GetUserAsync(User);
-                var chef = _orderChefService.GetAllChefs().Where(c => c.IdentityUser == chefIdentity).FirstOrDefault();
-                ViewData["TimeSlotError"] = "Er is een bestelling dat eerder moet afgerond worden dan deze!";
-                var order = _orderChefService.GetChefOrders(id);
-                
-                TempData["OrderIdFromBill"] = id;
-                int x = (int)id;
-                TempData["OrderID"] = x;
-
-
-                //filtering orderlines according to orderId
-                List<OrderLine> allOrderLines = _orderChefService.OrderLineRead(id);
-
-                List<OrderLine> filteredOrderLines = new List<OrderLine>();
-
-                foreach (var orderLine in allOrderLines.Where(c => c.OrderID == id))
-                {
-                    if (!filteredOrderLines.Contains(orderLine))
-                        filteredOrderLines.Add(orderLine);
-
-                }
-
-                ViewBag.listOfTheOrder = filteredOrderLines;
-                return View(order);
-            }
-            //if (ModelState.IsValid)
-            //{
-
-            
-
-            //_orderChefService.Update(orderFinish);
-
-        }
-
-
 
         private bool CustomerExists(int id)
         {

@@ -42,7 +42,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines/Create
         public async Task<IActionResult> Create(int id)
         {
-            if (User.IsInRole("Customer"))
+            if (User.IsInRole("Customer") && !User.IsInRole("Administrator"))
             {
                 Order order = _orderService.GetSpecificOrder(id);
                 Customer customer = await GetCustomerAsync();
@@ -62,18 +62,22 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("OrderLineID,ExtraDetails,DishAmount,MenuItemId")] OrderLine orderLine)
         {
-            // if (ModelState.IsValid)
-            //{
-            orderLine.OrderID = (int)TempData["Orderid"];
-            _orderLineService.AddOrderLine(orderLine);
+            int id = (int)TempData["Orderid"];
+            orderLine.OrderID = id;
+            if (ModelState.IsValid)
+            {
+
+            _orderLineService.AddOrderLine(orderLine); 
                 
             if(User.IsInRole("Administrator"))
             return RedirectToAction("EditOrder", "Orders", new { id = orderLine.OrderID });
-            if (User.IsInRole("Customer"))
+            if (User.IsInRole("Customer") && !User.IsInRole("Administrator"))
             return RedirectToAction("EditOrder", "OrderModule", new { id = orderLine.OrderID });
-            //}
-            ViewData["DishID"] = new SelectList(_orderLineService.GetMenuItems(), "DishId", "DishId", orderLine.MenuItemId);
-            ViewData["OrderID"] = new SelectList(_orderLineService.GetOrders(), "OrderID", "OrderID", orderLine.OrderID);
+            
+            }
+
+            ViewData["DishID"] = new SelectList(_orderLineService.GetMenuItems(), "MenuItemId", "Name");
+            ViewBag.Id = id;
             return View(orderLine);
         }
 
@@ -112,18 +116,23 @@ namespace Lekkerbek.Web.Controllers
             {
                 return Problem("Entity set 'LekkerbekContext.OrderLines'  is null.");
             }
+
             var orderLine = _orderLineService.GetSpecificOrderLineDetailed(id);
+
             if (User.IsInRole("Customer")&&!User.IsInRole("Administrator"))
             {
                 Customer customer = await GetCustomerAsync();
+
                 if (orderLine == null || orderLine.Order.CustomerId != customer.CustomerId)
                 {
                     return NotFound();
                 }
+
                 if (orderLine != null)
                 {
                     _orderLineService.RemoveOrderLine(orderLine);
                 }
+
                 return RedirectToAction("EditOrder", "OrderModule", new { id = orderLine.OrderID });
             }
             else if (User.IsInRole("Administrator"))

@@ -42,8 +42,6 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines
         public ActionResult DetailTemplate_HierarchyBinding_Orderline(int orderID, [DataSourceRequest] DataSourceRequest request)
         {
-            var a = _orderService.GetOrderLines();
-
             return Json(_orderService.GetOrderLines()
                 .Where(orderline => orderline.OrderID == orderID)
                 .ToDataSourceResult(request));
@@ -53,6 +51,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders/Create
         public IActionResult SelectCustomer()
         {
+
             
             ViewBag.CustomerId = _orderService.CustomerSelectList();
             return View();
@@ -88,7 +87,6 @@ namespace Lekkerbek.Web.Controllers
             
             DateTime timeSlotDateAndTime = Convert.ToDateTime(selectedDate);
             TempData["SelectedDateTime"] = timeSlotDateAndTime;
-            //TempData["SelectedChef"] = int.Parse(collection["ChefId"]);
             
             return RedirectToAction("AddOrderLine", "Orders");
         }
@@ -121,6 +119,8 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddOrderLine([Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,MenuItemId")] OrderLine orderLine)
         {
+            if (ModelState.IsValid) 
+            { 
             // go to database and get dish name via id
             orderLine.MenuItem = _orderService.GetSpecificMenuItem(orderLine.MenuItemId);
             Order.TemproraryCart.Add(orderLine);
@@ -129,10 +129,13 @@ namespace Lekkerbek.Web.Controllers
 
             ViewBag.TemproraryCart = Order.TemproraryCart;
             ViewData["MenuItemId"] = _orderService.MenuItemSelectList();
-            ModelState.Clear();
+
+            }
             return View();
 
+
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CompleteOrder()
@@ -206,8 +209,8 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
                 try
                 {
                 var orderForT = _orderService.GetSpecificOrder(id);
@@ -239,9 +242,18 @@ namespace Lekkerbek.Web.Controllers
 
 
             return RedirectToAction("index", "Orders");
-            //}
-            ViewData["CustomerID"] = _orderService.CustomerSelectList( order.CustomerId);
-           // ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
+            }
+            var timeSlotItem1 = _orderService.GetSpecificTimeSlot(order.TimeSlotID);
+
+            ViewData["CustomerID"] = _orderService.CustomerSelectList(order.CustomerId);
+
+            TempData["SelectDate"] = timeSlotItem1.StartTimeSlot.ToString("yyyy-MM-dd");
+            TempData["time"] = timeSlotItem1.StartTimeSlot.ToString("H:mm");
+
+
+            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotItem1.StartTimeSlot);
+
+            ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
             return View(order);
         }
 
@@ -259,7 +271,6 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
             ViewData["DishID"] = _orderService.MenuItemSelectList();
-            //ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
             return View(orderLine);
         }
 
@@ -275,8 +286,8 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
 
-            // if (ModelState.IsValid)
-            //{
+             if (ModelState.IsValid)
+            {
             try
                 {
 
@@ -294,9 +305,8 @@ namespace Lekkerbek.Web.Controllers
                 }
             }
             return RedirectToAction("EditOrder", new { id = orderLine.OrderID });
-            //}
-            //ViewData["DishID"] = new SelectList(_context.MenuItems, "MenuItemId", "MenuItemId", orderLine.MenuItemId);
-            //ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
+            }
+            ViewData["DishID"] = _orderService.MenuItemSelectList();
             return View(orderLine);
         }
 

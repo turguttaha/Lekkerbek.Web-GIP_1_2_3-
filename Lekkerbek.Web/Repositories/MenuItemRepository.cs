@@ -14,12 +14,29 @@ namespace Lekkerbek.Web.Repositories
             _context = context;
         }
 
-        public List<MenuItemViewModel> GetMenuItems()
+        public List<MenuItemViewModel> GetMenuItemsViewModels()
         {
             //var MenuItems = _context.MenuItems.ToList();
 
             //return _context.MenuItems.Select(item => new Models.MenuItem
             return _context.MenuItems.Select(item => new MenuItemViewModel
+            //This is another way to make a new object
+            {
+                MenuItemId = item.MenuItemId,
+                Price = Convert.ToDouble(item.Price, new CultureInfo("en-EN")),
+                Type = item.Sort,
+                BtwNumber = item.BtwNumber,
+                Description = item.Description,
+                Name = item.Name,
+            }).ToList();
+        }
+
+        public List<MenuItem> GetMenuItems()
+        {
+            //var MenuItems = _context.MenuItems.ToList();
+
+            //return _context.MenuItems.Select(item => new Models.MenuItem
+            return _context.MenuItems.Select(item => new MenuItem
             //This is another way to make a new object
             {
                 MenuItemId = item.MenuItemId,
@@ -30,6 +47,7 @@ namespace Lekkerbek.Web.Repositories
                 Name = item.Name,
             }).ToList();
         }
+
 
         //public void DeleteFromDataBase(MenuItem entity)
         public void DeleteFromDataBase(MenuItem entity)

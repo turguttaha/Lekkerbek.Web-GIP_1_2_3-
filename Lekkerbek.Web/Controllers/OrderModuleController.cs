@@ -49,8 +49,6 @@ namespace Lekkerbek.Web.Controllers
 
         public ActionResult DetailTemplate_HierarchyBinding_Orderline(int orderID, [DataSourceRequest] DataSourceRequest request)
         {
-            var a = _orderService.GetOrderLines();
-
             return Json(_orderService.GetOrderLines()
                 .Where(orderline => orderline.OrderID == orderID)
                 .ToDataSourceResult(request));
@@ -113,8 +111,8 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
             try
             {
                 var orderForT = _orderService.GetSpecificOrder(id);
@@ -146,9 +144,16 @@ namespace Lekkerbek.Web.Controllers
 
 
             return RedirectToAction("index");
-            //}
-            ViewData["CustomerID"] = _orderService.CustomerSelectList(order.CustomerId);
-            // ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
+            }
+
+            var timeSlotItemB = _orderService.GetSpecificTimeSlot(order.TimeSlotID);
+
+            TempData["SelectDate"] = timeSlotItemB.StartTimeSlot.ToString("yyyy-MM-dd");
+            TempData["time"] = timeSlotItemB.StartTimeSlot.ToString("H:mm");
+
+            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotItemB.StartTimeSlot);
+
+            ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
             return View(order);
         }
 
@@ -161,13 +166,14 @@ namespace Lekkerbek.Web.Controllers
             }
 
             var orderLine = _orderService.GetSpecificOrderLine(id);
+
             Customer customer = await GetCustomerAsync();
+
             if (orderLine == null || orderLine.Order.CustomerId!=customer.CustomerId)
             {
                 return NotFound();
             }
             ViewData["DishID"] = _orderService.MenuItemSelectList();
-            //ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
             return View(orderLine);
         }
 
@@ -182,20 +188,25 @@ namespace Lekkerbek.Web.Controllers
             {
                 return NotFound();
             }
+
             Customer customer = await GetCustomerAsync();
+            
             var customersOrders = _orderService.Read().Where(o => o.CustomerId == customer.CustomerId);
+            
             bool orderlineCheck = true;
+            
             foreach(Order order in customersOrders) 
             {           
                     if(order.OrderID!=orderLine.OrderID)
                     orderlineCheck = false;
             }
+
             if (!orderlineCheck) { return NotFound(); }
-            // if (ModelState.IsValid)
-            //{
+
+            if (ModelState.IsValid)
+            {
             try
             {
-
                 _orderService.UpdateOrderLine(orderLine);
             }
             catch (DbUpdateConcurrencyException)
@@ -209,16 +220,20 @@ namespace Lekkerbek.Web.Controllers
                     throw;
                 }
             }
+
             return RedirectToAction("EditOrder", new { id = orderLine.OrderID });
-            //}
-            //ViewData["DishID"] = new SelectList(_context.MenuItems, "MenuItemId", "MenuItemId", orderLine.MenuItemId);
-            //ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
+            
+            }
+
+            ViewData["DishID"] = _orderService.MenuItemSelectList();
+
             return View(orderLine);
         }
 
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+
             if (id == null || _orderService.Read() == null)
             {
                 return NotFound();
@@ -304,8 +319,8 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
 
                 try
                 {
@@ -325,14 +340,13 @@ namespace Lekkerbek.Web.Controllers
                 return RedirectToAction(nameof(Index));
 
 
-           // }
+            }
             ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer2);
             return RedirectToAction("EditCustomer",customer2);
         }
 
         public IActionResult MenuItemList()
         {
-
             return View();
         }
         public IActionResult ReadMenuItems([DataSourceRequest] DataSourceRequest request)
@@ -423,21 +437,27 @@ namespace Lekkerbek.Web.Controllers
         }
         public async Task<JsonResult> UpdateAdress(string street, string city , string postalCode)
         {
-            try
+            if (ModelState.IsValid)
             {
-                Customer customer = await GetCustomerAsync();
-                customer.StreetName = street;
-                customer.City = city;
-                customer.PostalCode = postalCode;
+                try
+                {
+                    Customer customer = await GetCustomerAsync();
+                    customer.StreetName = street;
+                    customer.City = city;
+                    customer.PostalCode = postalCode;
 
-                _customerService.Update(customer);
-                return Json(new { status = "Uw adres is werd aangepast" });
-            }
-            catch {
-                return Json(new { status = "Error" });
-            }
+                    _customerService.Update(customer);
 
-           
+
+                    return Json(new { status = "Uw adres is werd aangepast" });
+                }
+                catch
+                {
+                    return Json(new { status = "Error" });
+                }
+            }
+            return Json(new { status = "Alle velden moeten ingevuld zijn!" });
+
         }
 
         public async Task<IActionResult> CompleteOrderFinal(IFormCollection collection)
@@ -448,7 +468,6 @@ namespace Lekkerbek.Web.Controllers
                 TempData["CreateError"] = "Uw adres moet ingevuld zijn voor u uw bestelling kunt plaatsen ";
                 return RedirectToAction(nameof(CompleteOrder));
             }
-            //it might be IFormCollection???
 
             string x = collection["TimeSlotsSelectList"];
             String selectedDate = collection["StartTimeSlot"] + " " + x;

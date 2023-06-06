@@ -16,6 +16,7 @@ namespace Lekkerbek.Web.Controllers
         {
             _restaurantManagementService = restaurantManagementService;
         }
+
         // GET: RestaurantManagment
         public ActionResult Index()
         {
@@ -25,8 +26,8 @@ namespace Lekkerbek.Web.Controllers
         //OpeningsHour///////////////////
         public ActionResult OpeningsHours()
         {
-           var list=  _restaurantManagementService.GetAllOpeningsHours();
-            return View(list);
+           
+            return View();
         }
 
 
@@ -40,6 +41,11 @@ namespace Lekkerbek.Web.Controllers
         // GET: RestaurantManagment/Details/5
         public ActionResult CreateOpeningsHour()
         {
+            if (User.IsInRole("CookTest"))
+            {
+                return View("CookCreate");
+            }
+
             return View();
         }
 
@@ -48,6 +54,7 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateOpeningsHour([Bind("DayOfWeek,StartTime,EndTime")] RestaurantOpeninghours restaurantOpeninghours)
         {
+            if (ModelState.IsValid) { 
             try
             {
                 var openingsHourList =  _restaurantManagementService.GetAllOpeningsHours();
@@ -91,12 +98,12 @@ namespace Lekkerbek.Web.Controllers
             {
                 return View();
             }
+            }
+            return View(restaurantOpeninghours);
         }
 
         public ActionResult DeleteOpeningsHour([DataSourceRequest] DataSourceRequest request, RestaurantOpeninghours restaurantOpeninghours)
-
         {
-            ModelState.Remove("StartTime"); ModelState.Remove("EndTime");
             if (restaurantOpeninghours != null && ModelState.IsValid)
             {
                 _restaurantManagementService.DestroyOpeningsHour(restaurantOpeninghours);
@@ -107,7 +114,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: RestaurantManagment/Edit/5
         public ActionResult EditOpeningsHour(int id)
         {
-           var entity = _restaurantManagementService.GetSpecificOpeningsHour(id);
+            var entity = _restaurantManagementService.GetSpecificOpeningsHour(id);
             return View(entity);
         }
 
@@ -116,6 +123,7 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditOpeningsHour(int id, [Bind("DayOfWeek,StartTime,EndTime")] RestaurantOpeninghours restaurantOpeninghours)
         {
+            if (ModelState.IsValid) { 
             try
             {  //add here controle
                 List<Order> orderListAffterNow = _restaurantManagementService.GetAllOrders(DateTime.Now);
@@ -187,11 +195,14 @@ namespace Lekkerbek.Web.Controllers
                 var entity = _restaurantManagementService.GetSpecificOpeningsHour(id);
                 return View(entity);
             }
+            }
+            return View(restaurantOpeninghours);
         }
-        //chef hollidays
+        
+
+        //////////////////////////////chef hollidays///////////////////////////////////////////
         public ActionResult ChefHoliday()
-        {
-           
+        {         
             return View();
         }
         public ActionResult ReadChefHoliday([DataSourceRequest] DataSourceRequest request)
@@ -202,7 +213,6 @@ namespace Lekkerbek.Web.Controllers
         public ActionResult CreateChefHoliday()
         {
             ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
-
             return View();
         }
         [HttpPost]
@@ -212,7 +222,7 @@ namespace Lekkerbek.Web.Controllers
 
             //extra check, amount of chefs that are on holliday compared to the total amount of chefs (if its the last chef, dont allow)
             //check how many orders there are, if the amount of orders on a given time range, is equal to the working chefs, then dont allow
-
+            if (ModelState.IsValid) { 
             try
             {
                 bool conflict = false;
@@ -288,19 +298,21 @@ namespace Lekkerbek.Web.Controllers
                 Console.WriteLine(e.Message);
                 return View();
             }
+
+            }
+
+            ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
+            return View(workerHoliday);
+
         }
         public ActionResult DeleteWorkerHoliday([DataSourceRequest] DataSourceRequest request, WorkerHoliday workerHoliday)
-
         {
-            ModelState.Remove("StartDate"); ModelState.Remove("EndDate");
             if (workerHoliday != null && ModelState.IsValid)
             {
                 _restaurantManagementService.DestroyWorkerHoliday(workerHoliday);
             }
             return Json(new[] { workerHoliday }.ToDataSourceResult(request, ModelState));
         }
-
-
 
         // GET: RestaurantManagment/Edit/5
         public ActionResult EditWorkerHoliday(int id)
@@ -309,12 +321,12 @@ namespace Lekkerbek.Web.Controllers
             return View(entity);
         }
 
-
         // POST: RestaurantManagment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditWorkerHoliday(int id, [Bind("WorkerHolidayId,ChefId,Description,StartDate,EndDate")] WorkerHoliday workerHoliday)
         {
+            if (ModelState.IsValid) { 
             try
             {
                 var allWorkersHolidayList = _restaurantManagementService.GetAllWorkerHolidays();
@@ -403,13 +415,16 @@ namespace Lekkerbek.Web.Controllers
                 var entity = _restaurantManagementService.GetSpecificHolidayDay(id);
                 return View(entity);
             }
+
+            }
+
+            return View(workerHoliday);
         }
 
         //HOLIDAY///////////////////
         public ActionResult HolidayDays()
         {
-            var list = _restaurantManagementService.GetAllHolidayDays();
-            return View(list);
+            return View();
         }
         
         // GET: RestaurantManagment/Create
@@ -419,19 +434,18 @@ namespace Lekkerbek.Web.Controllers
             return Json(list.ToDataSourceResult(request));
         }
 
-
         // GET: RestaurantManagment/Details/5
         public ActionResult CreateHolidayDay()
         {
             return View();
         }
 
-
         // POST: RestaurantManagment/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CreateHolidayDay([Bind("Description,StartDate,EndDate")] RestaurantHoliday restaurantHoliday)
         {
+            if (ModelState.IsValid) { 
             try
             {
                 List<Order> orderTimeSlots = _restaurantManagementService.GetAllOrders(restaurantHoliday.StartDate, restaurantHoliday.EndDate);
@@ -479,23 +493,20 @@ namespace Lekkerbek.Web.Controllers
             {
                 return View();
             }
+
+            }
+            return View(restaurantHoliday);
         }
 
-
-
-
         public ActionResult DeleteHolidayDay([DataSourceRequest] DataSourceRequest request, RestaurantHoliday restaurantHoliday)
-
         {
-            ModelState.Remove("StartDate"); ModelState.Remove("EndDate");
+            //ModelState.Remove("StartDate"); ModelState.Remove("EndDate");
             if (restaurantHoliday != null && ModelState.IsValid)
             {
                 _restaurantManagementService.DestroyHolidayDay(restaurantHoliday);
             }
             return Json(new[] { restaurantHoliday }.ToDataSourceResult(request, ModelState));
         }
-
-
 
         // GET: RestaurantManagment/Edit/5
         public ActionResult EditHolidayDay(int id)
@@ -504,12 +515,12 @@ namespace Lekkerbek.Web.Controllers
             return View(entity);
         }
 
-
         // POST: RestaurantManagment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditHolidayDay(int id, [Bind("RestaurantHolidayId,Description,StartDate,EndDate")] RestaurantHoliday restaurantHoliday)
         {
+            if(ModelState.IsValid) { 
             try
             {
                 List<Order> orderTimeSlots = _restaurantManagementService.GetAllOrders(restaurantHoliday.StartDate, restaurantHoliday.EndDate);
@@ -566,6 +577,8 @@ namespace Lekkerbek.Web.Controllers
                 var entity = _restaurantManagementService.GetSpecificHolidayDay(id);
                 return View(entity);
             }
+            }
+            return View(restaurantHoliday);
         }
 
 
