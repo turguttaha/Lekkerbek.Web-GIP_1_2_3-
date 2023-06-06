@@ -51,6 +51,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: Orders/Create
         public IActionResult SelectCustomer()
         {
+
             
             ViewBag.CustomerId = _orderService.CustomerSelectList();
             return View();

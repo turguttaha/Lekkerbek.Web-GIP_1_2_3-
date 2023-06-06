@@ -14,7 +14,7 @@ namespace Lekkerbek.Web.Models
         [StringLength(20, ErrorMessage = "Uw voornaam mag maar 20 tekens lang zijn")]
         [Display(Name = "Voornaam")]
         public string? FName { get; set; } = string.Empty;
-        [StringLength(20, MinimumLength = 2)]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "Uw familienaam mag maar 20 tekens lang zijn")]
         [Display(Name = "Familienaam")]
         public string? LName { get; set; } = string.Empty;
 
@@ -58,7 +58,7 @@ namespace Lekkerbek.Web.Models
         public string? Btw { get; set; } = string.Empty;
 
         [Display(Name = "BTW nummer")]
-        [RegularExpression("^[0][0-9]{9}", ErrorMessage ="Het btw nummer moet 9 cijfers lang zijn")]
+        [RegularExpression("^[0][0-9]{9}", ErrorMessage ="Het btw nummer moet beginnen met een 0 en dan 9 cijfers bevatten")]
         public string? BtwNumber { get; set; }
 
         [Display(Name = "E-mail")]

@@ -16,6 +16,7 @@ namespace Lekkerbek.Web.Controllers
         {
             _restaurantManagementService = restaurantManagementService;
         }
+
         // GET: RestaurantManagment
         public ActionResult Index()
         {
@@ -40,6 +41,11 @@ namespace Lekkerbek.Web.Controllers
         // GET: RestaurantManagment/Details/5
         public ActionResult CreateOpeningsHour()
         {
+            if (User.IsInRole("CookTest"))
+            {
+                return View("CookCreate");
+            }
+
             return View();
         }
 
