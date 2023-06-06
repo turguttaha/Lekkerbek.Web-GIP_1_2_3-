@@ -95,7 +95,7 @@ Mock<IUserStore<IdentityUser>>().Object,
             userMock.Setup(x => x.Identity.IsAuthenticated).Returns(true);
             userMock.Setup(x => x.Identity.Name).Returns("customerUser");
             userMock.Setup(x => x.IsInRole("Administrator")).Returns(false);
-
+            userMock.Setup(x => x.IsInRole("CookTest")).Returns(true);
 
             _restaurantManagementController = new RestaurantManagementController(new RestaurantManagementService(new RestaurantManagementRepository(_context)))
             {
