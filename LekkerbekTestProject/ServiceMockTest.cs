@@ -116,6 +116,7 @@ Mock<IUserStore<IdentityUser>>().Object,
         {
             // Arrange
             // Act
+            //should give unauthorized access page, but gives normal viewresult for some reason
             var result = _restaurantManagementController.HolidayDays();
             // Assert
             Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
