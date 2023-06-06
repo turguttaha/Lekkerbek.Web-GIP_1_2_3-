@@ -32,7 +32,7 @@
                 <span asp-validation-for="TimeSlotID" class="text-danger"></span>
 
 
-            </div>
+            </div><p id="chefError" class="text-danger"></p>
             <div class="form-group form-check invisible">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Finished" /> @Html.DisplayNameFor(model => model.Finished)
@@ -77,7 +77,7 @@
     </tbody>
 </table>
             <div class="form-group">
-                <input type="submit" value="Opslaan" class="btn btn-primary" />
+                <input type="submit" value="Opslaan" id="saveButton" class="btn btn-primary" />
             </div>
 
         </form>
@@ -112,9 +112,14 @@
                         // Hier gaan we de span met id "statusSpan" ophalen
                         // en de text vervangen met de status.
                         // Status krijgen we van de action Message mee.
-                        if (response.timeSlots.length == 0) {
+                            if (response.timeSlots == null) {
+                                $("#chefError").html(response.orderError);
+                                $("#time").empty();
+                                document.getElementById("saveButton").disabled = true;
+                            }
+                            else if (response.timeSlots.length == 0) {
                             //Javascript shows this always, idk why, it also wont reset in the else, in other words the pop up if no chefs are availible is broken
-                            $("#chefError").html("No chefs availible");
+                            $("#chefError").html("Er zijn geen chefs meer vrij.");
                             console.log("test");
                         }
                         else {
