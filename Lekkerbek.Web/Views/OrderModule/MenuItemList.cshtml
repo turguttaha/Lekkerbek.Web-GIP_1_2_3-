@@ -62,7 +62,7 @@
 </div>
 
 
-@(Html.Kendo().Grid<Lekkerbek.Web.Models.MenuItem>()
+@(Html.Kendo().Grid<Lekkerbek.Web.ViewModel.MenuItemViewModel>()
 .Name("grid")
 
 .Columns(columns =>
@@ -71,7 +71,7 @@
     columns.Bound(f => f.Name);
     columns.Bound(f => f.Description);
     columns.Bound(f => f.Price);
-    columns.Bound(f => f.Sort);
+    columns.Bound(f => f.Type);
     columns.Bound(f => f.BtwNumber).Title("BTW %").Filterable(false);
     columns.Bound(c => c.MenuItemId)
               .Title(" ").Filterable(false)

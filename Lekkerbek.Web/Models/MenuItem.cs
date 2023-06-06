@@ -24,9 +24,8 @@ namespace Lekkerbek.Web.Models
         public double BtwNumber { get; set; }
 
         [Display(Name = "Soort")]
-
         public string Sort { get; set; } = string.Empty;
-        public virtual ICollection<OrderLine> OrderLines { get; set; }
+        public virtual ICollection<OrderLine>? OrderLines { get; set; }
 
     }
 }

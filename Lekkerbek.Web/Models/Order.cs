@@ -14,17 +14,17 @@ namespace Lekkerbek.Web.Models
         [Display(Name = "Korting")]
         public int? Discount { get; set; }
         [Display(Name ="Klant")]
-        public virtual Customer Customer { get; set; }
+        public virtual Customer? Customer { get; set; }
 
         //Realatie met OrderLine
         [Display(Name = "Menu items")]
-        public virtual ICollection<OrderLine> OrderLines { get; set; }
+        public virtual ICollection<OrderLine>? OrderLines { get; set; }
 
         //Foreign Key van Time Slot
         public int? TimeSlotID { get; set; }
         [Display(Name ="Tijdslot")]
  
-        public virtual TimeSlot TimeSlot { get; set; }//this is something we need to think about what we call it
+        public virtual TimeSlot? TimeSlot { get; set; }//this is something we need to think about what we call it
 
         internal static List<OrderLine> TemproraryCart { get; set; } = new List<OrderLine>();
     }
