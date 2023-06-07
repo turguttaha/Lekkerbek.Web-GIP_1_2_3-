@@ -84,10 +84,16 @@
             // Hier gaan we de span met id "statusSpan" ophalen
             // en de text vervangen met de status.
             // Status krijgen we van de action Message mee.
-            if(response.timeSlots.length==0)
+            if (response.timeSlots== null)
+            {
+                                $("#chefError").html(response.orderError);
+                                $("#time").empty();
+                                document.getElementById("saveButton").disabled = true;
+            }
+            else if(response.timeSlots.length==0)
             {
                 //Javascript shows this always, idk why, it also wont reset in the else, in other words the pop up if no chefs are availible is broken
-                $("#chefError").html("No chefs availible");
+                $("#chefError").html("Er zijn geen chefs meer vrij.");
                 $("#time").empty();
                                 document.getElementById("saveButton").disabled = true;
             }

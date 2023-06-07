@@ -1,7 +1,7 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Registreer";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -9,7 +9,7 @@
 <div class="row">
     <div class="col-md-4">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
+            <h2>Maak nieuw account aan.</h2>
             <hr />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating">
@@ -64,12 +64,12 @@
             </div>
             <div class="form-floating">
                 <select asp-for="Input.PreferredDishId" class="form-control" asp-items="ViewBag.PreferredDishId" aria-required="true"></select>
-                <label asp-for="Input.PreferredDishId">Preferred Dish</label>
+                <label asp-for="Input.PreferredDishId"></label>
                 <span asp-validation-for="Input.PreferredDishId" class="text-danger"></span>
             </div>
             <div class="form-floating m-4 ">
                 <input name="profCustomer" id="profCustomer" type="checkbox" style=" width: 15px; height: 15px;" />
-                <label for="profCustomer" class="fw-bolder">Are you professional customer ?</label>
+                <label for="profCustomer" class="fw-bolder">Bent u een professionele klant ?</label>
 
             </div>
             <div id="ProfCustCont" hidden>
@@ -94,7 +94,7 @@
                     <span asp-validation-for="Input.BtwNumber" class="text-danger"></span>
                 </div>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mt-3">Register</button>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mt-3">Registreren</button>
         </form>
     </div>
     <div class="col-md-6 col-md-offset-2">

@@ -21,6 +21,29 @@ namespace Lekkerbek.Web.Services
             _repository = repository;
             _customerService = customerService;
         }
+        public bool IsRestaurantClosed(DateTime askDateTime) 
+        {
+            var closingDays = _repository.GetRestaurantHolliday();
+            foreach (var item in closingDays)
+            {
+                if (item.StartDate <= askDateTime && askDateTime <= item.EndDate)
+                {
+                    
+                    return true;
+
+                }
+
+            }
+            int selectedDayOfWeek = (int)((DayOfWeek)Enum.Parse(typeof(DayOfWeekEnum), askDateTime.DayOfWeek.ToString()));
+            var openingsHours = _repository.GetOpeningsHours(selectedDayOfWeek);
+            if (openingsHours == null||openingsHours.Count()==0) 
+            {
+                return true;
+            }
+            return false;
+        }
+
+
        
         public List<SelectListItem> GetTimeDropDownList(DateTime askDateTime)
         {
@@ -42,17 +65,8 @@ namespace Lekkerbek.Web.Services
                     item.StartTime = item.StartTime.AddMinutes(15);
                 }
             }
-            var closingDays = _repository.GetRestaurantHolliday();
-            foreach (var item in closingDays)
-            {
-                if (item.StartDate <= askDateTime && askDateTime <= item.EndDate)
-                {
-                    timeSlotSelectListNew.Clear();
-                    return timeSlotSelectListNew;
-
-                }
-
-            }
+            
+            
             //filter out the timeslots that are already fully booked
             //gets the timeslot of a specific day
             List<TimeSlot> timeSlotOfADay = _repository.GetUsedTimeSlots(askDateTime);
@@ -88,7 +102,7 @@ namespace Lekkerbek.Web.Services
                 }
                                
             }
-
+            
             return tempTimeSlotSelectList;
         }
 
