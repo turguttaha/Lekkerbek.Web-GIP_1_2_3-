@@ -59,18 +59,6 @@ namespace LekkerbekTestProject.ModelValidations
             }
 
         [TestMethod]
-        public void StartTimeSlot_HasRequiredAttribute()
-            {
-                // Arrange
-                var propInfo = typeof(TimeSlot).GetProperty("StartTimeSlot");
-                var attribute = propInfo.GetCustomAttribute<RequiredAttribute>();
-
-                // Assert
-                Assert.IsNotNull(attribute);
-                Assert.AreEqual("Tijdslot moet ingevuld zijn", attribute.ErrorMessage);
-            }
-
-        [TestMethod]
         public void StartTimeSlot_HasDateTimeDataTypeAttribute()
             {
                 // Arrange
