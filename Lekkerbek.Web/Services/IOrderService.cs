@@ -26,6 +26,7 @@ namespace Lekkerbek.Web.Services
         public void UpdateOrderLine(OrderLine orderLine);
         public bool OrderLineExists(int id);
         public bool DeleteOrder(Order order);
+        public bool IsRestaurantClosed(DateTime askDateTime);
         public Customer GetSpecificCustomer(int? id);
         public IEnumerable<OrderViewModel> FilterOrdersForCustomer(int? customerId);
         public List<OrderViewModel> GetOrderViewModels();
