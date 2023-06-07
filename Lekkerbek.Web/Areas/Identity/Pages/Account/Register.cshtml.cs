@@ -109,16 +109,19 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
             [Display(Name = "Postcode")]
             public string? PostalCode { get; set; }
 
-            [StringLength(20, ErrorMessage = "Btw mag maar 20 tekens bevatten")]
+            [MaxLength(2)]
             [Display(Name = "BTW")]
+            [RegularExpression("^[a-zA-Z]{2}", ErrorMessage = "Enkel geldige landcodes mogen ingevuld worden")]
             public string? Btw { get; set; } = string.Empty;
 
             [Display(Name = "BTW nummer")]
+            [RegularExpression("^[0][0-9]{9}", ErrorMessage = "Het btw nummer moet beginnen met een 0 en dan 9 cijfers bevatten")]
             public string? BtwNumber { get; set; }
 
             //Foreign Key van Preferred Dish
+            [Display(Name = "Favoriete Gerechten")]
             public int? PreferredDishId { get; set; }
-
+            [Display(Name = "Favoriete Gerechten")]
             public virtual PreferredDish PreferredDish { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -145,7 +148,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
             /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Bevestig wachtwoord")]
-            [Compare("Wachtwoord", ErrorMessage = "Het wachtwoord en het bevestigingswachtwoord komen niet overeen.")]
+            [Compare("Password", ErrorMessage = "Het wachtwoord en het bevestigingswachtwoord komen niet overeen.")]
             public string ConfirmPassword { get; set; }
         }
 

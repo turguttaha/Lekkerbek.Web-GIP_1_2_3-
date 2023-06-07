@@ -19,7 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telerik.SvgIcons;
 
-namespace LekkerbekTestProject
+namespace LekkerbekTestProject.Services
 {
     [TestClass]
     public class ServiceMockTest
@@ -27,8 +27,8 @@ namespace LekkerbekTestProject
         private OrdersController _controller;
         private RestaurantManagementController _restaurantManagementController;
         private LekkerbekContext _context;
-        private RestaurantManagementRepository _restaurantManagementRepository; 
-        
+        private RestaurantManagementRepository _restaurantManagementRepository;
+
         [TestInitialize]
         public void Initialize()
         {
@@ -40,8 +40,8 @@ namespace LekkerbekTestProject
             .Options;
             _context = new LekkerbekContext(options);
             _context.Database.EnsureCreated();
-            
-            
+
+
             // Configure any additional dependencies for the controller (e.g.,services, repositories)
             var mockOrderService = new Mock<IOrderService>();
             var orderNr1 = new Order { OrderID = 1, CustomerId = 1, TimeSlotID = 1, Finished = false };
@@ -55,8 +55,8 @@ namespace LekkerbekTestProject
 
             // Create the controller instance with the required dependencies
             var userManagerMock = new Mock<UserManager<IdentityUser>>(new
-Mock<IUserStore<IdentityUser>>().Object,
- null, null, null, null, null, null, null, null);
+            Mock<IUserStore<IdentityUser>>().Object,
+            null, null, null, null, null, null, null, null);
             userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
             .ReturnsAsync((string userId) => new IdentityUser { Id = userId });
             // Create test users
@@ -75,8 +75,7 @@ Mock<IUserStore<IdentityUser>>().Object,
             var adminRole = new IdentityRole { Name = "Administrator" };
             var custRole = new IdentityRole { Name = "Customer" };
             // Add the users to the UserManager
-            var users = new List<IdentityUser> { adminUser, customerUser
-}.AsQueryable();
+            var users = new List<IdentityUser> { adminUser, customerUser }.AsQueryable();
             userManagerMock.Setup(u => u.Users).Returns(users);
             // Assign the users to the role
             userManagerMock.Setup(u => u.IsInRoleAsync(adminUser,
@@ -86,8 +85,8 @@ Mock<IUserStore<IdentityUser>>().Object,
             var adminUsers = new List<IdentityUser> { adminUser };
             userManagerMock.Setup(u =>
            u.GetUsersInRoleAsync(adminRole.Name)).ReturnsAsync(adminUsers);
-            
- var customerUsers = new List<IdentityUser> { customerUser };
+
+            var customerUsers = new List<IdentityUser> { customerUser };
             userManagerMock.Setup(u =>
            u.GetUsersInRoleAsync(custRole.Name)).ReturnsAsync(customerUsers);
             // Create the controller instance with the required dependencies
@@ -106,7 +105,7 @@ Mock<IUserStore<IdentityUser>>().Object,
             };
 
             _controller = new OrdersController(mockOrderService.Object);
-            
+
             _restaurantManagementRepository = new RestaurantManagementRepository(_context);
 
 
@@ -135,14 +134,7 @@ Mock<IUserStore<IdentityUser>>().Object,
 
             Assert.AreEqual("CookCreate", viewResult.ViewName);
         }
-        [TestCleanup]
-        public void Cleanup()
-        {
-            _controller.Dispose();
-            _context.Database.EnsureDeleted();
-            _restaurantManagementController.Dispose();
-            _context.Dispose();
-        }
+
         [TestMethod]
         public async Task CreateCustomer_Success()
         {
@@ -150,13 +142,13 @@ Mock<IUserStore<IdentityUser>>().Object,
 
 
             // Arrange
-            
-            var timeSlot = new RestaurantHoliday { RestaurantHolidayId=1, StartDate = Convert.ToDateTime("12/12/2000 00:00"), EndDate = Convert.ToDateTime("12/12/2000 00:00"), Description = ":D" };
+
+            var timeSlot = new RestaurantHoliday { RestaurantHolidayId = 1, StartDate = Convert.ToDateTime("12/12/2000 00:00"), EndDate = Convert.ToDateTime("12/12/2000 00:00"), Description = ":D" };
             // Act
             _restaurantManagementRepository.AddToDatabaseHolidayDay(timeSlot);
-             // Assert
+            // Assert
 
-             var createdHolliday = await _context.RestaurantHolidays.FirstOrDefaultAsync(o =>o.RestaurantHolidayId == timeSlot.RestaurantHolidayId);
+            var createdHolliday = await _context.RestaurantHolidays.FirstOrDefaultAsync(o => o.RestaurantHolidayId == timeSlot.RestaurantHolidayId);
             Assert.IsNotNull(createdHolliday);
             // Additional assertions on the created customer properties
         }
@@ -172,13 +164,13 @@ Mock<IUserStore<IdentityUser>>().Object,
             {
                 // Act
                 Mock<IOrderService> mockOrderService = new Mock<IOrderService>();
-                
+
                 var results = _controller.Index();
                 // Assert
                 Assert.IsInstanceOfType(results, typeof(IActionResult));
-                
-                
-                
+
+
+
             }
             catch (AssertFailedException)
             {
@@ -214,7 +206,7 @@ Mock<IUserStore<IdentityUser>>().Object,
             {
                 ControllerContext = new ControllerContext
                 {
-                    
+
                 }
             };
             var newHolliday = new RestaurantHoliday
@@ -236,6 +228,14 @@ Mock<IUserStore<IdentityUser>>().Object,
             Assert.AreEqual(Convert.ToDateTime("11/11/2000 00:00"), savedCustomer.StartDate);
         }
 
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _context.Database.EnsureDeleted();
+            _controller.Dispose();
+            _restaurantManagementController.Dispose();
+            _context.Dispose();
+        }
 
     }
 }

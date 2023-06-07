@@ -427,13 +427,23 @@ namespace Lekkerbek.Web.Controllers
 
             //get datetime of today for first check instead of hardcoded value
             DateTime timeSlotDateAndTime = Convert.ToDateTime(date + " 00:00");
-            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotDateAndTime);
-            foreach (SelectListItem item in _orderService.GetTimeDropDownList(timeSlotDateAndTime))
+            
+            string errorMessage = "";
+            if (_orderService.IsRestaurantClosed(timeSlotDateAndTime))
             {
-                Console.WriteLine(item.Value);
+                errorMessage = "Het restaurant is gesloten";
+                ViewBag.TimeSlotsSelectList = null;
+            }
+            else
+            {
+                ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotDateAndTime);
+                foreach (SelectListItem item in _orderService.GetTimeDropDownList(timeSlotDateAndTime))
+                {
+                    Console.WriteLine(item.Value);
+                }
             }
 
-            return Json(new { timeSlots = ViewBag.TimeSlotsSelectList });
+            return Json(new { timeSlots = ViewBag.TimeSlotsSelectList, orderError = errorMessage });
         }
         public async Task<JsonResult> UpdateAdress(string street, string city , string postalCode)
         {
