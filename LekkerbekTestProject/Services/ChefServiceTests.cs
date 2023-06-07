@@ -64,7 +64,7 @@ namespace LekkerbekTestProject.Services
         public async Task CreateChef_Success()
         {
             // Arrange
-            var chef = new ChefViewModel { ChefId = 1, ChefName = "Test" };
+            var chef = new ChefViewModel { ChefId = 1, ChefName = "Test",Email="test@",IdentityId= "test"};
             // Act
              _chefService.Create(chef);
             // Assert

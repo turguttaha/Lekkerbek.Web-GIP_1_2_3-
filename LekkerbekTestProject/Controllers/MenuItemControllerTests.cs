@@ -18,7 +18,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LekkerbekTestProject
+namespace LekkerbekTestProject.Controllers
 {
     [TestClass]
     public class MenuItemControllerTests
@@ -48,7 +48,7 @@ namespace LekkerbekTestProject
             userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
             .ReturnsAsync((string userId) => new IdentityUser { Id = userId });
             // Create the controller instance with the required dependencies
-            
+
             var user = new Mock<ClaimsPrincipal>();
             user.Setup(x => x.Identity.IsAuthenticated).Returns(true);
             user.Setup(x => x.Identity.Name).Returns("testuser");
@@ -78,8 +78,8 @@ namespace LekkerbekTestProject
                 var result = _controller.Create();
                 // Assert
                 Assert.IsInstanceOfType(result, typeof(ViewResult));
-                
-                
+
+
             }
             catch (AssertFailedException)
             {

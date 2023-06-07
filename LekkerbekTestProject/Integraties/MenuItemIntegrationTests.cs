@@ -16,26 +16,24 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
-namespace LekkerbekTestProject
+namespace LekkerbekTestProject.Integraties
 {
     [TestClass]
-    public class CustomerIntegrationTests
+    public class MenuItemIntegrationTests
     {
         private LekkerbekContext _context;
         private UserManager<IdentityUser> _userManager;
         private ClaimsPrincipal _user;
-        
- [TestInitialize]
+
+        [TestInitialize]
         public void Initialize()
         {
             // Create an in-memory SQLite database
             var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
             // Initialize the DbContext using the SQLite connection
-            _context = new LekkerbekContext(new
-           DbContextOptionsBuilder<LekkerbekContext>()
+            _context = new LekkerbekContext(new DbContextOptionsBuilder<LekkerbekContext>()
             .UseSqlite(connection)
             .Options);
             // Create the database schema
@@ -60,12 +58,12 @@ namespace LekkerbekTestProject
         {
             _context.Dispose();
         }
-        
- [TestMethod]
+
+        [TestMethod]
         public async Task AddMenuItem_ValidData_Success()
         {
             // Arrange
-            var menuItemController = new MenuItemsController(new MenuItemService(new MenuItemRepository(_context)), new OrderService(new OrdersRepository(_context), new CustomerService(new CustomersRepository(_context))))
+            var menuItemsController = new MenuItemsController(new MenuItemService(new MenuItemRepository(_context)), new OrderService(new OrdersRepository(_context), new CustomerService(new CustomersRepository(_context))))
             {
                 ControllerContext = new ControllerContext
                 {
@@ -75,10 +73,10 @@ namespace LekkerbekTestProject
             var newMenuItem = new MenuItem
             {
                 Name = "Cake",
-                Description = "Cake"
+                Description = "Dessert"
             };
             // Act
-            var result = await menuItemController.Create(newMenuItem);
+            var result = await menuItemsController.Create(newMenuItem);
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
             var redirectResult = (RedirectToActionResult)result;
@@ -86,8 +84,7 @@ namespace LekkerbekTestProject
             // Verify that the newCustomer object is created in the DbContext
             var savedMenuItem = await _context.MenuItems.FirstOrDefaultAsync(m => m.Name == "Cake");
             Assert.IsNotNull(savedMenuItem);
-            Assert.AreEqual("Cake", savedMenuItem.Description);
+            Assert.AreEqual("Dessert", savedMenuItem.Description);
         }
     }
-
 }

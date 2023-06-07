@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Integraties\" />
     <Folder Include="Authenticatie en autorisaties\" />
     <Folder Include="Repositories\" />
     <Folder Include="Routes\" />

@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Quartz.Xml;
 
-namespace LekkerbekTestProject
+namespace LekkerbekTestProject.Services
 {
     [TestClass]
     public class MenuItemServiceTests
@@ -45,12 +45,12 @@ namespace LekkerbekTestProject
             // Act
             _menuItemService.Create(menuItem);
             // Assert
-            
+
             var createdMenuItem = await _context.MenuItems.FirstOrDefaultAsync(M => M.MenuItemId == menuItem.MenuItemId);
             Assert.IsNotNull(createdMenuItem);
             // Additional assertions on the created customer properties
         }
-        
+
         [TestMethod]
         public async Task GetSpecificMenuItem_Succes()
         {
@@ -83,7 +83,7 @@ namespace LekkerbekTestProject
             await _context.SaveChangesAsync();
             menuItem.Name = "Name updated!";
             // Act
-            
+
             _menuItemService.Update(menuItem);
             // Assert
             var retrievedMenuItem = await _context.MenuItems.FirstOrDefaultAsync(M => M.MenuItemId == menuItem.MenuItemId);

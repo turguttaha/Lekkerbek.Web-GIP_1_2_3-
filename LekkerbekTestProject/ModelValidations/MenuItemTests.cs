@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LekkerbekTestProject
+namespace LekkerbekTestProject.ModelValidations
 {
     public class CustomerTests
     {
@@ -25,7 +25,7 @@ namespace LekkerbekTestProject
             _context = new LekkerbekContext(options);
             _context.Database.EnsureCreated();
         }
-        
+
         [TestCleanup]
         public void Cleanup()
         {
@@ -50,4 +50,4 @@ namespace LekkerbekTestProject
            _context.SaveChangesAsync());
         }
     }
-    }
+}
