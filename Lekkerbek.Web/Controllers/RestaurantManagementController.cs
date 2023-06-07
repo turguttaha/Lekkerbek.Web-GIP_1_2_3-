@@ -5,6 +5,7 @@ using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -249,8 +250,9 @@ namespace Lekkerbek.Web.Controllers
                     foreach (Order order in orderTimeSlots)
                     {
 
-                        if (orderTimeSlots.GroupBy(c => c.TimeSlot.StartTimeSlot).Where(x => x.Count() == allChefCount) != null)
+                        if (!orderTimeSlots.GroupBy(c => c.TimeSlot.StartTimeSlot).Where(x => x.Count() == allChefCount).IsNullOrEmpty())
                         {
+                                var a = orderTimeSlots.GroupBy(c => c.TimeSlot.StartTimeSlot).Where(x => x.Count() == allChefCount);
                             ModelState.AddModelError("Model", "Deze chef moet een bestelling klaarmaken tijdens deze periode!");
                             ViewBag.hError = "Deze chef moet een bestelling klaarmaken tijdens deze periode!";
                             ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();

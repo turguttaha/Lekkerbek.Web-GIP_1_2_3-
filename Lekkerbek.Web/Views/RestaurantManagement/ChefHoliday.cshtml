@@ -11,7 +11,7 @@
 .Name("grid")
 .Columns(columns =>
 {
-    
+    columns.Bound(f => f.ChefId);
     columns.Bound(f => f.StartDate).Format("{0:g}");
     columns.Bound(f => f.EndDate).Format("{0:g}");
     columns.Bound(f => f.Description);

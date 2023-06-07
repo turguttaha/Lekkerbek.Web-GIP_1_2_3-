@@ -20,7 +20,7 @@ namespace Lekkerbek.Web.Repositories
             //This is another way to make a new object
             {
                 CustomerId = customer.CustomerId,
-                Name = (customer.FirmName!=null? customer.FirmName : customer.FName + " " + customer.LName),
+                Name = (customer.ContactPerson!=null? customer.FirmName : customer.FName + " " + customer.LName),
                 Email = customer.Email,
                 PhoneNumber = customer.PhoneNumber,
                 Btw = customer.Btw,

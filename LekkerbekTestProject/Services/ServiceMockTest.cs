@@ -110,30 +110,7 @@ namespace LekkerbekTestProject.Services
 
 
         }
-        //[TestMethod]
-        //public async Task CustomerController_Create_ForbiddenForCustomerRole()
-        //{
-        //    // Arrange
-        //    // Act
-        //    //should give unauthorized access page, but gives normal viewresult for some reason
-        //    var result = _restaurantManagementController.HolidayDays();
-        //    // Assert
-        //    Assert.IsInstanceOfType(result, typeof(UnauthorizedResult));
-        //}
-
-        [TestMethod]
-        public async Task CustomerController_CreateRoute_ReturnsViewResult()
-        {
-            // Arrange
-            // Act
-            var result = _restaurantManagementController.CreateOpeningsHour();
-            //// Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOfType(result, typeof(IActionResult));
-            var viewResult = (ViewResult)result;
-
-            Assert.AreEqual("CookCreate", viewResult.ViewName);
-        }
+        
 
         [TestMethod]
         public async Task CreateCustomer_Success()

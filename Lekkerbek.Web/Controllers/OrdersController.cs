@@ -118,6 +118,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: OrderLines/Create
         public IActionResult AddOrderLine()
         {
+           
             ViewData["MenuItemId"] = _orderService.MenuItemSelectList();
             ViewBag.TemproraryCart = Order.TemproraryCart;
             return View();
@@ -151,6 +152,14 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CompleteOrder()
         {
+            if(Order.TemproraryCart.Count == 0)
+            {
+
+                TempData["Errorx"] = "Je moet minstens een Menu Item toevoegen!";
+                return RedirectToAction("AddOrderLine");
+
+            }
+
             //TimeSlot Object aanmaken
 
             TimeSlot timeSlot = new TimeSlot();
