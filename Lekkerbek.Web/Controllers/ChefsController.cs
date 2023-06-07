@@ -25,22 +25,14 @@ namespace Lekkerbek.Web.Controllers
     {
        
         private readonly ChefService _chefService;
-        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
-        private readonly IUserStore<IdentityUser> _userStore;
-        private readonly ILogger<RegisterModel> _logger;
-        public ChefsController(ChefService chefService, 
-            SignInManager<IdentityUser> signInManager, 
-            UserManager<IdentityUser> userManager,
-            IUserStore<IdentityUser> userStore,
-            ILogger<RegisterModel> logger
+        public ChefsController(
+            ChefService chefService, 
+            UserManager<IdentityUser> userManager
             )
         {
             _chefService = chefService;
-            _signInManager = signInManager;
             _userManager = userManager;
-            _userStore = userStore;
-            _logger = logger;
         }
 
         // GET: Chefs
