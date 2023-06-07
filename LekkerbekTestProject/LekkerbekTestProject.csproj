@@ -23,10 +23,4 @@
     <ProjectReference Include="..\Lekkerbek.Web\Lekkerbek.Web.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Authenticatie en autorisaties\" />
-    <Folder Include="Repositories\" />
-    <Folder Include="Routes\" />
-  </ItemGroup>
-
 </Project>
