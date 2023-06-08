@@ -1,4 +1,5 @@
-﻿using Lekkerbek.Web.Models;
+﻿
+using Lekkerbek.Web.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,10 +42,10 @@ namespace Lekkerbek.Web.Data
 
 
 
-      //  protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
       //{
-      //     optionsBuilder.UseSqlServer("Server=ucllgipsqlteam2v4.database.windows.net;Database=gip2db;user=gipteam2;password=Gipteam_2;trustservercertificate=true;");
+         //  optionsBuilder.UseSqlServer("Server=ucllgipsqlteam2v4.database.windows.net;Database=gip2db;user=gipteam2;password=Gipteam_2;trustservercertificate=true;");
          
-      //  }
+       // }
     }
 }
