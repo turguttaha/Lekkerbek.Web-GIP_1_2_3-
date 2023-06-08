@@ -22,9 +22,15 @@
             @Html.DisplayNameFor(model => model.Customer)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.FName)
-            @Html.DisplayFor(model => model.Customer.LName)
-            @Html.DisplayFor(model=>model.Customer.FirmName)
+            @if (Model.Customer.ContactPerson != null)
+            {
+                @Html.DisplayFor(model => model.Customer.FirmName)
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.Customer.FName)
+                @Html.DisplayFor(model => model.Customer.LName)
+            }
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TimeSlot)

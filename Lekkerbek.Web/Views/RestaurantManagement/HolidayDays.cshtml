@@ -12,8 +12,8 @@
 .Columns(columns =>
 {
     
-    columns.Bound(f => f.StartDate).Format("{0:g}");
-    columns.Bound(f => f.EndDate).Format("{0:g}");
+    columns.Bound(f => f.StartDate).Format("{0:d}");
+    columns.Bound(f => f.EndDate).Format("{0:d}");
     columns.Bound(f => f.Description);
     columns.Bound(f => f.RestaurantHolidayId).Title("  ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/RestaurantManagement/EditHolidayDay/#=RestaurantHolidayId#'>Bewerken</a></div>");
 
