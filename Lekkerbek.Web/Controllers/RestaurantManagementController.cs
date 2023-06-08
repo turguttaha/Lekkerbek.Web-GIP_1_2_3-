@@ -454,12 +454,12 @@ namespace Lekkerbek.Web.Controllers
                 if(orderTimeSlots.Count > 0)
                 {
                     ModelState.AddModelError("Model", "Er staan open bestellingen tijdens de periode die u wilt wijzigen!");
-                    ViewBag.hError = "Er staan open bestellingen tijdens de periode die u wilt wijzigen!";
+                        TempData["hError"] = "Er staan open bestellingen tijdens de periode die u wilt wijzigen!";
                     return View();
                 }
                 var holidayList = _restaurantManagementService.GetAllHolidayDays();
                 bool conflict = false;
-                if (restaurantHoliday.StartDate < restaurantHoliday.EndDate)
+                if (restaurantHoliday.StartDate <= restaurantHoliday.EndDate)
                 {
                     foreach (var holiday in holidayList)
                     {
@@ -477,7 +477,7 @@ namespace Lekkerbek.Web.Controllers
                     if (conflict)
                     {
                         ModelState.AddModelError("Model", "Dit tijdslot is al in gebruik!");
-                        ViewBag.hError = "Dit tijdslot is al in gebruik!";
+                        TempData["hError"] = "Dit tijdslot is al in gebruik!";
                         return View();
                     }
                     else
@@ -487,7 +487,7 @@ namespace Lekkerbek.Web.Controllers
                 else
                 {
                     ModelState.AddModelError("Model", "Startuur moet eerder zijn dan einduur");
-                    ViewBag.hError = "Startuur moet eerder zijn dan einduur";
+                        TempData["hError"] = "Startuur moet eerder zijn dan einduur";
                     return View();
                 }
             }
@@ -536,7 +536,7 @@ namespace Lekkerbek.Web.Controllers
                 RestaurantHoliday restaurantHoliday1 = holidayList.Find(h=>h.RestaurantHolidayId == id);
                 holidayList.Remove(restaurantHoliday1);
                 bool conflict = false;
-                if (restaurantHoliday.StartDate < restaurantHoliday.EndDate)
+                if (restaurantHoliday.StartDate <= restaurantHoliday.EndDate)
                 {
                     foreach (var holiday in holidayList)
                     {

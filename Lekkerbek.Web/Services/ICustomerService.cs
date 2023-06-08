@@ -8,7 +8,6 @@ namespace Lekkerbek.Web.Services
     {
         public IEnumerable<Customer> Read();
         public IList<CustomerViewModel> GetAllViews();
-
         public void Create(Customer customer);
         public void Update(Customer customer);
         public void Destroy(CustomerViewModel customer);
