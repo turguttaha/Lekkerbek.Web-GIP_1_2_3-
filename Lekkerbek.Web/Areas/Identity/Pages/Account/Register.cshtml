@@ -38,7 +38,7 @@
                 <span asp-validation-for="Input.LName" class="text-danger"></span>
             </div>
             <div class="form-floating">
-                <input asp-for="Input.Birthday" id="birthday" class="form-control" autocomplete="First Name" aria-required="true" />
+                <input asp-for="Input.Birthday" class="form-control" autocomplete="First Name" aria-required="true" />
                 <label asp-for="Input.Birthday"></label>
                 <span asp-validation-for="Input.Birthday" class="text-danger"></span>
             </div>
@@ -115,21 +115,5 @@
             document.querySelector("#ProfCustCont").hidden = true;
         }
     });
-        var birthday = document.getElementById("birthday");
-        var birthdayError = document.getElementById("birthday-error");
-        var date = new Date();
-        date.setFullYear(date.getFullYear() - 18);
-        birthday.max = date.toISOString().split("T")[0];
 
-        birthday.addEventListener('change', function () {
-            var selectedDate = new Date(birthday.value);
-            if (selectedDate > date) {
-                birthdayError.style.display = 'block';
-                birthday.setCustomValidity('You must be at least 18 years old.');
-            } else {
-                birthdayError.style.display = 'none';
-                birthday.setCustomValidity('');
-            }
-        });
-  
 </script>

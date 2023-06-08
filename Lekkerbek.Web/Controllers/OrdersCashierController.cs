@@ -22,7 +22,6 @@ using System.Net.Mime;
 using Lekkerbek.Web.NewFolder;
 using System.ComponentModel;
 using Telerik.SvgIcons;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -85,7 +84,7 @@ namespace Lekkerbek.Web.Controllers
             double totalPriceBTW = 0;
             foreach (var oorder in filteredOrderLines)
             {
-                totalPrice += oorder.MenuItem.Price * oorder.DishAmount * (1 + (oorder.MenuItem.BtwNumber / 100));
+                totalPrice += oorder.MenuItem.Price * oorder.DishAmount;
                 totalPriceBTW += oorder.MenuItem.Price * oorder.DishAmount * (1 + (oorder.MenuItem.BtwNumber / 100));
             }
             ViewBag.totalPrice = Math.Round(totalPrice, 2);
@@ -151,22 +150,13 @@ namespace Lekkerbek.Web.Controllers
                 //orderFinish.Finished = true;
                 if ( orderFinish != null) 
                 {
-                        if (collection["Discount"] != "" && !collection["Discount"].IsNullOrEmpty())
-                        {
-                            orderFinish.Discount = int.Parse(collection["Discount"]);
-                            ViewBag.Korting = true;
-                        }
-                        else 
-                        { 
-                            ViewBag.Korting = true;
-                        }
-                    
+                    orderFinish.Discount = int.Parse(collection["Discount"]);
                     ViewBag.totalPrice = Math.Round((double)(totalPrice * (100 - orderFinish.Discount) / 100), 2);
                     ViewBag.discount = discount;
 
                     _orderCashierService.Update(orderFinish);
                 }
-                    
+                    ViewBag.Korting = true;
                     return View(orderFinish);
 
                 }
@@ -603,7 +593,7 @@ th, td{
             {
                 return NotFound();
             }
-            ViewBag.PreferredDishId = new SelectList(_orderCashierService.GetAllPrefferedDishes(), "PreferredDishId", "Name", customer.PreferredDishId);
+            ViewData["PreferredDishId"] = new SelectList(_orderCashierService.GetAllPrefferedDishes(), "PreferredDishId", "Name", customer.PreferredDishId);
             return View(customer);
         }
 

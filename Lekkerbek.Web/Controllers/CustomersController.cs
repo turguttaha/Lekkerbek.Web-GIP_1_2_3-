@@ -91,11 +91,11 @@ namespace Lekkerbek.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (customer != null)
-                {
-                    _customerService.Create(customer);
-                    return RedirectToAction(nameof(Index));
-                }
+            if (customer != null)
+            {
+                _customerService.Create(customer);
+                return RedirectToAction(nameof(Index));
+            }
             }
             ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
             return View(customer);

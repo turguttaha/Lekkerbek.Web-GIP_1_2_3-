@@ -35,7 +35,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Birthday" class="control-label"></label>
-                <input asp-for="Birthday" id="birthday" class="form-control" />
+                <input asp-for="Birthday" class="form-control" />
                 <span asp-validation-for="Birthday" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -89,7 +89,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" value="Opslaan" class="btn btn-primary mt-3" />
+                <input type="submit" value="Save" class="btn btn-primary mt-3" />
             </div>
         </form>
     </div>
@@ -115,20 +115,5 @@
             document.querySelector("#ProfCustCont").hidden = true;
         }
     });
-        var birthday = document.getElementById("birthday");
-        var birthdayError = document.getElementById("birthday-error");
-        var date = new Date();
-        date.setFullYear(date.getFullYear() - 18);
-        birthday.max = date.toISOString().split("T")[0];
 
-        birthday.addEventListener('change', function () {
-            var selectedDate = new Date(birthday.value);
-            if (selectedDate > date) {
-                birthdayError.style.display = 'block';
-                birthday.setCustomValidity('You must be at least 18 years old.');
-            } else {
-                birthdayError.style.display = 'none';
-                birthday.setCustomValidity('');
-            }
-        });
 </script>
