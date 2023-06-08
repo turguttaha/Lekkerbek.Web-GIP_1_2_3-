@@ -459,7 +459,7 @@ namespace Lekkerbek.Web.Controllers
                     _customerService.Update(customer);
 
 
-                    return Json(new { status = "Uw adres is werd aangepast" });
+                    return Json(new { status = "Uw adres is aangepast" });
                 }
                 catch
                 {
