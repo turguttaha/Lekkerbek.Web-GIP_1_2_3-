@@ -54,6 +54,7 @@ namespace Lekkerbek.Web.Controllers
             try
             {
                 var openingsHourList =  _restaurantManagementService.GetAllOpeningsHours();
+                    
                 bool conflict = false;
                 if (restaurantOpeninghours.StartTime < restaurantOpeninghours.EndTime)
                 {
@@ -62,8 +63,10 @@ namespace Lekkerbek.Web.Controllers
 
                         if (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek )
                         {
-                            if ((openingHour.StartTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.EndTime.TimeOfDay))
-                            { conflict = true; }
+                            if ((openingHour.StartTime.TimeOfDay <= restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay <= openingHour.EndTime.TimeOfDay))
+                            { 
+                                conflict = true; 
+                            }
 
                         }
                         if (openingHour.EndTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.StartTime.TimeOfDay)
@@ -150,7 +153,7 @@ namespace Lekkerbek.Web.Controllers
                     foreach (var openingHour in openingsHourList)
                     {
 
-                        if (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek && (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.EndTime.TimeOfDay))
+                        if (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek && (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek && openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.EndTime.TimeOfDay))
                         {
 
                             conflict = true;
