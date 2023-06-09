@@ -9,7 +9,7 @@
     Layout = "_Layout";
 }
 
-<h1>Orders</h1>
+<h1>Bestellingen</h1>
 <p class="text-danger">@TempData["TimesPast"]</p>
 @(Html.Kendo().Grid<OrderViewModel>()
     .Name("grid")
@@ -20,9 +20,9 @@
         columns.Bound(p => p.Finished);
         columns.Bound(p => p.TimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}");
         columns.Bound(p => p.OrderID)
-               .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/EditOrder/#=OrderID#'>Edit</a></div>");
+               .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/EditOrder/#=OrderID#'>Wijzigen</a></div>");
         columns.Bound(p => p.OrderID)
-               .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/Delete/#=OrderID#'>Delete</a></div>");
+               .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/OrderModule/Delete/#=OrderID#'>Verwijderen</a></div>");
 
     })
     .Pageable()
@@ -61,8 +61,8 @@
                         .Name("grid_#=OrderID#") // template expression, to be evaluated in the master context
                         .Columns(columns =>
                         {
-                            columns.Bound(o => o.MenuItem.Name).Title("Item Name").Width(100);
-                            columns.Bound(o => o.DishAmount).Title("Amount").Width(150);
+                            columns.Bound(o => o.MenuItem.Name).Title("Naam").Width(100);
+                            columns.Bound(o => o.DishAmount).Title("Hoeveelheid").Width(150);
                             columns.Bound(o => o.ExtraDetails).Width(150); 
                         })
                         .DataSource(dataSource => dataSource

@@ -1,5 +1,6 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
+using Lekkerbek.Web.Migrations;
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -16,15 +17,17 @@ namespace Lekkerbek.Web.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ICustomerService _customerService;
         private readonly IOrderService _orderService;
+        private readonly OrderLineService _orderLineService;
         private readonly IMenuItemService _menuItemService;
 
 
-        public OrderModuleController(ICustomerService customerService, IOrderService orderService, IMenuItemService menuItemService, UserManager<IdentityUser> userManager)
+        public OrderModuleController(ICustomerService customerService, IOrderService orderService, IMenuItemService menuItemService, UserManager<IdentityUser> userManager, OrderLineService orderLineService)
         {
             _customerService = customerService;
             _orderService = orderService;
             _menuItemService = menuItemService;
             _userManager = userManager;
+            _orderLineService = orderLineService;
         }
         private async Task<Customer> GetCustomerAsync()
         {
@@ -46,8 +49,6 @@ namespace Lekkerbek.Web.Controllers
 
         public ActionResult DetailTemplate_HierarchyBinding_Orderline(int orderID, [DataSourceRequest] DataSourceRequest request)
         {
-            var a = _orderService.GetOrderLines();
-
             return Json(_orderService.GetOrderLines()
                 .Where(orderline => orderline.OrderID == orderID)
                 .ToDataSourceResult(request));
@@ -63,8 +64,9 @@ namespace Lekkerbek.Web.Controllers
             }
 
             var order = _orderService.GetSpecificOrder(id);
+            Customer customer = await GetCustomerAsync();
 
-            if (order == null)
+            if (order == null||customer.CustomerId!=order.CustomerId)
             {
                 return NotFound();
             }
@@ -87,7 +89,7 @@ namespace Lekkerbek.Web.Controllers
 
                 return View(order);
             }
-            TempData["TimesPast"] = "Order has less than 1 hours to prepare so no changes can be made to the order.";
+            TempData["TimesPast"] = "U kan geen de bestelling niet wijzigen 1u voor deze wordt klaargemaakt.";
             return RedirectToAction("Index");
         }
 
@@ -103,8 +105,14 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-            //{
+            Customer customer = await GetCustomerAsync();
+            if(customer.CustomerId !=order.CustomerId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
             try
             {
                 var orderForT = _orderService.GetSpecificOrder(id);
@@ -136,9 +144,16 @@ namespace Lekkerbek.Web.Controllers
 
 
             return RedirectToAction("index");
-            //}
-            ViewData["CustomerID"] = _orderService.CustomerSelectList(order.CustomerId);
-            // ViewData["TimeSlotID"] = new SelectList(_context.TimeSlots, "Id", "Id", order.TimeSlotID);
+            }
+
+            var timeSlotItemB = _orderService.GetSpecificTimeSlot(order.TimeSlotID);
+
+            TempData["SelectDate"] = timeSlotItemB.StartTimeSlot.ToString("yyyy-MM-dd");
+            TempData["time"] = timeSlotItemB.StartTimeSlot.ToString("H:mm");
+
+            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotItemB.StartTimeSlot);
+
+            ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
             return View(order);
         }
 
@@ -151,12 +166,14 @@ namespace Lekkerbek.Web.Controllers
             }
 
             var orderLine = _orderService.GetSpecificOrderLine(id);
-            if (orderLine == null)
+
+            Customer customer = await GetCustomerAsync();
+
+            if (orderLine == null || orderLine.Order.CustomerId!=customer.CustomerId)
             {
                 return NotFound();
             }
             ViewData["DishID"] = _orderService.MenuItemSelectList();
-            //ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
             return View(orderLine);
         }
 
@@ -165,18 +182,31 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditOrderLine(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,MenuItemId")] OrderLine orderLine)
+        public async Task<IActionResult> EditOrderLine(int id, [Bind("OrderLineID,ExtraDetails,DishAmount,OrderID,MenuItemId,Order")] OrderLine orderLine)
         {
             if (id != orderLine.OrderLineID)
             {
                 return NotFound();
             }
 
-            // if (ModelState.IsValid)
-            //{
+            Customer customer = await GetCustomerAsync();
+            
+            var customersOrders = _orderService.Read().Where(o => o.CustomerId == customer.CustomerId);
+            
+            bool orderlineCheck = true;
+            
+            foreach(Order order in customersOrders) 
+            {           
+                    if(order.OrderID!=orderLine.OrderID)
+                    orderlineCheck = false;
+            }
+
+            if (!orderlineCheck) { return NotFound(); }
+
+            if (ModelState.IsValid)
+            {
             try
             {
-
                 _orderService.UpdateOrderLine(orderLine);
             }
             catch (DbUpdateConcurrencyException)
@@ -190,29 +220,35 @@ namespace Lekkerbek.Web.Controllers
                     throw;
                 }
             }
+
             return RedirectToAction("EditOrder", new { id = orderLine.OrderID });
-            //}
-            //ViewData["DishID"] = new SelectList(_context.MenuItems, "MenuItemId", "MenuItemId", orderLine.MenuItemId);
-            //ViewData["OrderID"] = new SelectList(_context.Orders, "OrderID", "OrderID", orderLine.OrderID);
+            
+            }
+
+            ViewData["DishID"] = _orderService.MenuItemSelectList();
+
             return View(orderLine);
         }
 
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+
             if (id == null || _orderService.Read() == null)
             {
                 return NotFound();
             }
 
             var order = _orderService.GetSpecificOrder(id);
-
-            ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
-
-            if (order == null)
+            Customer customer = await GetCustomerAsync();
+            if (order == null||customer.CustomerId!=order.CustomerId)
             {
                 return NotFound();
             }
+
+            ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
+
+
             TempData["TimesPast"] = "";
             return View(order);
         }
@@ -228,6 +264,11 @@ namespace Lekkerbek.Web.Controllers
             }
 
             var order = _orderService.GetSpecificOrder(id);
+            Customer customer = await GetCustomerAsync();
+            if(order.CustomerId!=customer.CustomerId)
+            {
+                return NotFound();
+            }
 
 
             if (order != null)
@@ -238,7 +279,7 @@ namespace Lekkerbek.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                TempData["TimesPast"] = "Order has less than 2 hours to prepare so it cannot be cancelled.";
+                TempData["TimesPast"] = "De bestelling kan niet geannuleerd worden 2u voor deze klaargemaakt wordt.";
                 ViewBag.listOfTheOrder = _orderService.FilterOrderLines(id);
 
                 return View(order);
@@ -246,10 +287,7 @@ namespace Lekkerbek.Web.Controllers
             return NotFound();
         }
 
-
-
         //// GET: Customers/Edit/5
-
         public async Task<IActionResult> EditCustomer()
         {
            
@@ -281,8 +319,8 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
 
                 try
                 {
@@ -302,14 +340,13 @@ namespace Lekkerbek.Web.Controllers
                 return RedirectToAction(nameof(Index));
 
 
-           // }
+            }
             ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer2);
             return RedirectToAction("EditCustomer",customer2);
         }
 
         public IActionResult MenuItemList()
         {
-
             return View();
         }
         public IActionResult ReadMenuItems([DataSourceRequest] DataSourceRequest request)
@@ -328,11 +365,38 @@ namespace Lekkerbek.Web.Controllers
             orderLine.MenuItemId = int.Parse(menuItemId);
             orderLine.DishAmount = int.Parse(menuItemAmount);
             orderLine.ExtraDetails = extraDetails;
+            
             orderLine.MenuItem = _orderService.GetSpecificMenuItem(orderLine.MenuItemId);
             Order.TemproraryCart.Add(orderLine);
             
-            return Json(new { status = "Your Menu Item is Added!" });
+            return Json(new { status = "Menu item is toegevoegd!" });
 
+        }
+
+        public async Task<JsonResult> RemoveOrderLine(string id)
+        {
+
+            List<OrderLine> list =  Order.TemproraryCart;
+            bool test = false;
+            OrderLine newItem = null;
+            foreach (var item in list) 
+            {
+                string itemId = string.Empty;
+                itemId = item.MenuItemId.ToString()+item.DishAmount+item.ExtraDetails;
+                if (itemId == id) 
+                {
+                    test = true;
+                    newItem = item;
+                }
+                    
+
+            }
+            if (test) 
+            { 
+                Order.TemproraryCart.Remove(newItem);
+            }
+            
+            return Json(new { status = "Het product is verwijderd", temporaryCart = list });
         }
 
 
@@ -346,7 +410,7 @@ namespace Lekkerbek.Web.Controllers
         {
             if(Order.TemproraryCart.Count == 0)
             {
-                TempData["temporaryCartError"] = "You have to add at least 1 Menu Item before continue!";
+                TempData["temporaryCartError"] = "U moet minstens 1 menu item toevoegen!";
                 return RedirectToAction(nameof(MenuItemList));
             }
             DateTime now = DateTime.Now;
@@ -363,31 +427,47 @@ namespace Lekkerbek.Web.Controllers
 
             //get datetime of today for first check instead of hardcoded value
             DateTime timeSlotDateAndTime = Convert.ToDateTime(date + " 00:00");
-            ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotDateAndTime);
-            foreach (SelectListItem item in _orderService.GetTimeDropDownList(timeSlotDateAndTime))
+            
+            string errorMessage = "";
+            if (_orderService.IsRestaurantClosed(timeSlotDateAndTime))
             {
-                Console.WriteLine(item.Value);
+                errorMessage = "Het restaurant is gesloten";
+                ViewBag.TimeSlotsSelectList = null;
+            }
+            else
+            {
+                ViewBag.TimeSlotsSelectList = _orderService.GetTimeDropDownList(timeSlotDateAndTime);
+                foreach (SelectListItem item in _orderService.GetTimeDropDownList(timeSlotDateAndTime))
+                {
+                    Console.WriteLine(item.Value);
+                }
             }
 
-            return Json(new { timeSlots = ViewBag.TimeSlotsSelectList });
+            return Json(new { timeSlots = ViewBag.TimeSlotsSelectList, orderError = errorMessage });
         }
         public async Task<JsonResult> UpdateAdress(string street, string city , string postalCode)
         {
-            try
+            if (ModelState.IsValid)
             {
-                Customer customer = await GetCustomerAsync();
-                customer.StreetName = street;
-                customer.City = city;
-                customer.PostalCode = postalCode;
+                try
+                {
+                    Customer customer = await GetCustomerAsync();
+                    customer.StreetName = street;
+                    customer.City = city;
+                    customer.PostalCode = postalCode;
 
-                _customerService.Update(customer);
-                return Json(new { status = "Your adress is succesfully updated" });
-            }
-            catch {
-                return Json(new { status = "Error" });
-            }
+                    _customerService.Update(customer);
 
-           
+
+                    return Json(new { status = "Uw adres is aangepast" });
+                }
+                catch
+                {
+                    return Json(new { status = "Error" });
+                }
+            }
+            return Json(new { status = "Alle velden moeten ingevuld zijn!" });
+
         }
 
         public async Task<IActionResult> CompleteOrderFinal(IFormCollection collection)
@@ -395,10 +475,9 @@ namespace Lekkerbek.Web.Controllers
             Customer customer = await GetCustomerAsync();
             if (customer.StreetName == null || customer.City == null || customer.PostalCode == null)
             {
-                TempData["CreateError"] = "Please update your adress before complete the order ";
+                TempData["CreateError"] = "Uw adres moet ingevuld zijn voor u uw bestelling kunt plaatsen ";
                 return RedirectToAction(nameof(CompleteOrder));
             }
-            //it might be IFormCollection???
 
             string x = collection["TimeSlotsSelectList"];
             String selectedDate = collection["StartTimeSlot"] + " " + x;

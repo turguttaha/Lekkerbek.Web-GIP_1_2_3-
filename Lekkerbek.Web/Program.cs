@@ -9,6 +9,7 @@ using Quartz.Spi;
 using Quartz;
 using Lekkerbek.Web.Jobs;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,11 +37,9 @@ builder.Services.AddTransient<ChefRepository>();
 builder.Services.AddTransient<ChefService>();
 builder.Services.AddTransient<IEmailSender, EmailService>();
 builder.Services.AddTransient<RestaurantManagementRepository>();
-builder.Services.AddTransient<RestaurantManagementService>();
+builder.Services.AddTransient<IRestaurantManagementService,RestaurantManagementService>();
 builder.Services.AddTransient<OrderLineRepository>();
 builder.Services.AddTransient<OrderLineService>();
-
-
 
 
 //Congig connection DataBase

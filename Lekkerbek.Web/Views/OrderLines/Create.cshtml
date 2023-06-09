@@ -4,9 +4,9 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Aanmaken</h1>
 
-<h4>OrderLine</h4>
+<h4>OrderLijn</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -28,27 +28,24 @@
                 <span asp-validation-for="ExtraDetails" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Toevoegen" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-@if (User.IsInRole("Adinistrator"))
+@if (User.IsInRole("Administrator"))
 {
     <div>
-        <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
+        <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Terug naar Bestellen</a>
     </div>
 }
 else
 {
     <div>
-        @if (User.IsInRole("Administrator"))
-        {
-            <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
-        }
+        
         @if (User.IsInRole("Customer")&& !User.IsInRole("Administrator"))
         {
-            <a asp-controller="OrderModule" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Back to Order</a>
+            <a asp-controller="OrderModule" asp-action="EditOrder" asp-route-id="@ViewBag.Id">Terug naar Bestellen</a>
 
         }
     </div>

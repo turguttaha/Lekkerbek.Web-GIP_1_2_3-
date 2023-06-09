@@ -11,56 +11,56 @@ namespace Lekkerbek.Web.Models
     {
         //[ScaffoldColumn(false)]
         public int CustomerId { get; set; }
-        [StringLength(20, ErrorMessage = "Your First Name can contain only 20 characters")]
-        [Display(Name = "First Name")]
-
-        
+        [StringLength(20, ErrorMessage = "Uw voornaam mag maar 20 tekens lang zijn")]
+        [Display(Name = "Voornaam")]
+        [Required]
         public string? FName { get; set; } = string.Empty;
-        [StringLength(20, MinimumLength = 2)]
-        [Display(Name = "Last Name")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "Uw familienaam mag maar 20 tekens lang zijn")]
+        [Display(Name = "Familienaam")]
+        [Required]
         public string? LName { get; set; } = string.Empty;
 
         [Display(Name = "GSM")]
         [DataType(DataType.PhoneNumber)]
         public string? PhoneNumber { get; set; }
 
-
-
-
-        [Display(Name = "Birthday")]
+        [Display(Name = "Geboortedatum")]
         [DataType(DataType.Date)]
         //[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
-
         public DateTime? Birthday { get; set; }
 
 
 
 
 
-        [StringLength(30, ErrorMessage = "Your Firm Name can contain only 30 characters")]
-        [Display(Name = "Firm Name")]
+        [StringLength(30, ErrorMessage = "Uw bedrijfsnaam mag maar 30 tekens lang zijn")]
+        [Display(Name = "Bedrijfsnaam")]
         public string? FirmName { get; set; } = string.Empty;
 
-        [StringLength(30, ErrorMessage = "Your contact person can contain only 30 characters")]
-        [Display(Name = "Contact Person")]
+        [StringLength(30, ErrorMessage = "De naam van de contactpersoon mag maar 30 tekens lang zijn")]
+        [Display(Name = "Contactpersoon")]
         public string? ContactPerson { get; set; } = string.Empty;
 
-        [StringLength(450, ErrorMessage = "Your street name can contain only 450 characters")]
-        [Display(Name = "Street name")]
+        [StringLength(450, ErrorMessage = "De straatnaam mag maar 450 tekens lang zijn")]
+        [Display(Name = "Straatnaam")]
         public string? StreetName { get; set; } = string.Empty;
 
-        [StringLength(20, ErrorMessage = "Your city can contain only 20 characters")]
-        [Display(Name = "City")]
+        [StringLength(20, ErrorMessage = "De stad mag maar 20 tekens lang zijn")]
+        [Display(Name = "Stad")]
         public string? City { get; set; } = string.Empty;
 
-        [Display(Name = "Postal code")]
+        [Display(Name = "Postcode")]
         public string? PostalCode { get; set; }
 
-        [StringLength(20, ErrorMessage = "Your BTW can contain only 20 characters")]
+       
+        [MaxLength(2)]
         [Display(Name = "BTW")]
+        [RegularExpression("^[a-zA-Z]{2}", ErrorMessage = "Enkel geldige landcodes mogen ingevuld worden")]
+        
         public string? Btw { get; set; } = string.Empty;
 
-        [Display(Name = "BTW number")]
+        [Display(Name = "BTW nummer")]
+        [RegularExpression("^[0][0-9]{9}", ErrorMessage ="Het btw nummer moet beginnen met een 0 en dan 9 cijfers bevatten")]
         public string? BtwNumber { get; set; }
 
         [Display(Name = "E-mail")]
@@ -73,14 +73,14 @@ namespace Lekkerbek.Web.Models
         public bool? LoyaltyScore { get; set; }
 
         //Foreign Key van Preferred Dish
-
+        [Display(Name = "Favoriete Gerechten")]
         public int? PreferredDishId { get; set; }
 
-        public virtual PreferredDish PreferredDish { get; set; }
+        public virtual PreferredDish? PreferredDish { get; set; }
 
         //Relatie met order
         //aan de Order class - virtual Customer property - int CustomerId -  moeten toegevoegd worden dus elke klant kan een of meer bestelling hebben maar elke bestelling is van slechts een klant
-        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Order>? Orders { get; set; }
 
         public virtual IdentityUser? IdentityUser { get; set; }
 

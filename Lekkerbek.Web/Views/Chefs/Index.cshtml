@@ -6,7 +6,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Chef Lijst</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 
 @(
@@ -16,9 +16,9 @@ Html.Kendo().Grid<ChefViewModel>()
 {    
     columns.Bound(f => f.ChefName);
     columns.Bound(f => f.Email);
-    columns.Command(command => { command.Edit(); command.Destroy(); }).Width(250);
+    columns.Command(command => { command.Edit().Text("Wijzigen"); command.Destroy().Text("Verwijderen"); }).Width(350);
 })
- .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Chefs/AssignChefList/'>Add Chef</a></div>"))
+ .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Chefs/AssignChefList/'>Chef Toevoegen</a></div>"))
 .Editable(editable => editable.Mode(GridEditMode.InLine))
 .Pageable()
 .Sortable()
@@ -36,7 +36,6 @@ Html.Kendo().Grid<ChefViewModel>()
 
     })
     .Events(events => events.Error("error_handler"))
-    .Create(create => create.Action("EditingPopup_Create", "Chefs")) // Action invoked when the user saves a new data item.
     .Read(read => read.Action("ReadChefs", "Chefs")) // Action invoked when the Grid needs data.
     .Update(update => update.Action("EditingPopup_Update", "Chefs"))
     .Destroy(delete => delete.Action("DeleteChef", "Chefs")); // Action invoked when the user removes a data item.

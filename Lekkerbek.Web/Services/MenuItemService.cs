@@ -19,7 +19,7 @@ namespace Lekkerbek.Web.Services
             private IList<MenuItemViewModel> GetAll()
         {
 
-            var result = _repository.GetMenuItems();
+            var result = _repository.GetMenuItemsViewModels();
 
             return result;
         }
@@ -51,7 +51,7 @@ namespace Lekkerbek.Web.Services
         }
 
         //public MenuItem GetSpecificMenuItem(int? id)
-        public MenuItemViewModel GetSpecificMenuItem(int? id)
+        public Models.MenuItem GetSpecificMenuItem(int? id)
         {
             var menuItem = _repository.GetMenuItems().Find(x => x.MenuItemId == id);
             if (menuItem == null)

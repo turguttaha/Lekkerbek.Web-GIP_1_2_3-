@@ -5,17 +5,19 @@ using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Lekkerbek.Web.Controllers
 {
     [Authorize(Roles = "Administrator")]
     public class RestaurantManagementController : Controller
     {
-        private readonly RestaurantManagementService _restaurantManagementService;
-        public RestaurantManagementController(RestaurantManagementService restaurantManagementService)
+        private readonly IRestaurantManagementService _restaurantManagementService;
+        public RestaurantManagementController(IRestaurantManagementService restaurantManagementService)
         {
             _restaurantManagementService = restaurantManagementService;
         }
+
         // GET: RestaurantManagment
         public ActionResult Index()
         {
@@ -25,8 +27,8 @@ namespace Lekkerbek.Web.Controllers
         //OpeningsHour///////////////////
         public ActionResult OpeningsHours()
         {
-           var list=  _restaurantManagementService.GetAllOpeningsHours();
-            return View(list);
+           
+            return View();
         }
 
 
@@ -48,9 +50,11 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateOpeningsHour([Bind("DayOfWeek,StartTime,EndTime")] RestaurantOpeninghours restaurantOpeninghours)
         {
+            if (ModelState.IsValid) { 
             try
             {
                 var openingsHourList =  _restaurantManagementService.GetAllOpeningsHours();
+                    
                 bool conflict = false;
                 if (restaurantOpeninghours.StartTime < restaurantOpeninghours.EndTime)
                 {
@@ -59,8 +63,10 @@ namespace Lekkerbek.Web.Controllers
 
                         if (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek )
                         {
-                            if ((openingHour.StartTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.EndTime.TimeOfDay))
-                            { conflict = true; }
+                            if ((openingHour.StartTime.TimeOfDay <= restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay <= openingHour.EndTime.TimeOfDay))
+                            { 
+                                conflict = true; 
+                            }
 
                         }
                         if (openingHour.EndTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.StartTime.TimeOfDay)
@@ -71,8 +77,8 @@ namespace Lekkerbek.Web.Controllers
                     }
                     if (conflict)
                     {
-                        ModelState.AddModelError("Model", "This time slot is already taken!");
-                        ViewBag.oHError = "This time slot is already taken!";
+                        ModelState.AddModelError("Model", "Dit tijdslot is al bezet!");
+                        ViewBag.oHError = "Dit tijdslot is al bezet!";
                         return View();
                     }
                     else
@@ -81,8 +87,8 @@ namespace Lekkerbek.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Model", "Start time should be earlier than endtime");
-                    ViewBag.oHError = "Start time should be earlier than endtime";
+                    ModelState.AddModelError("Model", "Beginuur moet eerder zijn dan einduur");
+                    ViewBag.oHError = "Beginuur moet eerder zijn dan einduur";
                     return View();
                 }
               
@@ -91,12 +97,12 @@ namespace Lekkerbek.Web.Controllers
             {
                 return View();
             }
+            }
+            return View(restaurantOpeninghours);
         }
 
         public ActionResult DeleteOpeningsHour([DataSourceRequest] DataSourceRequest request, RestaurantOpeninghours restaurantOpeninghours)
-
         {
-            ModelState.Remove("StartTime"); ModelState.Remove("EndTime");
             if (restaurantOpeninghours != null && ModelState.IsValid)
             {
                 _restaurantManagementService.DestroyOpeningsHour(restaurantOpeninghours);
@@ -107,7 +113,7 @@ namespace Lekkerbek.Web.Controllers
         // GET: RestaurantManagment/Edit/5
         public ActionResult EditOpeningsHour(int id)
         {
-           var entity = _restaurantManagementService.GetSpecificOpeningsHour(id);
+            var entity = _restaurantManagementService.GetSpecificOpeningsHour(id);
             return View(entity);
         }
 
@@ -116,6 +122,7 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditOpeningsHour(int id, [Bind("DayOfWeek,StartTime,EndTime")] RestaurantOpeninghours restaurantOpeninghours)
         {
+            if (ModelState.IsValid) { 
             try
             {  //add here controle
                 List<Order> orderListAffterNow = _restaurantManagementService.GetAllOrders(DateTime.Now);
@@ -133,8 +140,8 @@ namespace Lekkerbek.Web.Controllers
                 }
                 if(conflictedOrders.Count > 0) 
                 {
-                    ModelState.AddModelError("Model", "There is a pre-created order out of the selected time range, so you cannot change opening Hours!");
-                    ViewBag.oHError = "There is a pre-created order out of the selected time range, so you cannot change opening Hours!";
+                    ModelState.AddModelError("Model", "Er is een order op een op het moment dat u wilt wijzigen in de toekomst, de actie kan niet voltooid worden!");
+                    ViewBag.oHError = "Er is een order op een op het moment dat u wilt wijzigen in de toekomst, de actie kan niet voltooid worden!";
                     return View();
                 }
                 var openingsHourList = _restaurantManagementService.GetAllOpeningsHours();
@@ -146,7 +153,7 @@ namespace Lekkerbek.Web.Controllers
                     foreach (var openingHour in openingsHourList)
                     {
 
-                        if (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek && (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.EndTime.TimeOfDay))
+                        if (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek && (openingHour.StartTime.TimeOfDay < restaurantOpeninghours.EndTime.TimeOfDay && restaurantOpeninghours.EndTime.TimeOfDay < openingHour.EndTime.TimeOfDay) || (openingHour.DayOfWeek == restaurantOpeninghours.DayOfWeek && openingHour.StartTime.TimeOfDay < restaurantOpeninghours.StartTime.TimeOfDay && restaurantOpeninghours.StartTime.TimeOfDay < openingHour.EndTime.TimeOfDay))
                         {
 
                             conflict = true;
@@ -160,8 +167,8 @@ namespace Lekkerbek.Web.Controllers
                   
                     if (conflict)
                     {
-                        ModelState.AddModelError("Model", "This time slot is already taken!");
-                        ViewBag.oHError = "This time slot is already taken!";
+                        ModelState.AddModelError("Model", "Dit tijdslot is al ingenomen!");
+                        ViewBag.oHError = "Dit tijdslot is al ingenomen!";
                         return View();
                     }
                     else
@@ -176,8 +183,8 @@ namespace Lekkerbek.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Model", "Start time should be earlier than endtime");
-                    ViewBag.oHError = "Start time should be earlier than endtime";
+                    ModelState.AddModelError("Model", "Startuur moet eerder zijn dan einduur");
+                    ViewBag.oHError = "Startuur moet eerder zijn dan einduur";
                     return View();
                 }
 
@@ -187,12 +194,15 @@ namespace Lekkerbek.Web.Controllers
                 var entity = _restaurantManagementService.GetSpecificOpeningsHour(id);
                 return View(entity);
             }
+            }
+            return View(restaurantOpeninghours);
         }
-        //chef hollidays
+        
+
+        //////////////////////////////chef hollidays///////////////////////////////////////////
         public ActionResult ChefHoliday()
-        {
-            var list = _restaurantManagementService.GetAllHolidayDays();
-            return View(list);
+        {         
+            return View();
         }
         public ActionResult ReadChefHoliday([DataSourceRequest] DataSourceRequest request)
         {
@@ -202,7 +212,6 @@ namespace Lekkerbek.Web.Controllers
         public ActionResult CreateChefHoliday()
         {
             ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
-
             return View();
         }
         [HttpPost]
@@ -212,7 +221,7 @@ namespace Lekkerbek.Web.Controllers
 
             //extra check, amount of chefs that are on holliday compared to the total amount of chefs (if its the last chef, dont allow)
             //check how many orders there are, if the amount of orders on a given time range, is equal to the working chefs, then dont allow
-
+            if (ModelState.IsValid) { 
             try
             {
                 bool conflict = false;
@@ -230,8 +239,8 @@ namespace Lekkerbek.Web.Controllers
                     //if == 1 => conflict bool
                     if (allChefCount - getChefsOnHolliday == 1)
                     {
-                        ModelState.AddModelError("Model", "There are not enough chefs working in this period for this chef to take vacation!");
-                        ViewBag.hError = "There are not enough chefs working in this period for this chef to take vacation!";
+                        ModelState.AddModelError("Model", "Er zijn niet genoeg chefs, deze chef mag geen vakantie nemen!");
+                        ViewBag.hError = "Er zijn niet genoeg chefs, deze chef mag geen vakantie nemen!";
                         ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
                         return View();
                     }
@@ -239,10 +248,11 @@ namespace Lekkerbek.Web.Controllers
                     foreach (Order order in orderTimeSlots)
                     {
 
-                        if (orderTimeSlots.GroupBy(c => c.TimeSlot.StartTimeSlot).Where(x => x.Count() == allChefCount) != null)
+                        if (!orderTimeSlots.GroupBy(c => c.TimeSlot.StartTimeSlot).Where(x => x.Count() == allChefCount).IsNullOrEmpty())
                         {
-                            ModelState.AddModelError("Model", "This chef has an order that he needs to prepare during these dates!");
-                            ViewBag.hError = "This chef has an order that he needs to prepare during these dates!";
+                                var a = orderTimeSlots.GroupBy(c => c.TimeSlot.StartTimeSlot).Where(x => x.Count() == allChefCount);
+                            ModelState.AddModelError("Model", "Deze chef moet een bestelling klaarmaken tijdens deze periode!");
+                            ViewBag.hError = "Deze chef moet een bestelling klaarmaken tijdens deze periode!";
                             ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
                             return View();
                         }
@@ -266,8 +276,8 @@ namespace Lekkerbek.Web.Controllers
                     }
                     if (conflict)
                     {
-                        ModelState.AddModelError("Model", "This chef already is already on holliday during part of this time, check that there is no overlap between hollidays!");
-                        ViewBag.hError = "This chef already is already on holliday during part of this time, check that there is no overlap between hollidays!";
+                        ModelState.AddModelError("Model", "De chef heeft al vakantie opgenomen tijdens deze periode, check dat er geen overlap is met bestaande vakantiedagen!");
+                        ViewBag.hError = "De chef heeft al vakantie opgenomen tijdens deze periode, check dat er geen overlap is met bestaande vakantiedagen!";
                         ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
                         return View();
                     }
@@ -277,8 +287,8 @@ namespace Lekkerbek.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Model", "Start time should be earlier than endtime");
-                    ViewBag.hError = "Start time should be earlier than endtime";
+                    ModelState.AddModelError("Model", "Startuur moet eerder zijn dan einduur");
+                    ViewBag.hError = "Startuur moet eerder zijn dan einduur";
                     ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
                     return View();
                 }
@@ -288,19 +298,21 @@ namespace Lekkerbek.Web.Controllers
                 Console.WriteLine(e.Message);
                 return View();
             }
+
+            }
+
+            ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
+            return View(workerHoliday);
+
         }
         public ActionResult DeleteWorkerHoliday([DataSourceRequest] DataSourceRequest request, WorkerHoliday workerHoliday)
-
         {
-            ModelState.Remove("StartDate"); ModelState.Remove("EndDate");
             if (workerHoliday != null && ModelState.IsValid)
             {
                 _restaurantManagementService.DestroyWorkerHoliday(workerHoliday);
             }
             return Json(new[] { workerHoliday }.ToDataSourceResult(request, ModelState));
         }
-
-
 
         // GET: RestaurantManagment/Edit/5
         public ActionResult EditWorkerHoliday(int id)
@@ -309,12 +321,12 @@ namespace Lekkerbek.Web.Controllers
             return View(entity);
         }
 
-
         // POST: RestaurantManagment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditWorkerHoliday(int id, [Bind("WorkerHolidayId,ChefId,Description,StartDate,EndDate")] WorkerHoliday workerHoliday)
         {
+            if (ModelState.IsValid) { 
             try
             {
                 var allWorkersHolidayList = _restaurantManagementService.GetAllWorkerHolidays();
@@ -335,8 +347,8 @@ namespace Lekkerbek.Web.Controllers
                     //if == 1 => conflict bool
                     if (allChefCount - getChefsOnHolliday == 1)
                     {
-                        ModelState.AddModelError("Model", "There are not enough chefs working in this period for this chef to take vacation!");
-                        ViewBag.hError = "There are not enough chefs working in this period for this chef to take vacation!";
+                        ModelState.AddModelError("Model", "Er zijn niet genoeg chefs, deze chef mag geen vakantie nemen!");
+                        ViewBag.hError = "Er zijn niet genoeg chefs, deze chef mag geen vakantie nemen!";
                         ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
                         return View();
                     }
@@ -346,8 +358,8 @@ namespace Lekkerbek.Web.Controllers
 
                         if (orderTimeSlots.GroupBy(c => c.TimeSlot.StartTimeSlot).Where(x => x.Count() == allChefCount) != null)
                         {
-                            ModelState.AddModelError("Model", "This chef has an order that he needs to prepare during these dates!");
-                            ViewBag.hError = "This chef has an order that he needs to prepare during these dates!";
+                            ModelState.AddModelError("Model", "Deze chef moet een bestelling klaarmaken tijdens deze periode!");
+                            ViewBag.hError = "Deze chef moet een bestelling klaarmaken tijdens deze periode!";
                             ViewData["ChefId"] = _restaurantManagementService.ChefsSelectList();
                             return View();
                         }
@@ -376,8 +388,8 @@ namespace Lekkerbek.Web.Controllers
                     }
                     if (conflict)
                     {
-                        ModelState.AddModelError("Model", "This chef already is already on holliday during part of this time, check that there is no overlap between hollidays!");
-                        ViewBag.hError = "This chef already is already on holliday during part of this time, check that there is no overlap between hollidays!";
+                        ModelState.AddModelError("Model", "De chef heeft al vakantie opgenomen tijdens deze periode, check dat er geen overlap is met bestaande vakantiedagen!");
+                        ViewBag.hError = "De chef heeft al vakantie opgenomen tijdens deze periode, check dat er geen overlap is met bestaande vakantiedagen!";
                         return View();
                     }
                     else
@@ -389,8 +401,8 @@ namespace Lekkerbek.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Model", "Start time should be earlier than endtime");
-                    ViewBag.hError = "Start time should be earlier than endtime";
+                    ModelState.AddModelError("Model", "Startuur moet eerder zijn dan einduur");
+                    ViewBag.hError = "Startuur moet eerder zijn dan einduur";
                     return View();
                 }
                 /////////////
@@ -403,13 +415,16 @@ namespace Lekkerbek.Web.Controllers
                 var entity = _restaurantManagementService.GetSpecificHolidayDay(id);
                 return View(entity);
             }
+
+            }
+
+            return View(workerHoliday);
         }
 
         //HOLIDAY///////////////////
         public ActionResult HolidayDays()
         {
-            var list = _restaurantManagementService.GetAllHolidayDays();
-            return View(list);
+            return View();
         }
         
         // GET: RestaurantManagment/Create
@@ -419,31 +434,30 @@ namespace Lekkerbek.Web.Controllers
             return Json(list.ToDataSourceResult(request));
         }
 
-
         // GET: RestaurantManagment/Details/5
         public ActionResult CreateHolidayDay()
         {
             return View();
         }
 
-
         // POST: RestaurantManagment/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CreateHolidayDay([Bind("Description,StartDate,EndDate")] RestaurantHoliday restaurantHoliday)
         {
+            if (ModelState.IsValid) { 
             try
             {
                 List<Order> orderTimeSlots = _restaurantManagementService.GetAllOrders(restaurantHoliday.StartDate, restaurantHoliday.EndDate);
                 if(orderTimeSlots.Count > 0)
                 {
-                    ModelState.AddModelError("Model", "There is a pre-created order in the selected time range, so you cannot plan a holiday within this date range!");
-                    ViewBag.hError = "There is a pre-created order in the selected time range, so you cannot plan a holiday within this date range!";
+                    ModelState.AddModelError("Model", "Er staan open bestellingen tijdens de periode die u wilt wijzigen!");
+                        TempData["hError"] = "Er staan open bestellingen tijdens de periode die u wilt wijzigen!";
                     return View();
                 }
                 var holidayList = _restaurantManagementService.GetAllHolidayDays();
                 bool conflict = false;
-                if (restaurantHoliday.StartDate < restaurantHoliday.EndDate)
+                if (restaurantHoliday.StartDate <= restaurantHoliday.EndDate)
                 {
                     foreach (var holiday in holidayList)
                     {
@@ -460,8 +474,8 @@ namespace Lekkerbek.Web.Controllers
                     }
                     if (conflict)
                     {
-                        ModelState.AddModelError("Model", "This time slot is already taken!");
-                        ViewBag.hError = "This time slot is already taken!";
+                        ModelState.AddModelError("Model", "Dit tijdslot is al in gebruik!");
+                        TempData["hError"] = "Dit tijdslot is al in gebruik!";
                         return View();
                     }
                     else
@@ -470,8 +484,8 @@ namespace Lekkerbek.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Model", "Start time should be earlier than endtime");
-                    ViewBag.hError = "Start time should be earlier than endtime";
+                    ModelState.AddModelError("Model", "Startuur moet eerder zijn dan einduur");
+                        TempData["hError"] = "Startuur moet eerder zijn dan einduur";
                     return View();
                 }
             }
@@ -479,23 +493,20 @@ namespace Lekkerbek.Web.Controllers
             {
                 return View();
             }
+
+            }
+            return View(restaurantHoliday);
         }
 
-
-
-
         public ActionResult DeleteHolidayDay([DataSourceRequest] DataSourceRequest request, RestaurantHoliday restaurantHoliday)
-
         {
-            ModelState.Remove("StartDate"); ModelState.Remove("EndDate");
+            //ModelState.Remove("StartDate"); ModelState.Remove("EndDate");
             if (restaurantHoliday != null && ModelState.IsValid)
             {
                 _restaurantManagementService.DestroyHolidayDay(restaurantHoliday);
             }
             return Json(new[] { restaurantHoliday }.ToDataSourceResult(request, ModelState));
         }
-
-
 
         // GET: RestaurantManagment/Edit/5
         public ActionResult EditHolidayDay(int id)
@@ -504,26 +515,26 @@ namespace Lekkerbek.Web.Controllers
             return View(entity);
         }
 
-
         // POST: RestaurantManagment/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditHolidayDay(int id, [Bind("RestaurantHolidayId,Description,StartDate,EndDate")] RestaurantHoliday restaurantHoliday)
         {
+            if(ModelState.IsValid) { 
             try
             {
                 List<Order> orderTimeSlots = _restaurantManagementService.GetAllOrders(restaurantHoliday.StartDate, restaurantHoliday.EndDate);
                 if (orderTimeSlots.Count > 0)
                 {
-                    ModelState.AddModelError("Model", "There is a pre-created order in the selected time range, so you cannot plan a holiday within this date range!");
-                    ViewBag.hError = "There is a pre-created order in the selected time range, so you cannot plan a holiday within this date range!";
+                    ModelState.AddModelError("Model", "Er staan open bestellingen tijdens de periode die u wilt wijzigen!");
+                    ViewBag.hError = "Er staan open bestellingen tijdens de periode die u wilt wijzigen!";
                     return View();
                 }
                 var holidayList = _restaurantManagementService.GetAllHolidayDays();
                 RestaurantHoliday restaurantHoliday1 = holidayList.Find(h=>h.RestaurantHolidayId == id);
                 holidayList.Remove(restaurantHoliday1);
                 bool conflict = false;
-                if (restaurantHoliday.StartDate < restaurantHoliday.EndDate)
+                if (restaurantHoliday.StartDate <= restaurantHoliday.EndDate)
                 {
                     foreach (var holiday in holidayList)
                     {
@@ -540,8 +551,8 @@ namespace Lekkerbek.Web.Controllers
                     }
                     if (conflict)
                     {
-                        ModelState.AddModelError("Model", "This time slot is already taken!");
-                        ViewBag.hError = "This time slot is already taken!";
+                        ModelState.AddModelError("Model", "Dit tijdslot is al in gebruik!");
+                        ViewBag.hError = "Dit tijdslot is al in gebruik!";
                         return View();
                     }
                     else
@@ -553,8 +564,8 @@ namespace Lekkerbek.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Model", "Start time should be earlier than endtime");
-                    ViewBag.hError = "Start time should be earlier than endtime";
+                    ModelState.AddModelError("Model", "Startuur moet eerder zijn dan einduur");
+                    ViewBag.hError = "Startuur moet eerder zijn dan einduur";
                     return View();
                 }
                 /////////////
@@ -566,6 +577,8 @@ namespace Lekkerbek.Web.Controllers
                 var entity = _restaurantManagementService.GetSpecificHolidayDay(id);
                 return View(entity);
             }
+            }
+            return View(restaurantHoliday);
         }
 
 

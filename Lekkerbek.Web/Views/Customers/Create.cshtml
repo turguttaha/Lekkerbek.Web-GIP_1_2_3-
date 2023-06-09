@@ -4,9 +4,9 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Create</h1>
+<h1>Aanmaken</h1>
 
-<h4>Customer</h4>
+<h4>Klant</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -36,10 +36,10 @@
             <div class="form-group">
                 <label asp-for="Birthday" class="control-label"></label>
                 <input asp-for="Birthday" id="birthday" class="form-control" required />
-                <span id="birthday-error" class="text-danger" style="display: none;">You must be at least 18 years old.</span>
+                <span id="birthday-error" class="text-danger" style="display: none;">Je moet minimaal 18 jaar oud zijn.</span>
             </div>
             <div class="form-group">
-                <label asp-for="PreferredDishId" class="control-label">Preferred Dish</label>
+                <label asp-for="PreferredDishId" class="control-label"></label>
                 <select asp-for="PreferredDishId" class="form-control" asp-items="ViewBag.PreferredDishId"></select>
                 <span asp-validation-for="PreferredDishId" class="text-danger"></span>
             </div>
@@ -63,7 +63,7 @@
 
             <div class="form-group mt-3 mb-2 ">
                 <input name="profCustomer" id="profCustomer" type="checkbox" style=" width: 15px; height: 15px;" />
-                <label for="profCustomer" class="fw-bolder">Add professional customer ?</label>
+                <label for="profCustomer" class="fw-bolder">Professionele klant toevoegen?</label>
 
             </div>
             <div id="ProfCustCont" hidden>
@@ -89,14 +89,14 @@
                 </div>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary mt-3" />
+                <input type="submit" value="Aanmaken" class="btn btn-primary mt-3" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Terug naar lijst</a>
 </div>
 
 @section Scripts {

@@ -8,10 +8,9 @@ namespace Lekkerbek.Web.Services
     {
         public IEnumerable<Customer> Read();
         public IList<CustomerViewModel> GetAllViews();
-
         public void Create(Customer customer);
         public void Update(Customer customer);
-        public void Destroy(Customer customer);
+        public void Destroy(CustomerViewModel customer);
         public SelectList GetPreferredDishes();
         public SelectList GetPreferredDishes(Customer customer);
         public Customer GetSpecificCustomer(int? id);

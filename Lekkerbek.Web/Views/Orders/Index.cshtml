@@ -7,7 +7,7 @@
     Layout = "_Layout";
 }
 
-<h1>Orders</h1>
+<h1>Bestellingen</h1>
 <p class="text-danger">@TempData["TimesPast"]</p>
 @(Html.Kendo().Grid<OrderViewModel>()
     .Name("grid")
@@ -19,14 +19,14 @@
         columns.Bound(p => p.Finished);
         columns.Bound(p => p.TimeSlot).Format("{0:dd/MM/yyyy HH:mm:ss}");
         columns.Bound(p => p.OrderID)
-                                .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/EditOrder/#=OrderID#'>Edit</a></div>");
+                                .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/EditOrder/#=OrderID#'>Wijzigen</a></div>");
         //columns.Bound(p => p.OrderID)
         //                        .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Details/#=OrderID#'>Details</a></div>");
         columns.Bound(p => p.OrderID)
-        .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Delete/#=OrderID#'>Delete</a></div>");
+        .Title(" ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/Orders/Delete/#=OrderID#'>Verwijderen</a></div>");
 
     })
-    .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Orders/SelectCustomer'>Add New Order</a></div>"))
+    .ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/Orders/SelectCustomer'>Maak nieuwe bestelling</a></div>"))
     .Pageable()
     .Sortable()
         .Filterable(filterable => filterable
@@ -59,13 +59,13 @@
                     .Animation(animation => animation.Open(open => open.Fade(FadeDirection.In)))
                     .Items(items =>
                     {
-                        items.Add().Text("OrderLine").Content(@<text>
+                        items.Add().Text("Menu items").Content(@<text>
                             @(Html.Kendo().Grid<OrderLine>()
                         .Name("grid_#=OrderID#") // template expression, to be evaluated in the master context
                         .Columns(columns =>
                         {
-                                    columns.Bound(o => o.MenuItem.Name).Title("Item Name").Width(100);
-                                    columns.Bound(o => o.DishAmount).Title("Amount").Width(150);
+                                    columns.Bound(o => o.MenuItem.Name).Title("Menu item").Width(100);
+                                    columns.Bound(o => o.DishAmount).Title("Aantal").Width(150);
                                     columns.Bound(o => o.ExtraDetails).Width(150);
                                 })
                         .DataSource(dataSource => dataSource

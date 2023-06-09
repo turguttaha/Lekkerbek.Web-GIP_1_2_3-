@@ -64,7 +64,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($" Kan gebruiker met ID niet laden'{_userManager.GetUserId(User)}'.");
             }
 
             RequirePassword = await _userManager.HasPasswordAsync(user);
@@ -76,7 +76,7 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+                return NotFound($"Kan gebruiker met ID niet laden '{_userManager.GetUserId(User)}'.");
             }
 
             RequirePassword = await _userManager.HasPasswordAsync(user);
@@ -84,11 +84,11 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
             {
                 if (!await _userManager.CheckPasswordAsync(user, Input.Password))
                 {
-                    ModelState.AddModelError(string.Empty, "Incorrect password.");
+                    ModelState.AddModelError(string.Empty, "Onjuist wachtwoord.");
                     return Page();
                 }
             }
-            var customer = _customerService.Read().Where(b => b.IdentityUser == user).FirstOrDefault();
+            var customer = _customerService.GetAllViews().Where(b => b.IdentityUser == user).FirstOrDefault();
             _customerService.Destroy(customer);
             var result = await _userManager.DeleteAsync(user);
             var userId = await _userManager.GetUserIdAsync(user);
@@ -96,12 +96,12 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account.Manage
 
             if (!result.Succeeded)
             {
-                throw new InvalidOperationException($"Unexpected error occurred deleting user.");
+                throw new InvalidOperationException($"Er is een onverwachte fout opgetreden bij het verwijderen van de gebruiker.");
             }
 
             await _signInManager.SignOutAsync();
 
-            _logger.LogInformation("User with ID '{UserId}' deleted themselves.", userId);
+            _logger.LogInformation("Gebruiker met ID '{UserId}' heeft zichzelf verwijderd\r\n.", userId);
 
             return Redirect("~/");
         }

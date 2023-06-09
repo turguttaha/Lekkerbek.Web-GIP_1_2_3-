@@ -15,6 +15,8 @@ using Lekkerbek.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Telerik.SvgIcons;
+using Lekkerbek.Web.ViewModel;
+using System.Globalization;
 
 namespace Lekkerbek.Web.Controllers
 {
@@ -33,7 +35,7 @@ namespace Lekkerbek.Web.Controllers
             _userManager = userManager;
         }
 
-        public ActionResult DetailTemplate()
+        public ActionResult Index()
         {
             return View();
         }
@@ -50,47 +52,12 @@ namespace Lekkerbek.Web.Controllers
                 .ToDataSourceResult(request));
         }
 
-        public ActionResult Index()
+        public async Task<ActionResult> EditingPopup_DestroyAsync([DataSourceRequest] DataSourceRequest request, CustomerViewModel customer)
         {
-            return View();
-        }
 
-
-        public ActionResult EditingPopup_Read([DataSourceRequest] DataSourceRequest request)
-        {
-            return Json(_customerService.Read().ToDataSourceResult(request));
-        }
-        // pop-up Create - update
-        //[AcceptVerbs(HttpVerbs.Post)]
-        //public ActionResult EditingPopup_Create([DataSourceRequest] DataSourceRequest request, Customer customer)
-        //{
-        //    if (customer != null && ModelState.IsValid)
-        //    {
-        //        _productService.Create(customer);
-        //    }
-
-        //    return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
-        //}
-
-        // [AcceptVerbs(HttpVerbs.Post)]
-        //public ActionResult EditingPopup_Update([DataSourceRequest] DataSourceRequest request, Customer customer)
-        //{
-        //    if (customer != null && ModelState.IsValid)
-        //    {
-        //       // _productService.Update(product);
-        //    }
-
-        //    return Json(new[] { customer }.ToDataSourceResult(request, ModelState));
-        //}
-
-        // [AcceptVerbs(HttpVerbs.Post)]
-        public async Task<ActionResult> EditingPopup_DestroyAsync([DataSourceRequest] DataSourceRequest request, Customer customer)
-
-        {
-            ModelState.Remove("Birthday");
             if (_orderService.Read().Any(ol => ol.CustomerId == customer.CustomerId))
             {
-                ModelState.AddModelError("Model", "Unable to delete (present in (an) order(s))!");
+                ModelState.AddModelError("Model", "Kan niet verwijdert worden(aanwezig in een bestelling)!");
             }
             else if (customer != null)
             {
@@ -120,17 +87,16 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,FName,LName,Email,PhoneNumber,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,Birthday,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> Create([Bind("FName,LName,Email,PhoneNumber,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,Birthday,PreferredDishId")] Customer customer)
         {
-            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
             if (customer != null)
             {
                 _customerService.Create(customer);
                 return RedirectToAction(nameof(Index));
             }
-            //}
+            }
             ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
             return View(customer);
         }
@@ -165,9 +131,8 @@ namespace Lekkerbek.Web.Controllers
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-            // {
-            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
+            if (ModelState.IsValid)
+             {
             if (customer != null)
             {
                 try
@@ -188,7 +153,7 @@ namespace Lekkerbek.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            //}
+            }
             ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
             return View(customer);
         }

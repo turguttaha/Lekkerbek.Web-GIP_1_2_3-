@@ -73,11 +73,8 @@ namespace Lekkerbek.Web.Controllers
                     filteredOrderLines.Add(orderLine);
 
             }
-            //ViewBag.Dishes = _context.Dishes;
-
 
             ViewBag.listOfTheOrder = filteredOrderLines;
-
 
             if (order == null)
             {
@@ -93,7 +90,6 @@ namespace Lekkerbek.Web.Controllers
             ViewBag.totalPrice = Math.Round(totalPrice, 2);
             ViewBag.totalPriceBTW = Math.Round(totalPriceBTW,2);
 
-            //var orderCount = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
             var orderCount = _orderCashierService.GetOrders(order.CustomerId);
             
             if (orderCount.Count() >= 3)
@@ -115,16 +111,26 @@ namespace Lekkerbek.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Bill(int id, [Bind("OrderID,OrderFinishedTime,Finished,CustomerID,TimeSlotID")] Order orderInfo, IFormCollection collection)
         {
-            //var orderFinish = _context.Orders.Where(c => c.OrderID == id).FirstOrDefault();
+            if (id == null || _orderCashierService.Read() == null)
+            {
+                return NotFound();
+            }
+
             var orderFinish = _orderCashierService.GetSpecificOrder(id);
-            //if (ModelState.IsValid)
-            //{
+
+            if (orderFinish == null)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+
             try
             {
-                var discount = collection["Discount"];
-                // Order.TemproraryCart.Add(orderLine);
 
-                //List<OrderLine> allOrderLines2 = _context.OrderLines.Include(c => c.Dish).ToList();
+                var discount = collection["Discount"];
+
                 List<OrderLine> allOrderLines2 = _orderCashierService.OrderLineRead(id);
                 List<OrderLine> filteredOrderLines2 = new List<OrderLine>();
 
@@ -132,31 +138,28 @@ namespace Lekkerbek.Web.Controllers
                 {
                     if (!filteredOrderLines2.Contains(orderLine))
                         filteredOrderLines2.Add(orderLine);
-
                 }
-                double totalPrice = 0;
+                    ViewBag.listOfTheOrder = filteredOrderLines2;
+                    double totalPrice = 0;
+
                 foreach (var oorder in filteredOrderLines2)
                 {
                     totalPrice += oorder.MenuItem.Price * oorder.DishAmount * (1 + (oorder.MenuItem.BtwNumber / 100));
                 }
 
-
                 //orderFinish.Finished = true;
                 if ( orderFinish != null) 
                 {
-                    
                     orderFinish.Discount = int.Parse(collection["Discount"]);
                     ViewBag.totalPrice = Math.Round((double)(totalPrice * (100 - orderFinish.Discount) / 100), 2);
                     ViewBag.discount = discount;
 
-                    //_context.Update(orderFinish);
-                    //await _context.SaveChangesAsync();
                     _orderCashierService.Update(orderFinish);
-                    
                 }
-                
-                
-            }
+                    ViewBag.Korting = true;
+                    return View(orderFinish);
+
+                }
             catch (DbUpdateConcurrencyException)
             {
                 if (!OrderExists(orderInfo.OrderID))
@@ -168,12 +171,14 @@ namespace Lekkerbek.Web.Controllers
                     throw;
                 }
             }
-            if (id == null || _orderCashierService.Read() == null)
-            {
-                return NotFound();
-            }
 
+            
+           
+            }
             var order = _orderCashierService.GetSpecificOrder(id);
+            TempData["OrderIdFromBill"] = id;
+            int x = (int)id;
+            TempData["OrderID"] = x;
 
             //filtering orderlines occording to orderId
             List<OrderLine> allOrderLines = _orderCashierService.OrderLineRead(id);
@@ -183,19 +188,21 @@ namespace Lekkerbek.Web.Controllers
             {
                 if (!filteredOrderLines.Contains(orderLine))
                     filteredOrderLines.Add(orderLine);
-
             }
-            //ViewBag.Dishes = _context.Dishes;
-
 
             ViewBag.listOfTheOrder = filteredOrderLines;
-            
-            if (order == null)
+
+            double totalPrice2 = 0;
+            double totalPriceBTW = 0;
+            foreach (var oorder in filteredOrderLines)
             {
-                return NotFound();
+                totalPrice2 += oorder.MenuItem.Price * oorder.DishAmount;
+                totalPriceBTW += oorder.MenuItem.Price * oorder.DishAmount * (1 + (oorder.MenuItem.BtwNumber / 100));
             }
-            //var orderCount = _context.Orders.Where(c => c.CustomerID == order.CustomerID).ToList();
-            var orderCount = _orderCashierService.GetOrders(order.CustomerId);
+            ViewBag.totalPrice = Math.Round(totalPrice2, 2);
+            ViewBag.totalPriceBTW = Math.Round(totalPriceBTW, 2);
+
+            var orderCount = _orderCashierService.GetOrders(orderFinish.CustomerId);
 
             if (orderCount.Count() >= 3)
             {
@@ -205,15 +212,11 @@ namespace Lekkerbek.Web.Controllers
             {
                 ViewBag.Korting = false;
             }
-            return View(order);
-            //}
-
-            return RedirectToAction(nameof(Index));
+            return View(orderFinish);
         }
         // GET: Customers/Create
         public IActionResult Create()
         {
-
             ViewData["PreferredDishId"] = _customerService.GetPreferredDishes();
             return View();
         }
@@ -223,17 +226,17 @@ namespace Lekkerbek.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,FName,LName,Email,PhoneNumber,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,Birthday,PreferredDishId")] Customer customer)
+        public async Task<IActionResult> Create([Bind("FName,LName,Email,PhoneNumber,FirmName,ContactPerson,StreetName,City,PostalCode,Btw,BtwNumber,Birthday,PreferredDishId")] Customer customer)
         {
             //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
             if (customer != null)
             {
                 _customerService.Create(customer);
                 return RedirectToAction(nameof(Index));
             }
-            //}
+            }
             ViewData["PreferredDishId"] = _customerService.GetPreferredDishes(customer);
             return View(customer);
         }
@@ -245,12 +248,10 @@ namespace Lekkerbek.Web.Controllers
         {
             var orderFinish = _orderCashierService.GetSpecificOrder(id);
 
-            //if (ModelState.IsValid)
-            //{
             try
             {
 
-                orderFinish.Finished = true;
+                orderFinish.Finished = true;    
                 _orderCashierService.Update(orderFinish);
 
                 string testMail = @"
@@ -356,12 +357,12 @@ th, td{
             <header>
                 <div class=""Left"">
                     <img src=""cid:Logo"" alt=""Logo"">
-                    <H1>Bill</H1>
+                    <H1>Rekening</H1>
                 </div>
                 <div class=""Grid"">
                     <div class=""Left-bottom"">
-                        <p>Number : " + orderFinish.OrderID + @"</p>
-                        <p>Date : " + DateTime.Now.ToString() + @"</p>
+                        <p>Nummer : " + orderFinish.OrderID + @"</p>
+                        <p>Datum : " + DateTime.Now.ToString() + @"</p>
                     </div>
                     <div class=""Right"">";
                 if (orderFinish.Customer.FirmName != null && orderFinish.Customer.FirmName != "")
@@ -379,19 +380,19 @@ th, td{
             <thead>
                 <tr>
                     <th>
-                        Dish Name
+                        Gerecht
                     </th>
                     <th>
-                        Dish Price
+                        Prijs
                     </th>
                     <th>
                         BTW
                     </th>
                     <th>
-                        Dish Amount
+                        Hoeveelheid
                     </th>
                     <th>
-                        Total
+                        Totaal
                     </th>
           
                 </tr>
@@ -455,7 +456,7 @@ th, td{
                     <tr>
 
                         <td>
-                            Discount:
+                            Korting:
                         </td>
                         <td>
                         </td>
@@ -477,7 +478,7 @@ th, td{
         
                 <tr class=""Line-Above"">
                     <td>
-                        <b> Without BTW </b>
+                        <b> Zonder BTW </b>
                     </td>
                     <td>
 
@@ -513,7 +514,7 @@ th, td{
                 </tr>
                 <tr>
                     <td>
-                        <b> With BTW </b>
+                        <b> Met BTW </b>
                     </td>
                     <td>
 
@@ -537,7 +538,7 @@ th, td{
             </div>
             <footer>
                 <p>De Lekkerbek- Culinaire Kringstraat108/2- 3530 HOUTHALEN - TEL. : 0475/22.22.41</p>
-                <p>B.T.W. : BE 04763.352.133        COMPANYNR : 0763.352.133</p>
+                <p>B.T.W. : BE 04763.352.133        BEDRIJFNR : 0763.352.133</p>
                 <p>PNB PARIBAS FORTIS : IBAN BE19 0013 5497 5612   -   BIC GEPA BE BB</p>
             </footer>    
         </div>    
@@ -558,7 +559,8 @@ th, td{
                     MailMessage m = new MailMessage();
                     m.AlternateViews.Add(avHtml);
                     EmailService emailService = new EmailService();
-                    emailService.SendMail("gipteam2.lekkerbek@gmail.com", "Your invoice of the Lekkerbek", testMail, m);  
+                    emailService.SendMail("gipteam2.lekkerbek@gmail.com", "Je rekening van de Lekkerbek", testMail, m);
+
 
 
             }
@@ -573,8 +575,6 @@ th, td{
                     throw;
                 }
             }
-
-            // }
            
             Thread.Sleep(5000);
             return RedirectToAction(nameof(Index));
@@ -609,15 +609,11 @@ th, td{
                 return NotFound();
             }
 
-            //if (ModelState.IsValid)
-            // {
-            //I put this in the comment. Because ModelState.IsValid is checking if all values are populated. But we do not fill the id value, it is added in dabase.
-
+            if (ModelState.IsValid)
+            {
             try
             {
                 _orderCashierService.UpdateCustomer(customer);
-                //_context.Update(customer);
-                //await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -631,7 +627,7 @@ th, td{
                 }
             }
             return RedirectToAction("Bill", new { id = (int)TempData["OrderIdFromBill"] });
-            //}
+            }
             ViewData["PreferredDishId"] = new SelectList(_orderCashierService.GetAllPrefferedDishes(), "PreferredDishId", "PreferredDishId", customer.PreferredDishId);
             return View(customer);
         }

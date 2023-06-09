@@ -71,67 +71,14 @@ namespace Lekkerbek.Web.NewFolder
             else
             return customer;
         }
+
         public bool CustomerExists(int id)
         {
             return _repository.GetCustomers().Any(e => e.CustomerId == id);
         }
-        // Create - Update Pop-up
-        //public void Create(Customer customer)
-        //{
-        //    var customer1 = new Customer();//Declaring new customer entity and sticking in the info given from View.
-
-        //    customer1.CustomerId = customer.CustomerId;
-        //    customer1.FName = customer.FName;
-        //    customer1.LName = customer.LName;
-        //    customer1.Email = customer.Email;
-        //    customer1.PhoneNumber = customer.PhoneNumber;
-        //    customer1.Address = customer.Address;
-        //    customer1.Birthday = customer.Birthday;
-        //    customer1.PreferredDishId = customer.PreferredDishId;
-        //    //customer1.PreferredDish = new PreferredDish();
-
-
-        //    if (customer1.PreferredDishId == null)
-        //    {
-        //        customer1.PreferredDishId = 1;
-        //    }
-
-        //    else
-        //    {
-        //        customer1.PreferredDishId = customer.PreferredDish.PreferredDishId;
-        //    }
-
-        //    _context.Customers.Add(customer1);
-        //    _context.SaveChanges();
-
-        //    customer.CustomerId = customer1.CustomerId;
-        //}
-
-        //public void Update(Customer customer)
-        //{
-        //    var customer1 = new Customer();
-
-        //    customer1.CustomerId = customer.CustomerId;
-        //    customer1.FName = customer.FName;
-        //    customer1.LName = customer.LName;
-        //    customer1.Email = customer.Email;
-        //    customer1.PhoneNumber = customer.PhoneNumber;
-        //    customer1.Address = customer.Address;
-        //    customer1.Birthday = customer.Birthday;
-        //    customer1.PreferredDishId = customer.PreferredDishId;
-
-        //    if (customer.PreferredDish != null)
-        //    {
-        //        customer1.CustomerId = customer.CustomerId;
-        //    }
-
-        //    _context.Customers.Attach(customer1);
-        //    _context.Entry(customer1).State = EntityState.Modified;
-        //    _context.SaveChanges();
-        //}
-
+        
         //This func removes customer and related objects(orders orderlines)
-        public void Destroy(Customer customer)
+        public void Destroy(CustomerViewModel customer)
         {
             if (!UpdateDatabase)
             {
@@ -150,20 +97,6 @@ namespace Lekkerbek.Web.NewFolder
                 _repository.DeleteFromDataBase(entity);
             }
         }
-
-
-
-        //public Customer One(Func<Customer, bool> predicate)
-        //{
-        //    return GetAll().FirstOrDefault(predicate);
-        //}
-
-
-        /*public void Dispose() //why not @override?
-        {
-            entities.Dispose();
-        }*/
-
 
     }
 }

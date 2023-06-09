@@ -5,9 +5,9 @@
     List<OrderLine> listOfTheOrder = ViewBag.listOfTheOrder;
 }
 
-<h1>Edit</h1>
+<h1>Wijzigen</h1>
 
-<h4>Order</h4>
+<h4>Bestellingen</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -16,43 +16,44 @@
             <input type="hidden" asp-for="OrderID" />
             
             <div class="form-group">
-                <label asp-for="CustomerId" class="control-label">Customer Name</label>
+                <label asp-for="CustomerId" class="control-label">Naam</label>
                 <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerID"></select>
                 <span asp-validation-for="CustomerId" class="text-danger"></span>
             </div>
             <div class="form-group">
 
-                <label asp-for="TimeSlotID" class="control-label">Date</label>
-                <input value="@TempData["SelectDate"]" asp-for="TimeSlotID" type="date" class="form-control" />
+                <label asp-for="TimeSlotID" class="control-label">Datum</label>
+                <input value="@TempData["SelectDate"]" asp-for="TimeSlotID" type="date" id="date" class="form-control" />
 
             </div>
             <div class="form-group">
 
-                <label asp-for="TimeSlotID" class="control-label">Time Slot</label>
-                @Html.DropDownList("TimeSlotsSelectList",new SelectList(ViewBag.TimeSlotsSelectList, "Value", "Text",TempData["time"]))
+                <label asp-for="TimeSlotID" class="control-label">Tijdslot</label>
+                @Html.DropDownList("TimeSlotsSelectList",new SelectList(ViewBag.TimeSlotsSelectList, "Value", "Text",TempData["time"]), new{@id="time"})
                 <span asp-validation-for="TimeSlotID" class="text-danger"></span>
 
 @*                <label asp-for="TimeSlotID" class="control-label"></label>
                 <select asp-for="TimeSlotID" class="form-control" asp-items="ViewBag.TimeSlotsSelectList"></select>
                 <span asp-validation-for="TimeSlotID" class="text-danger"></span>*@
             </div>
+            <p id="chefError" class="text-danger"></p>
             <div class="form-group form-check invisible">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Finished" /> @Html.DisplayNameFor(model => model.Finished)
                 </label>
             </div>
-<a asp-controller="Orderlines" asp-action="Create" asp-route-id="@Model.OrderID">Add New Dish</a>
+<a asp-controller="Orderlines" asp-action="Create" asp-route-id="@Model.OrderID">Voeg menu item toe</a>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Dish Name
+                Menu item
             </th>
             <th>
-                Dish Amount
+                Aantal
             </th>
             <th>
-                Extra Details
+                Extra wensen
             </th>
             <th></th>
         </tr>
@@ -71,24 +72,81 @@
                     @Html.DisplayFor(modelItem => item.ExtraDetails)
                 </td>
                 <td>
-                    <a asp-action="EditOrderLine" asp-route-id="@item.OrderLineID">Edit</a>
-                    <a asp-controller="Orderlines" asp-action="Delete" asp-route-id="@item.OrderLineID">Delete</a>
+                    <a asp-action="EditOrderLine" asp-route-id="@item.OrderLineID">Wijzigen</a>
+                    <a asp-controller="Orderlines" asp-action="Delete" asp-route-id="@item.OrderLineID">Verwijderen</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Opslaan" id="saveButton" class="btn btn-primary" />
             </div>
-
+            <p class="text-danger" id="chefError"></p>
         </form>
     </div>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Terug naar de lijst</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+    <script>
+        $(function () {
+            $("#date").change(function () {
+                $.ajax(
+                    {
+
+                        // Hier kan je kiezen tussen GET, POST, PUT, DELETE....
+                        // Elk van deze keywords heeft een andere nut,
+                        // zie de les frontend.
+                        type: "POST",
+                        // Hier geven we de action naam en controler naam mee.
+                        url: '@Url.Action("LookUpChefs", "Orders")',
+                        // Hier gaan we data meegeven in een JSON formaat.
+                        data: { "date": $("#date").val() },
+                        dataType: "json",
+                        // Hier gaan we jQuery/javascript code schrijven indien onze
+                        // request successvol is.
+                        success: function (response) {
+                            console.log(response);
+                            // Hier gaan we de span met id "statusSpan" ophalen
+                            // en de text vervangen met de status.
+                            // Status krijgen we van de action Message mee.
+                            if (response.timeSlots == null) {
+                                $("#chefError").html(response.orderError);
+                                $("#time").empty();
+                                document.getElementById("saveButton").disabled = true;
+                            }
+                            else if (response.timeSlots.length == 0) {
+                                //Javascript shows this always, idk why, it also wont reset in the else, in other words the pop up if no chefs are availible is broken
+                                $("#chefError").html("Er zijn geen chefs meer vrij.");
+                                $("#time").empty();
+                                document.getElementById("saveButton").disabled = true;
+                            }
+                            else {
+                                console.log(response);
+                                $("#chefError").html("");
+                                let s;
+                                for (var i = 0; i < response.timeSlots.length; i++) {
+                                    s += '<option value="' + response.timeSlots[i].Value + '">' + response.timeSlots[i].Text + '</option>';
+                                }
+                                document.getElementById("saveButton").disabled = false;
+                                $("#time").html(s);
+                            }
+
+                        },
+                        error: function (response) {
+
+                            // Indien onze request faalt, kunnen we hier een mooie
+                            // foutmelding tonen.
+                            // In ons geval gaan we een alert tonen op het scherm
+                            // (in praktijk moet je dit beter afhandelen!).
+
+                        }
+                    });
+            });
+        })
+    </script>

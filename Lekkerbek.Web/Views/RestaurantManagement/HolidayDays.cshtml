@@ -4,21 +4,22 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Vakantiedagen</h1>
 <p id="error_text" class="text-danger fw-bold"></p>
 
 @(Html.Kendo().Grid<Lekkerbek.Web.Models.RestaurantHoliday>()
 .Name("grid")
 .Columns(columns =>
 {
+    
+    columns.Bound(f => f.StartDate).Format("{0:d}");
+    columns.Bound(f => f.EndDate).Format("{0:d}");
     columns.Bound(f => f.Description);
-    columns.Bound(f => f.StartDate).Format("{0:g}");
-    columns.Bound(f => f.EndDate).Format("{0:g}");
-    columns.Bound(f => f.RestaurantHolidayId).Title("  ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/RestaurantManagement/EditHolidayDay/#=RestaurantHolidayId#'>Edit</a></div>");
+    columns.Bound(f => f.RestaurantHolidayId).Title("  ").Filterable(false).ClientTemplate("<div class=' k-button k-button-md k-rounded-md k-button-solid k-button-solid-primary' ><a  href='/RestaurantManagement/EditHolidayDay/#=RestaurantHolidayId#'>Bewerken</a></div>");
 
-    columns.Command(command => { command.Destroy(); }).Width(200);
+    columns.Command(command => { command.Destroy().Text("Verwijderen"); }).Width(200);
 })
-.ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/RestaurantManagement/CreateHolidayDay'>Add New Holiday Day</a></div>"))
+.ToolBar(toolbar => toolbar.ClientTemplate("<div class='m-2 k-button k-button-md k-rounded-md k-button-solid k-button-solid-base k-toolbar-button  k-toolbar-tool'><a href='/RestaurantManagement/CreateHolidayDay'>Voeg nieuwe vakantiedagen toe</a></div>"))
 .Editable(editable => editable.Mode(GridEditMode.PopUp))
 .Pageable()
 .Scrollable()
@@ -40,6 +41,11 @@
 })
     )
 
+<script>
+    kendo.culture("nl-BE");
+    console.log(kendo.culture().name);
+
+</script>
 <script type="text/javascript">
     function error_handler(e) {
         if (e.errors) {

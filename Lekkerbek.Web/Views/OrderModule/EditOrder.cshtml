@@ -5,9 +5,9 @@
     List<OrderLine> listOfTheOrder = ViewBag.listOfTheOrder;
 }
 
-<h1>Edit</h1>
+<h1>Wijzigen</h1>
 
-<h4>Order</h4>
+<h4>Bestelling</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -18,7 +18,7 @@
 
             <div class="form-group">
 
-                <label asp-for="TimeSlotID" class="control-label">Date</label>
+                <label asp-for="TimeSlotID" class="control-label">Datum</label>
                 <input id="date" value="@TempData["SelectDate"]" asp-for="TimeSlotID" type="date" class="form-control" />
 
 
@@ -27,29 +27,29 @@
             
             <div class="form-group">
 
-                <label asp-for="TimeSlotID" class="control-label">Time</label> <br>
+                <label asp-for="TimeSlotID" class="control-label">Tijdslot</label> <br>
                 @Html.DropDownList("TimeSlotsSelectList", (IEnumerable<SelectListItem>)ViewBag.TimeSlotsSelectList, new{@id="time"})
                 <span asp-validation-for="TimeSlotID" class="text-danger"></span>
 
 
-            </div>
+            </div><p id="chefError" class="text-danger"></p>
             <div class="form-group form-check invisible">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Finished" /> @Html.DisplayNameFor(model => model.Finished)
                 </label>
             </div>
-<a asp-controller="Orderlines" asp-action="Create" asp-route-id="@Model.OrderID">Add New Dish</a>
+<a asp-controller="Orderlines" asp-action="Create" asp-route-id="@Model.OrderID">Menu item toevoegen</a>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Dish Name
+                Menu item
             </th>
             <th>
-                Dish Amount
+                Aantal
             </th>
             <th>
-                Extra Details
+                Extra Wensen
             </th>
             <th></th>
         </tr>
@@ -68,22 +68,23 @@
                     @Html.DisplayFor(modelItem => item.ExtraDetails)
                 </td>
                 <td>
-                    <a asp-action="EditOrderLine" asp-route-id="@item.OrderLineID">Edit</a>
-                    <a asp-controller="Orderlines" asp-action="Delete" asp-route-id="@item.OrderLineID">Delete</a>
+                                <a asp-action="EditOrderLine" asp-route-id="@item.OrderLineID">Wijzigen</a>
+                                <a asp-controller="Orderlines" asp-action="Delete" asp-route-id="@item.OrderLineID">Verwijderen</a>
+
                 </td>
             </tr>
         }
     </tbody>
 </table>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Opslaan" id="saveButton" class="btn btn-primary" />
             </div>
 
         </form>
     </div>
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Terug naar het overzicht</a>
 </div>
 
 @section Scripts {
@@ -111,9 +112,14 @@
                         // Hier gaan we de span met id "statusSpan" ophalen
                         // en de text vervangen met de status.
                         // Status krijgen we van de action Message mee.
-                        if (response.timeSlots.length == 0) {
+                            if (response.timeSlots == null) {
+                                $("#chefError").html(response.orderError);
+                                $("#time").empty();
+                                document.getElementById("saveButton").disabled = true;
+                            }
+                            else if (response.timeSlots.length == 0) {
                             //Javascript shows this always, idk why, it also wont reset in the else, in other words the pop up if no chefs are availible is broken
-                            $("#chefError").html("No chefs availible");
+                            $("#chefError").html("Er zijn geen chefs meer vrij.");
                             console.log("test");
                         }
                         else {

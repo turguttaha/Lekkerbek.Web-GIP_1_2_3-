@@ -4,11 +4,15 @@ namespace Lekkerbek.Web.Models
 {
     public class RestaurantHoliday
     {
+        [Display(Name = "Restaurant Vakantiedagen ID")]
         public int RestaurantHolidayId { get; set; }
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
+        [Display(Name = "Begindatum")]
         public DateTime StartDate { get; set; }
-        [DataType(DataType.DateTime)]
+        [DataType(DataType.Date)]
+        [Display(Name = "Einddatum")]
         public DateTime EndDate { get; set; }
+        [Display(Name = "Beschrijving")]
         public string Description { get; set; }     
 
 

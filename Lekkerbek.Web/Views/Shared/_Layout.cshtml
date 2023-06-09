@@ -22,6 +22,8 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.kendostatic.com/2023.1.314/js/kendo.all.min.js"></script>
     <script src="https://cdn.kendostatic.com/2023.1.314/js/kendo.aspnetmvc.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2021.2.511/js/cultures/kendo.culture.nl-BE.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2021.2.511/js/messages/kendo.messages.nl-NL.min.js"></script>
     <script src="~/js/kendo-ui-license.js"></script>
     <style>
    /* .navbar {
@@ -61,26 +63,26 @@
                         @if(User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Customers</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Index">Klanten</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Orders</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">Bestellingen</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="MenuItems" asp-action="Index">Menu Items</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MenuItems" asp-action="Index">Menu</a>
                             </li>
                             <li class="nav-item">
                                 <div class="dropdown1">
 
-                                    <p class="nav-link text-dark m-0">Restaurant Management</p>
+                                    <p class="nav-link text-dark m-0">Restaurant beheren</p>
                                                                      
                                     <div class="dropdown-content1">
 
-                                        <a class="nav-link text-dark" asp-controller="RestaurantManagement" asp-action="OpeningsHours">Restaurant Openings Hours</a>
-                                        <a class="nav-link text-dark" asp-controller="RestaurantManagement" asp-action="HolidayDays">Restaurant Holiday Days</a>
-                                        <a class="nav-link text-dark" asp-controller="RestaurantManagement" asp-action="ChefHoliday">Chef Holiday Days</a>
-                                        <a class="nav-link text-dark" asp-controller="Admins" asp-action="AdminList">Manage Admins</a>
-                                        <a class="nav-link text-dark" asp-controller="Chefs" asp-action="Index">Manage Chefs</a>
+                                        <a class="nav-link text-dark" asp-controller="RestaurantManagement" asp-action="OpeningsHours">Openingsuren</a>
+                                        <a class="nav-link text-dark" asp-controller="RestaurantManagement" asp-action="HolidayDays">Vakantiedagen restaurant</a>
+                                        <a class="nav-link text-dark" asp-controller="RestaurantManagement" asp-action="ChefHoliday">Vakantiedagen chefs</a>
+                                        <a class="nav-link text-dark" asp-controller="Admins" asp-action="AdminList">Administrators beheren</a>
+                                        <a class="nav-link text-dark" asp-controller="Chefs" asp-action="Index">Chefs beheren</a>
                                     </div>
                                 </div>
                             </li>
@@ -88,25 +90,25 @@
                         @if (User.IsInRole("Cashier") )
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="OrdersCashier" asp-action="Index">Orders </a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="OrdersCashier" asp-action="Index">Bestellingen </a>
                             </li>
                         }
                         @if (User.IsInRole("Chef") )
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="OrdersChef" asp-action="Index">Orders </a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="OrdersChef" asp-action="Index">Bestellingen </a>
                             </li>
                         }
                         @if (User.IsInRole("Customer") && !User.IsInRole("Chef") && !User.IsInRole("Cashier") && !User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="OrderModule" asp-action="Index">Orders</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="OrderModule" asp-action="Index">Bestellingen</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="OrderModule" asp-action="MenuItemList">Create New Order</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="OrderModule" asp-action="MenuItemList">Nieuwe bestelling maken</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="OrderModule" asp-action="EditCustomer">Edit Your Details</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="OrderModule" asp-action="EditCustomer">Details aanpassen</a>
                             </li>
                         }
                     </ul>
@@ -123,7 +125,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - <b>Group - 2 (Frederik - Taha - Sora - Mathijs - Imdat)  </b>
+            &copy; 2023 - <b>Groep - 2 (Frederik - Taha - Sora - Mathijs - Imdat)  </b>
         </div>
     </footer>@*
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

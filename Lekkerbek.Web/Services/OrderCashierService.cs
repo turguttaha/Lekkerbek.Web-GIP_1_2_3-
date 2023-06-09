@@ -1,6 +1,7 @@
 ﻿using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Repositories;
 using Lekkerbek.Web.ViewModel;
+using Microsoft.AspNetCore.Identity;
 
 namespace Lekkerbek.Web.Services
 {
@@ -12,6 +13,11 @@ namespace Lekkerbek.Web.Services
         { 
             _repository = ordersCashierRepository;
         }
+
+        public OrderCashierService(OrdersCashierRepository ordersCashierRepository, UserManager<IdentityUser> @object) : this(ordersCashierRepository)
+        {
+        }
+
         private IList<Order> GetAll() 
         { 
             var result = _repository.GetOrders();

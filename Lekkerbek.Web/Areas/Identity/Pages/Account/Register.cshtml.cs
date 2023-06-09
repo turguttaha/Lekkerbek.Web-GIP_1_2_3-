@@ -76,49 +76,52 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [Display(Name = "First Name")]
+            [Display(Name = "Naam")]
             public string FName { get; set; }
             [Required]
-            [Display(Name = "Last Name")]
+            [Display(Name = "Familienaam")]
             public string LName { get; set; }
             [Required]
             [Display(Name = "GSM")]
             [DataType(DataType.PhoneNumber)]
             public string? PhoneNumber { get; set; }
             [Required]
-            [Display(Name = "Birthday")]
+            [Display(Name = "Geboortedatum")]
             [DataType(DataType.Date)]
             public DateTime? Birthday { get; set; }
 
-            [StringLength(30, ErrorMessage = "Your Firm Name can contain only 30 characters")]
-            [Display(Name = "Firm Name")]
+            [StringLength(30, ErrorMessage = "Bedrijfsnaam mag maar 30 tekens bevatten")]
+            [Display(Name = "Bedrijfsnaam")]
             public string? FirmName { get; set; } = string.Empty;
 
-            [StringLength(30, ErrorMessage = "Your contact person can contain only 30 characters")]
-            [Display(Name = "Contact Person")]
+            [StringLength(30, ErrorMessage = "Contactpersoon mag maar 30 tekens bevatten")]
+            [Display(Name = "Contactpersoon")]
             public string? ContactPerson { get; set; } = string.Empty;
             [Required]
-            [StringLength(450, ErrorMessage = "Your street name can contain only 450 characters")]
-            [Display(Name = "Street name")]
+            [StringLength(450, ErrorMessage = "Straat mag maar 450 tekens bevatten")]
+            [Display(Name = "Straat")]
             public string? StreetName { get; set; } = string.Empty;
             [Required]
-            [StringLength(20, ErrorMessage = "Your city can contain only 20 characters")]
-            [Display(Name = "City")]
+            [StringLength(20, ErrorMessage = "Stad mag maar 20 tekens bevatten")]
+            [Display(Name = "Stad")]
             public string? City { get; set; } = string.Empty;
             [Required]
-            [Display(Name = "Postal code")]
+            [Display(Name = "Postcode")]
             public string? PostalCode { get; set; }
 
-            [StringLength(20, ErrorMessage = "Your BTW can contain only 20 characters")]
+            [MaxLength(2)]
             [Display(Name = "BTW")]
+            [RegularExpression("^[a-zA-Z]{2}", ErrorMessage = "Enkel geldige landcodes mogen ingevuld worden")]
             public string? Btw { get; set; } = string.Empty;
 
-            [Display(Name = "BTW number")]
+            [Display(Name = "BTW nummer")]
+            [RegularExpression("^[0][0-9]{9}", ErrorMessage = "Het btw nummer moet beginnen met een 0 en dan 9 cijfers bevatten")]
             public string? BtwNumber { get; set; }
 
             //Foreign Key van Preferred Dish
+            [Display(Name = "Favoriete Gerechten")]
             public int? PreferredDishId { get; set; }
-
+            [Display(Name = "Favoriete Gerechten")]
             public virtual PreferredDish PreferredDish { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -134,9 +137,9 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "De {0} mag minimum {2} en maximum {1} tekens bevatten.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Wachtwoord")]
             public string Password { get; set; }
 
             /// <summary>
@@ -144,8 +147,8 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Bevestig wachtwoord")]
+            [Compare("Password", ErrorMessage = "Het wachtwoord en het bevestigingswachtwoord komen niet overeen.")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -204,8 +207,8 @@ namespace Lekkerbek.Web.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Hello Mr./Mrs.{customer.LName},<br> As the Lekkerbek family, we are happy to see you among us.Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync(Input.Email, "Bevestig uw email",
+                        $"Hallo Meneer/Mevrouv{customer.LName},<br> Als de Lekkerbek familie, we zijn blij dat u klant bij ons bent geworden. Bevestig uw account door <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'> hier te klikken.</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

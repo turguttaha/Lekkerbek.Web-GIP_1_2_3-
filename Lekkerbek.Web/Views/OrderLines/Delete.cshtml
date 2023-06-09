@@ -4,11 +4,11 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<h1>Verwijderen</h1>
 
-<h3>Are you sure you want to delete this Dish from Order?</h3>
+<h3>Bent u zeker dat u dit item wilt verwijderen?</h3>
 <div>
-    <h4>OrderLine</h4>
+    
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -41,19 +41,19 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="OrderLineID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <input type="submit" value="Verwijder" class="btn btn-danger" /> |
     </form>
 
     @if (User.IsInRole("Administrator"))
     {
         <div>
-            <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@Model.OrderID">Back to Order</a>
+            <a asp-controller="Orders" asp-action="EditOrder" asp-route-id="@Model.OrderID">Terug naar Bestellen</a>
         </div>
     }
-    @if (User.IsInRole("Customer"))
+    @if (User.IsInRole("Customer")&&!User.IsInRole("Administrator"))
     {
         <div>
-            <a asp-controller="OrderModule" asp-action="EditOrder" asp-route-id="@Model.OrderID">Back to Order</a>
+            <a asp-controller="OrderModule" asp-action="EditOrder" asp-route-id="@Model.OrderID">Terug naar Bestellen</a>
         </div>
     }
 </div>

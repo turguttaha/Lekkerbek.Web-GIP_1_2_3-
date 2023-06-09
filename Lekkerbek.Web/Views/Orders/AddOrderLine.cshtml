@@ -7,29 +7,26 @@
 
 }
 
-<h1>Create Order</h1>
+<h1>Bestelling maken</h1>
 <div>
     <ol class="stepper">
         <li class="stepper__item-done">
-            <h3 class="stepper__title">Step 1</h3>
-            <p class="stepper__desc">Select Customer</p>
+            <h3 class="stepper__title">Stap 1</h3>
+            <p class="stepper__desc">Selecteer klant</p>
         </li>
         <li class="stepper__item-done">
-            <h3 class="stepper__title">Step 2</h3>
-            <p class="stepper__desc">Select Time Slot</p>
+            <h3 class="stepper__title" id="timeslot">Stap 2</h3>
+            <p class="stepper__desc" id="timeslot">Kies tijdslot</p>
         </li>
-        <li class="stepper__item-done">
-            <h3 class="stepper__title">Step 3</h3>
-            <p class="stepper__desc">Select Chef</p>
-        </li>
+        
         <li class="stepper__item-doing">
-            <h3 class="stepper__title-doing">Step 4</h3>
-            <p class="stepper__desc">Add to orderline</p>
+            <h3 class="stepper__title-doing">Stap 3</h3>
+            <p class="stepper__desc">Voeg menu item toe</p>
         </li>
     </ol>
 </div>
 
-<h4>Select/Add Dish</h4>
+<h4>Selecteer menu items</h4>
 <hr />
 
 <div class="row">
@@ -37,7 +34,7 @@
         <form asp-action="AddOrderline">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="MenuItemId" class="control-label">Dish Name</label>
+                <label asp-for="MenuItemId" class="control-label">Menu item</label>
                 <select asp-for="MenuItemId" class="form-control" asp-items="ViewBag.MenuItemId"></select>
             </div>
             <div class="form-group">
@@ -52,15 +49,16 @@
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Add Dish to Order" class="btn btn-primary mt-3" />
+                <input type="submit" value="Voeg menu item toe" class="btn btn-primary mt-3" />
             </div>
             <p class="text-danger">@ViewData["Message"] </p>
+            <p class="text-danger">@TempData["Errorx"] </p>
         </form>
         <table class="table">
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.MenuItemId)
+                        @Html.DisplayNameFor(model => model.MenuItem)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.DishAmount)
@@ -94,7 +92,7 @@
             </tbody>
         </table>
         <form asp-action="CompleteOrder">
-            <input type="submit" value="Complete Order" class="btn btn-danger mt-3" />
+            <input type="submit" value="Bestelling afronden " class="btn btn-danger mt-3" />
         </form>
     </div>
 </div>
@@ -105,3 +103,25 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<script type="text/javascript">
+
+        var selectedTimeSlot = document.getElementById("timeslot").value;
+        var timeslotError = document.getElementById("timeslot-error");
+        //var date = new Date();
+        
+        //timeslot.max = datetime.now;
+
+        timeslot.addEventListener('change', function () {
+            //var selectedDate = new Date(timeslot.value);
+            if (selectedTimeSlot < DateTime.now) {
+                timeslotError.style.display = 'block';
+                timeslot.setCustomValidity('Please choose a timeslot in the future.');
+            } else {
+                timeslotError.style.display = 'none';
+                timeslot.setCustomValidity('');
+            }
+        });
+        }
+</script>
+
