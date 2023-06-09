@@ -36,7 +36,7 @@ namespace LekkerbekTestProject.Controllers
 
             // Configure mockServices as needed
             var chef = new Chef { ChefId=1,ChefName="testChef" };
-            var workerHoliday = new WorkerHoliday {WorkerHolidayId=1, ChefId = 1, StartDate = Convert.ToDateTime("11/11/2000 00:00"), EndDate = Convert.ToDateTime("13/11/2000 00:00") };
+            var workerHoliday = new WorkerHoliday {WorkerHolidayId=1, ChefId = 1, StartDate = Convert.ToDateTime("11/11/2000 00:00"), EndDate = Convert.ToDateTime("11/13/2000 00:00") };
             mockRestaurantManagementService.Setup(m => m.GetSpecificWorkerHoliday(1)).Returns(workerHoliday);
 
             var userManagerMock = new Mock<UserManager<IdentityUser>>(new Mock<IUserStore<IdentityUser>>().Object,
