@@ -41,7 +41,7 @@ namespace Lekkerbek.Web.Data
 
 
 
-
+        // Als u het testproject wilt uitvoeren en het programma wilt testen, moet u dit in de opmerking plaatsen. Anders een conflict wordt gebeurt
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=ucllgipsqlteam2v4.database.windows.net;Database=gip2db;user=gipteam2;password=Gipteam_2;trustservercertificate=true;");
