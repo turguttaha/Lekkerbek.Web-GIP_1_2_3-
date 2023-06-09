@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Lekkerbek.Web.Services
 {
-    public class RestaurantManagementService
+    public class RestaurantManagementService : IRestaurantManagementService
     {
         private readonly RestaurantManagementRepository _repository;
         public RestaurantManagementService(RestaurantManagementRepository repository)

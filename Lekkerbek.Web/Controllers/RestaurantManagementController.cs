@@ -12,8 +12,8 @@ namespace Lekkerbek.Web.Controllers
     [Authorize(Roles = "Administrator")]
     public class RestaurantManagementController : Controller
     {
-        private readonly RestaurantManagementService _restaurantManagementService;
-        public RestaurantManagementController(RestaurantManagementService restaurantManagementService)
+        private readonly IRestaurantManagementService _restaurantManagementService;
+        public RestaurantManagementController(IRestaurantManagementService restaurantManagementService)
         {
             _restaurantManagementService = restaurantManagementService;
         }
@@ -42,11 +42,6 @@ namespace Lekkerbek.Web.Controllers
         // GET: RestaurantManagment/Details/5
         public ActionResult CreateOpeningsHour()
         {
-            if (User.IsInRole("CookTest"))
-            {
-                return View("CookCreate");
-            }
-
             return View();
         }
 

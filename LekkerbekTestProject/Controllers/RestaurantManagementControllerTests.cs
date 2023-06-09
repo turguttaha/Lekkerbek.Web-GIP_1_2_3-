@@ -2,6 +2,7 @@
 using Lekkerbek.Web.Data;
 using Lekkerbek.Web.Models;
 using Lekkerbek.Web.Services;
+using Lekkerbek.Web.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,9 @@ using System.Threading.Tasks;
 namespace LekkerbekTestProject.Controllers
 {
     [TestClass]
-    public class OrdersChefControllerTests
+    public class RestaurantManagementControllerTests
     {
-        private OrdersChefController _controller;
+        private RestaurantManagementController _controller;
         [TestInitialize]
         public void Initialize()
         {
@@ -30,43 +31,26 @@ namespace LekkerbekTestProject.Controllers
             var options = new DbContextOptionsBuilder<LekkerbekContext>()
             .UseSqlite(connection)
             .Options;
-            // Configure any additional dependencies for the controller (e.g., services, repositories)
-            var mockOrderChefService = new Mock<IOrderChefService>();
-            var mockCustomerService = new Mock<ICustomerService>();
-            var mockOrderService = new Mock<IOrderService>();
-            var mockMenuItemService = new Mock<IMenuItemService>();
+            // Configure any additional dependencies for the controller (e.g.,services, repositories)
+            var mockRestaurantManagementService = new Mock<IRestaurantManagementService>();
 
             // Configure mockServices as needed
-            var customerNr1 = new Customer { CustomerId = 1, FName = "John " };
-            mockCustomerService.Setup(x =>
-           x.GetSpecificCustomer(customerNr1.CustomerId)).Returns(customerNr1);
-            var customerNr2 = new Customer { CustomerId = 2, FName = "Jane " };
-            mockCustomerService.Setup(x => x.Read()).Returns(
-            new List<Customer> { customerNr1, customerNr2 });
+            var chef = new Chef { ChefId=1,ChefName="testChef" };
+            var workerHoliday = new WorkerHoliday {WorkerHolidayId=1, ChefId = 1, StartDate = Convert.ToDateTime("11/11/2000 00:00"), EndDate = Convert.ToDateTime("13/11/2000 00:00") };
+            mockRestaurantManagementService.Setup(m => m.GetSpecificWorkerHoliday(1)).Returns(workerHoliday);
 
-            var order = new Order
-            {
-                OrderID = 1,
-                CustomerId = 2,
-                Finished = false,
-                TimeSlotID = 3,
-            };
-            mockOrderChefService.Setup(a=>a.GetChefsOrders(1)).Returns(order);
-
-            var userManagerMock = new Mock<UserManager<IdentityUser>>(new
-           Mock<IUserStore<IdentityUser>>().Object,
+            var userManagerMock = new Mock<UserManager<IdentityUser>>(new Mock<IUserStore<IdentityUser>>().Object,
             null, null, null, null, null, null, null, null);
-
             userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
             .ReturnsAsync((string userId) => new IdentityUser { Id = userId });
-           
+            // Create the controller instance with the required dependencies
+
             var user = new Mock<ClaimsPrincipal>();
             user.Setup(x => x.Identity.IsAuthenticated).Returns(true);
             user.Setup(x => x.Identity.Name).Returns("testuser");
             user.Setup(x => x.FindFirst(ClaimTypes.Role)).Returns(new
-           Claim(ClaimTypes.Role, "Chef"));
-            _controller = new OrdersChefController(mockOrderChefService.Object, mockCustomerService.Object,
-           mockOrderService.Object, mockMenuItemService.Object, userManagerMock.Object)
+            Claim(ClaimTypes.Role, "Administrator"));
+            _controller = new RestaurantManagementController(mockRestaurantManagementService.Object)
             {
                 ControllerContext = new ControllerContext
                 {
@@ -80,19 +64,21 @@ namespace LekkerbekTestProject.Controllers
             _controller.Dispose();
         }
         [TestMethod]
-        public async Task Details_ReturnsRedirectToAction()
+        public async Task EditWorkerHoliday_ReturnsViewResultWithWorkerHoliday()
         {
             // Arrange
             // service objects setup in the Initialize method
             try
             {
                 // Act
-                var result = await _controller.OrderDetails(1);
+                var result = _controller.EditWorkerHoliday(1);
                 // Assert
-                Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-                var viewResult = (RedirectToActionResult)result;
-                // check the viewresult model
-                Assert.AreEqual("Index", viewResult.ActionName);
+                Assert.IsInstanceOfType(result, typeof(ViewResult));
+                var viewResult = (ViewResult)result;
+                // check the viewresult model                
+                Assert.IsTrue(viewResult.Model is WorkerHoliday holiday );
+                holiday = (WorkerHoliday)viewResult.Model;
+                Assert.IsTrue(holiday.WorkerHolidayId == 1&&holiday.ChefId==1);
 
             }
             catch (AssertFailedException)
@@ -100,7 +86,5 @@ namespace LekkerbekTestProject.Controllers
                 Assert.Fail("The Details result is no ViewResult!");
             }
         }
-
     }
 }
-    
